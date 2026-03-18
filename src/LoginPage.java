@@ -145,8 +145,8 @@ public class LoginPage extends JFrame {
             setLayout(null);
 
             // Create the Toggle Button
-            toggleButton = new JButton("😊");
-            toggleButton.setFont(new Font("Noto Color Emoji", Font.PLAIN, 30)); // Font that supports emojis well
+            toggleButton = new JButton("👁");
+            toggleButton.setFont(new Font("Dialog", Font.PLAIN, 16)); // Font that supports emojis well
             toggleButton.setForeground(Color.GRAY);
             toggleButton.setOpaque(false);
             toggleButton.setContentAreaFilled(false);
@@ -164,11 +164,13 @@ public class LoginPage extends JFrame {
                     setEchoChar((char) 0);
                     toggleButton.setText("😊"); // Change to lock icon
                     toggleButton.setForeground(new Color(128, 128, 255)); // Highlight color
+			repaint();
                 } else {
                     // It is currently revealed, so hide it
                     setEchoChar(defaultEchoChar);
                     toggleButton.setText("👁"); // Change to eye icon
                     toggleButton.setForeground(Color.GRAY);
+			repaint();
                 }
             });
 
