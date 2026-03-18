@@ -4,8 +4,11 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.CardLayout;
 
 public class Test extends JFrame{
+
+	
 
 	public static void main(String[] args){
 		
@@ -30,26 +33,31 @@ public class Test extends JFrame{
 		sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
 		sidebarPanel.setBackground(new Color(128, 128, 255));
 
-		JLabel appLabel = new JLabel("APU - ASC");
-		appLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-		appLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		TextLabel appLabel = new TextLabel("APU - ASC");
 
-		Button testBtn = new Button("Profile");
-		Button newBtn = new Button("Haha");
+		JToggleButton profileBtn = createSidebarButton("Profile");
+		JToggleButton homeBtn = createSidebarButton("Home");
+
+		ButtonGroup sidebarGroup = new ButtonGroup();
+
+		sidebarGroup.add(profileBtn);
+		sidebarGroup.add(homeBtn);
 
 		JPanel dashboardPane = new JPanel();
-		dashboardPane.setLayout(new BoxLayout(dashboardPane, BoxLayout.Y_AXIS));
-		JLabel testLbl = new JLabel("Hmm");
-		testLbl.setFont(new Font("SansSerif", Font.BOLD, 28));
-		testLbl.setForeground(Color.BLACK);
-		testLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+		CardLayout cardLayout = new CardLayout();
+		dashboardPane.setLayout(cardLayout);
 
-		JLabel notProfileLbl = new JLabel("I'm New! and on top, apparently");
-		notProfileLbl.setFont(new Font("SansSerif", Font.PLAIN, 28));
-		notProfileLbl.setForeground(Color.RED);
-		notProfileLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JPanel profilePane = new JPanel();
+		profilePane.setLayout(new BoxLayout(profilePane, BoxLayout.Y_AXIS));
+		TextLabel profileLabel = new TextLabel("PROFILE");
+		profilePane.add(profileLabel);
 
-		
+		JPanel homePane = new JPanel();
+		homePane.setLayout(new BoxLayout(homePane, BoxLayout.Y_AXIS));
+		TextLabel homeLabel = new TextLabel("HOME");
+		homePane.add(homeLabel);
+
+
 		//Adding sidebarPanel and dashboardPane using gridbag constraints
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -71,64 +79,63 @@ public class Test extends JFrame{
 		gbc.weighty = 1.0;
 		contentPane.add(dashboardPane, gbc);
 
+		dashboardPane.add(profilePane, "PROFILE");
+		dashboardPane.add(homePane, "HOME");
 
-		dashboardPane.add(testLbl);
 		sidebarPanel.add(Box.createVerticalStrut(30));
 		sidebarPanel.add(appLabel);
 		sidebarPanel.add(Box.createVerticalStrut(50));
-		sidebarPanel.add(testBtn);
+		sidebarPanel.add(profileBtn);
 		sidebarPanel.add(Box.createVerticalStrut(50));
-		sidebarPanel.add(newBtn);
+		sidebarPanel.add(homeBtn);
 
-		testBtn.addActionListener(e -> {
-			testBtn.setActive(true);
-			newBtn.setActive(false);
-			testLbl.setText("Profile!");
-			dashboardPane.removeAll();
-			dashboardPane.add(notProfileLbl);
-			dashboardPane.add(Box.createVerticalStrut(20));
-			dashboardPane.add(testLbl);
-			dashboardPane.revalidate();
-			dashboardPane.repaint();
-			repaint();
+		profileBtn.addActionListener(e -> {
+			cardLayout.show(dashboardPane, "PROFILE");
 		});
 
-		newBtn.addActionListener(e -> {
-			newBtn.setActive(true);
-			testBtn.setActive(false);
-			testLbl.setText("Testing!!");
-			dashboardPane.removeAll();
-			dashboardPane.add(notProfileLbl);
-			dashboardPane.add(Box.createVerticalStrut(20));
-			dashboardPane.add(testLbl);
-			dashboardPane.revalidate();
-			dashboardPane.repaint();
-			repaint();
+		homeBtn.addActionListener(e -> {
+			cardLayout.show(dashboardPane, "HOME");
 
 		});
 	}
 
-	class Button extends JButton{
+	// Creates a new toggle sidebar button using this method
+	public JToggleButton createSidebarButton(String name){
+		JToggleButton btn = new JToggleButton(name);
+		btn.setBackground(new Color(128, 128, 255));
+		btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btn.setForeground(Color.WHITE);
+		btn.setFont(new Font("SansSerif", Font.BOLD, 28));
+		btn.setFocusPainted(false);
+		btn.setBorderPainted(false);
+		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		public Button(String label) {
-		setText(label);
-		setBackground(new Color(128, 128, 255));
-		setAlignmentX(Component.CENTER_ALIGNMENT);
-		setForeground(Color.WHITE);
-		setFont(new Font("SansSerif", Font.BOLD, 28));
-		setFocusPainted(false);
-		setBorderPainted(false);
-		setCursor(new Cursor(Cursor.HAND_CURSOR));
-		}
-
-		public void setActive(boolean isActive) {
-			if(isActive){
-				setBackground(Color.WHITE);
-				setForeground(Color.BLACK);
-			} else{
-				setBackground(new Color(128, 128, 255));
-				setForeground(Color.WHITE);
+		btn.addItemListener(e -> {
+			if(btn.isSelected()){
+				btn.setBackground(Color.WHITE);
+				btn.setForeground(Color.BLACK);
+			} else {
+				btn.setBackground(new Color(128, 128, 255));
+				btn.setForeground(Color.WHITE);
 			}
+		});
+
+		return btn;
+
+	}
+
+
+	class TextLabel extends JLabel{
+
+		public TextLabel(String label) {
+			setText(label);
+			setFont(new Font("SansSerif", Font.BOLD, 28));
+			setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
+
+	}
+
+	class sidebarPanel extends JPanel{
+
 	}
 }
