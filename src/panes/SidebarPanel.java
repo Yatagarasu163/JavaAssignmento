@@ -1,6 +1,8 @@
-package components;
+package panes;
 import javax.swing.*;
 import java.awt.*;
+import components.FloatingToggleButton;
+import components.TextLabel;
 
 public class SidebarPanel extends JPanel{
     
@@ -13,7 +15,7 @@ public class SidebarPanel extends JPanel{
     public SidebarPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(128, 128,255));
-
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20,20));
         
 
         TextLabel appLabel = new TextLabel("APU- ASC");
@@ -63,29 +65,4 @@ public class SidebarPanel extends JPanel{
     public JToggleButton getExitBtn(){
         return this.exitBtn;
     }
-
-    // Creates a new toggle sidebar button using this method
-	// public JToggleButton createSidebarButton(String name){
-	// 	JToggleButton btn = new JToggleButton(name);
-	// 	btn.setBackground(new Color(128, 128, 255));
-	// 	btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-	// 	btn.setForeground(Color.WHITE);
-	// 	btn.setFont(new Font("SansSerif", Font.BOLD, 28));
-	// 	btn.setFocusPainted(false);
-	// 	btn.setBorderPainted(false);
-	// 	btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-	// 	btn.addItemListener(e -> {
-	// 		if(btn.isSelected()){
-	// 			btn.setBackground(Color.WHITE);
-	// 			btn.setForeground(Color.BLACK);
-	// 		} else {
-	// 			btn.setBackground(new Color(128, 128, 255));
-	// 			btn.setForeground(Color.WHITE);
-	// 		}
-	// 	});
-
-	// 	return btn;
-
-	// }
 }

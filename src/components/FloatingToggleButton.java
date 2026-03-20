@@ -2,6 +2,7 @@ package components;
 
 import java.awt.*;
 import javax.swing.*;
+import config.UIConfig;
 
 public class FloatingToggleButton extends JToggleButton{
 
@@ -10,9 +11,9 @@ public class FloatingToggleButton extends JToggleButton{
 
     public FloatingToggleButton(String label){
         setText(label);
-        setBackground(new Color(128, 128, 225));
+        setBackground(UIConfig.mainBackground);
         setAlignmentX(Component.CENTER_ALIGNMENT);
-        setForeground(Color.WHITE);
+        setForeground(UIConfig.mainForeground);
         setFont(new Font("SansSerif", Font.BOLD, 16));
         setContentAreaFilled(false);
         setFocusPainted(false);
@@ -25,8 +26,8 @@ public class FloatingToggleButton extends JToggleButton{
 				setBackground(Color.WHITE);
 				setForeground(Color.BLACK);
 			} else {
-				setBackground(new Color(128, 128, 255));
-				setForeground(Color.WHITE);
+				setBackground(UIConfig.mainBackground);
+				setForeground(UIConfig.mainForeground);
 			}
 		});
     }
@@ -34,9 +35,9 @@ public class FloatingToggleButton extends JToggleButton{
     public FloatingToggleButton(String label, int radius){
         setText(label);
         this.radius = radius;
-		setBackground(new Color(128, 128, 255));
+		setBackground(UIConfig.mainBackground);
 		setAlignmentX(Component.CENTER_ALIGNMENT);
-		setForeground(Color.WHITE);
+		setForeground(UIConfig.mainForeground);
 		setFont(new Font("SansSerif", Font.BOLD, 28));
         setContentAreaFilled(false);
 		setFocusPainted(false);
@@ -49,8 +50,8 @@ public class FloatingToggleButton extends JToggleButton{
 				setBackground(Color.WHITE);
 				setForeground(Color.BLACK);
 			} else {
-				setBackground(new Color(128, 128, 255));
-				setForeground(Color.WHITE);
+				setBackground(UIConfig.mainBackground);
+				setForeground(UIConfig.mainForeground);
 			}
 		});
     }

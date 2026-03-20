@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import config.UIConfig;
 
 
 public class FloatingTextField extends JTextField {
@@ -17,8 +18,8 @@ public class FloatingTextField extends JTextField {
         setMaximumSize(new Dimension(300, 50));
         setPreferredSize(new Dimension(300, 50));
         setFont(new Font("SansSerif", Font.PLAIN, textSize));
-        setForeground(Color.DARK_GRAY);
-        setCaretColor(new Color(128, 128, 255));
+        setForeground(UIConfig.inputFieldForeground);
+        setCaretColor(UIConfig.caretColor);
 
         setBorder(BorderFactory.createCompoundBorder(
                 new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),

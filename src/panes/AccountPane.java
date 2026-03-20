@@ -1,8 +1,13 @@
-package components;
+package panes;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import components.TextLabel;
+import components.FloatingTextField;
+import components.FloatingPasswordField;
+import components.FloatingButton;
+import components.FloatingComboBox;
 
 
 public class AccountPane extends JPanel {
@@ -59,8 +64,7 @@ public class AccountPane extends JPanel {
 
         //Declares input fields for the right columns
         String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
-        JComboBox<String> titleComboBox = new JComboBox<>(options);
-        titleComboBox.setSelectedIndex(0);
+        FloatingComboBox<String> titleComboBox = new FloatingComboBox<>(options, 20);
         FloatingTextField emailTxtField = new FloatingTextField("Email");
         FloatingTextField contactNumberTxtField = new FloatingTextField("Contact Number");
         FloatingPasswordField passwordTxtField = new FloatingPasswordField("Auto-generated password");

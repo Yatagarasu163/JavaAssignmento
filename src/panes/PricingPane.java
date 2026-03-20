@@ -1,9 +1,13 @@
-package components;
+package panes;
 
 import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import components.FloatingButton;
+import components.FloatingComboBox;
+import components.TextLabel;
+import components.FloatingTextField;
 
 public class PricingPane extends JPanel{
 
@@ -28,8 +32,7 @@ public class PricingPane extends JPanel{
 
         //Sets the input fields
         String[] options = {"Normal service type", "Major service type"};
-        JComboBox<String> serviceTypeComboBox = new JComboBox<>(options);
-        serviceTypeComboBox.setSelectedIndex(0);
+        FloatingComboBox<String> serviceTypeComboBox = new FloatingComboBox<>(options);
         FloatingTextField newPriceTxtField = new FloatingTextField("New Price");
 
         //Adds content to the new formPanel
