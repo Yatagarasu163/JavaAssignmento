@@ -20,7 +20,7 @@ public class ManagerMainPane extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout());
 
-		SidebarPanel sidebarPanel = new SidebarPanel();
+		SidebarPanel sidebarPanel = new SidebarPanel("Manager");
 
 		JPanel dashboardPane = new JPanel();
 		CardLayout cardLayout = new CardLayout();
