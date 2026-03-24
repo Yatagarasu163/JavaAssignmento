@@ -41,7 +41,16 @@ public class ManagerMainPane extends JFrame{
 		dashboardPane.add(pricingPane, "PRICING");
 		dashboardPane.add(feedbackPane, "FEEDBACK");
 
-		
+
+
+		// To return to main dashboard
+		sidebarPanel.getHomeBtn().addActionListener(e -> {
+			// Change the "ACCOUNT" to "Dashboard" after you created a dashboard interface
+			cardLayout.show(dashboardPane, "ACCOUNT");
+
+			// Clear the other buttons "White Background"
+			sidebarPanel.clearSelection();
+		});
 
 		sidebarPanel.getAccountBtn().addActionListener(e -> {
 			cardLayout.show(dashboardPane, "ACCOUNT");

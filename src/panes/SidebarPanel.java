@@ -2,9 +2,16 @@ package panes;
 import javax.swing.*;
 import java.awt.*;
 import components.FloatingToggleButton;
-import components.TextLabel;
+// You can remove the TextLabel import if you aren't using it anywhere else!
 
 public class SidebarPanel extends JPanel {
+
+    private ButtonGroup navGroup;
+
+    // --- SHARED BUTTONS ---
+    // Added the home button (logo) here so we can access it later
+    private JButton homeBtn;
+    private FloatingToggleButton exitBtn = new FloatingToggleButton("Log Out", 20);
 
     // --- MANAGER BUTTONS ---
     private FloatingToggleButton accountBtn;
@@ -13,12 +20,9 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton feedbackBtn;
 
     // --- CUSTOMER BUTTONS ---
-    // Perfect for navigating to the nuggets, fries, and tarts!
     private FloatingToggleButton profileBtn;
     private FloatingToggleButton historyBtn;
 
-    // --- SHARED BUTTONS ---
-    private FloatingToggleButton exitBtn = new FloatingToggleButton("Log Out", 20);
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {
@@ -31,12 +35,26 @@ public class SidebarPanel extends JPanel {
         setBackground(new Color(128, 128, 255));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        TextLabel appLabel = new TextLabel("APU- ASC");
+        // --- CREATE THE LOGO / HOME BUTTON ---
+        homeBtn = new JButton("APU - ASC");
+        homeBtn.setForeground(Color.BLACK);
+        homeBtn.setFont(new Font("SansSerif", Font.BOLD, 28)); // Match your TextLabel size
+        homeBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        homeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Show the pointing finger
+
+        // These 3 lines make it look like text instead of a chunky button
+        homeBtn.setContentAreaFilled(false);
+        homeBtn.setBorderPainted(false);
+        homeBtn.setFocusPainted(false);
+
         int componentSpace = 50;
-        ButtonGroup grp = new ButtonGroup();
+        navGroup = new ButtonGroup();
 
         add(Box.createVerticalStrut(componentSpace));
-        add(appLabel);
+
+        // Add the new clickable logo instead of the TextLabel
+        add(homeBtn);
+
         add(Box.createVerticalStrut(componentSpace));
 
         // --- THE IF-ELSE ROLE LOGIC ---
@@ -46,10 +64,10 @@ public class SidebarPanel extends JPanel {
             editBtn = new FloatingToggleButton("Edit Profile", 20);
             feedbackBtn = new FloatingToggleButton("Feedback and Comments", 20);
 
-            grp.add(accountBtn);
-            grp.add(pricingBtn);
-            grp.add(editBtn);
-            grp.add(feedbackBtn);
+            navGroup.add(accountBtn);
+            navGroup.add(pricingBtn);
+            navGroup.add(editBtn);
+            navGroup.add(feedbackBtn);
 
             add(accountBtn);
             add(Box.createVerticalStrut(componentSpace));
@@ -64,8 +82,8 @@ public class SidebarPanel extends JPanel {
             profileBtn = new FloatingToggleButton("Profile", 20);
             historyBtn = new FloatingToggleButton("History", 20);
 
-            grp.add(profileBtn);
-            grp.add(historyBtn);
+            navGroup.add(profileBtn);
+            navGroup.add(historyBtn);
 
             add(profileBtn);
             add(Box.createVerticalStrut(componentSpace));
@@ -74,10 +92,20 @@ public class SidebarPanel extends JPanel {
         }
 
         // Add the shared Exit button at the bottom for everyone
-        grp.add(exitBtn);
+        navGroup.add(exitBtn);
         add(exitBtn);
         add(Box.createVerticalStrut(componentSpace));
     }
+
+    public void clearSelection() {
+        if (navGroup != null) {
+            navGroup.clearSelection();
+        }
+    }
+
+    // --- SHARED GETTERS ---
+    public JButton getHomeBtn() { return this.homeBtn; } // New getter for the logo!
+    public JToggleButton getExitBtn() { return this.exitBtn; }
 
     // --- GETTERS FOR MANAGER ---
     public JToggleButton getPricingBtn() { return this.pricingBtn; }
@@ -88,8 +116,4 @@ public class SidebarPanel extends JPanel {
     // --- GETTERS FOR CUSTOMER ---
     public JToggleButton getProfileBtn() { return this.profileBtn; }
     public JToggleButton getHistoryBtn() { return this.historyBtn; }
-
-    // --- SHARED GETTERS ---
-    public JToggleButton getExitBtn() { return this.exitBtn; }
 }
-

@@ -37,8 +37,29 @@ public class CustomerMainPane extends JFrame {
         // 6. Force the window to show the Dashboard as the default view
         cardLayout.show(cardsContainer, "DASHBOARD");
 
+        // Pass the starting data into the constructor
+        CustomerProfilePane profilePane = new CustomerProfilePane(
+                "Sum Ting Wong",
+                "CT123456",
+                "tingwong@gmail.com",
+                "03 March 2026",
+                "+60 12 - 345 6789",
+                "10, Jalan Ayam Hutan, Kampung Bunga Baru, 47130, Puchong, Selangor"
+        );
+
+        // Add it to your card layout container
+        cardsContainer.add(profilePane, "PROFILE");
+
         // TODO: In the future, add ActionListeners for your sidebarPanel buttons here
-        // Example:
-        // sidebarPanel.getMenuBtn().addActionListener(e -> cardLayout.show(cardsContainer, "MENU"));
+        sidebarPanel.getHomeBtn().addActionListener(e -> {
+            cardLayout.show(cardsContainer, "DASHBOARD");
+
+            // Clear the other buttons "White Background"
+            sidebarPanel.clearSelection();
+        });
+
+        sidebarPanel.getProfileBtn().addActionListener(e -> {
+            cardLayout.show(cardsContainer, "PROFILE");
+        });
     }
 }

@@ -48,7 +48,7 @@ public class CustomerDashboardPane extends JPanel {
         headerRow.add(createHeaderLabel("Appointment Status"));
         headerRow.add(createHeaderLabel("Car Plate Number"));
         headerRow.add(createHeaderLabel("Service Type"));
-        headerRow.add(createHeaderLabel("Action")); // For the comments button
+        headerRow.add(createHeaderLabel("Action"));
 
         // 3B. Create the panel that holds the actual data rows
         JPanel appointmentsTable = new JPanel();
