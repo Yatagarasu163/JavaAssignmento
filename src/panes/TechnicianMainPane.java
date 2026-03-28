@@ -50,8 +50,14 @@ public class TechnicianMainPane extends JFrame {
                 "10, Jalan Ayam Hutan, Kampung Bunga Baru, 47130, Puchong, Selangor"
         );
 
-        // Add into the main container area
-        cardContainer.add(profilePane, "TECHPROFILE");
+        // Add into the main container card
+        cardContainer.add(profilePane, "TechnicianProfile");
+
+        // Technician Appointment Page
+        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane();
+
+        // Add appointment pane into the container card
+        cardContainer.add(appointmentPane, "Appointment");
 
         sidebarPanel.getHomeBtn().addActionListener(e -> {
             cardLayout.show(cardContainer, "Dashboard");
@@ -62,7 +68,12 @@ public class TechnicianMainPane extends JFrame {
 
         // Execution of profile page when "My Profile" option is clicked
         sidebarPanel.getTechProfileBtn().addActionListener(e ->{
-            cardLayout.show(cardContainer, "TECHPROFILE");
+            cardLayout.show(cardContainer, "TechnicianProfile");
+        });
+
+        // Execution of Appointment page when "Appointment" option is clicked
+        sidebarPanel.getAppointmentBtn().addActionListener(e ->{
+            cardLayout.show(cardContainer, "Appointment");
         });
 
 
