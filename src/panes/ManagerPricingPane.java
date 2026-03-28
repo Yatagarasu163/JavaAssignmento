@@ -9,11 +9,11 @@ import components.FloatingComboBox;
 import components.TextLabel;
 import components.FloatingTextField;
 
-public class PricingPane extends JPanel{
+public class ManagerPricingPane extends JPanel{
 
     private double currentPrice = 67.69;
 
-    public PricingPane() {
+    public ManagerPricingPane() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
