@@ -131,4 +131,9 @@ public class SidebarPanel extends JPanel {
     // --- GETTERS FOR CUSTOMER ---
     public JToggleButton getProfileBtn() { return this.profileBtn; }
     public JToggleButton getHistoryBtn() { return this.historyBtn; }
+
+    // --- GETTERS FOR TECHNICIAN ---
+    public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}
+    public JToggleButton getAppointmentBtn() {return this.appointmentBtn;}
 }
+
