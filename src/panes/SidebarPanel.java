@@ -23,6 +23,10 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton profileBtn;
     private FloatingToggleButton historyBtn;
 
+    // --- TECHNICIAN BUTTONS--//
+    private FloatingToggleButton myProfileBtn;
+    private FloatingToggleButton appointmentBtn;
+
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {
@@ -88,6 +92,17 @@ public class SidebarPanel extends JPanel {
             add(profileBtn);
             add(Box.createVerticalStrut(componentSpace));
             add(historyBtn);
+            add(Box.createVerticalStrut(componentSpace));
+        } else if (role.equalsIgnoreCase("Technician")) {
+            myProfileBtn = new FloatingToggleButton("My Profile", 20);
+            appointmentBtn = new FloatingToggleButton("Appointments", 20);
+
+            navGroup.add(myProfileBtn);
+            navGroup.add(appointmentBtn);
+
+            add(myProfileBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(appointmentBtn);
             add(Box.createVerticalStrut(componentSpace));
         }
 
