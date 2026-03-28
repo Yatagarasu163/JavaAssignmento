@@ -11,9 +11,9 @@ import components.FloatingComboBox;
 import components.TextLabel;
 import config.UIConfig;
 
-public class FeedbackPane extends JPanel{
+public class ManagerFeedbackPane extends JPanel{
 
-    public FeedbackPane() {
+    public ManagerFeedbackPane() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
