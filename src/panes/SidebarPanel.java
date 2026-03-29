@@ -27,6 +27,9 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton customerListBtn;
     private FloatingToggleButton appointmentBtn;
     private FloatingToggleButton paymentBtn;
+    // --- TECHNICIAN BUTTONS--//
+    private FloatingToggleButton myProfileBtn;
+    private FloatingToggleButton appointmentBtn;
 
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
@@ -99,7 +102,7 @@ public class SidebarPanel extends JPanel {
             customerListBtn = new FloatingToggleButton("Customer List", 20);
             appointmentBtn = new FloatingToggleButton("Appointment", 20);
             paymentBtn = new FloatingToggleButton("Payment", 20);
-        
+
             navGroup.add(profileBtn);
             navGroup.add(customerListBtn);
             navGroup.add(appointmentBtn);
@@ -114,6 +117,17 @@ public class SidebarPanel extends JPanel {
             add(paymentBtn);
             add(Box.createVerticalStrut(componentSpace));
             
+        } else if (role.equalsIgnoreCase("Technician")) {
+            myProfileBtn = new FloatingToggleButton("My Profile", 20);
+            appointmentBtn = new FloatingToggleButton("Appointments", 20);
+
+            navGroup.add(myProfileBtn);
+            navGroup.add(appointmentBtn);
+
+            add(myProfileBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(appointmentBtn);
+            add(Box.createVerticalStrut(componentSpace));
         }
 
         // Add the shared Exit button at the bottom for everyone
@@ -148,3 +162,8 @@ public class SidebarPanel extends JPanel {
     public JToggleButton getAppointmentBtn() { return this.appointmentBtn; }
     public JToggleButton getPaymentBtn() { return this.paymentBtn; }
 }
+    // --- GETTERS FOR TECHNICIAN ---
+    public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}
+    public JToggleButton getAppointmentBtn() {return this.appointmentBtn;}
+}
+

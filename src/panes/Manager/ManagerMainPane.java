@@ -4,6 +4,8 @@ import javax.swing.*;
 
 import panes.AccountPane;
 import panes.SidebarPanel;
+import panes.Manager.ManagerPricingPane;
+import panes.Manager.ManagerFeedbackPane;
 
 import java.awt.*;
 public class ManagerMainPane extends JFrame{
