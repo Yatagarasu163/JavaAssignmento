@@ -1,11 +1,9 @@
-package panes;
+package panes.Manager;
 
 import javax.swing.*;
 
 import panes.AccountPane;
 import panes.SidebarPanel;
-import panes.PricingPane;
-import panes.FeedbackPane;
 
 import java.awt.*;
 public class ManagerMainPane extends JFrame{
@@ -27,8 +25,8 @@ public class ManagerMainPane extends JFrame{
 		dashboardPane.setLayout(cardLayout);
 
 		AccountPane accountPane = new AccountPane();
-		PricingPane pricingPane = new PricingPane();
-		FeedbackPane feedbackPane = new FeedbackPane();
+		ManagerPricingPane pricingPane = new ManagerPricingPane();
+		ManagerFeedbackPane feedbackPane = new ManagerFeedbackPane();
 		
 
 		JScrollPane sidePane = new JScrollPane(sidebarPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

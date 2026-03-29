@@ -23,6 +23,11 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton profileBtn;
     private FloatingToggleButton historyBtn;
 
+    // --- COUNTER STAFF BUTTONS ---
+    private FloatingToggleButton customerListBtn;
+    private FloatingToggleButton appointmentBtn;
+    private FloatingToggleButton paymentBtn;
+
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {
@@ -89,6 +94,26 @@ public class SidebarPanel extends JPanel {
             add(Box.createVerticalStrut(componentSpace));
             add(historyBtn);
             add(Box.createVerticalStrut(componentSpace));
+        } else if(role.equalsIgnoreCase("Counter Staff")){
+            profileBtn = new FloatingToggleButton("Profile", 20);
+            customerListBtn = new FloatingToggleButton("Customer List", 20);
+            appointmentBtn = new FloatingToggleButton("Appointment", 20);
+            paymentBtn = new FloatingToggleButton("Payment", 20);
+        
+            navGroup.add(profileBtn);
+            navGroup.add(customerListBtn);
+            navGroup.add(appointmentBtn);
+            navGroup.add(paymentBtn);
+
+            add(profileBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(customerListBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(appointmentBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(paymentBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            
         }
 
         // Add the shared Exit button at the bottom for everyone
@@ -114,6 +139,12 @@ public class SidebarPanel extends JPanel {
     public JToggleButton getFeedbackBtn() { return this.feedbackBtn; }
 
     // --- GETTERS FOR CUSTOMER ---
-    public JToggleButton getProfileBtn() { return this.profileBtn; }
+    public JToggleButton getProfileBtn() { return this.profileBtn; } // Returns for the Counter Staff as well
     public JToggleButton getHistoryBtn() { return this.historyBtn; }
+
+
+    // --- GETTERS FOR COUNTER STAFF ---
+    public JToggleButton getCustomerListBtn() { return this.customerListBtn; }
+    public JToggleButton getAppointmentBtn() { return this.appointmentBtn; }
+    public JToggleButton getPaymentBtn() { return this.paymentBtn; }
 }
