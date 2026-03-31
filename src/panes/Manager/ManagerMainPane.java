@@ -1,11 +1,11 @@
-package panes;
+package panes.Manager;
 
 import javax.swing.*;
 
 import panes.AccountPane;
 import panes.SidebarPanel;
-import panes.ManagerPricingPane;
-import panes.ManagerFeedbackPane;
+import panes.Manager.ManagerPricingPane;
+import panes.Manager.ManagerFeedbackPane;
 
 import java.awt.*;
 public class ManagerMainPane extends JFrame{

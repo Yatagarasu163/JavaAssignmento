@@ -1,4 +1,4 @@
-package panes;
+package panes.Manager;
 
 import javax.swing.JPanel;
 import java.awt.*;
