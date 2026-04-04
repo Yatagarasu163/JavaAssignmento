@@ -29,8 +29,6 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton paymentBtn;
     // --- TECHNICIAN BUTTONS--//
     private FloatingToggleButton myProfileBtn;
-    private FloatingToggleButton appointmentBtn;
-
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {

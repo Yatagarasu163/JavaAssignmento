@@ -1,4 +1,6 @@
-package panes;
+package panes.Customer;
+import panes.SidebarPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -50,6 +52,13 @@ public class CustomerMainPane extends JFrame {
         // Add it to your card layout container
         cardsContainer.add(profilePane, "PROFILE");
 
+        CustomerHistoryPane historyPane = new CustomerHistoryPane(cardsContainer, cardLayout);
+
+        cardsContainer.add(historyPane, "HISTORY");
+
+        CustomerPaymentDetailsPane paymentDetailsPane = new CustomerPaymentDetailsPane();
+        cardsContainer.add(paymentDetailsPane, "PAYMENT_DETAILS");
+
         // TODO: In the future, add ActionListeners for your sidebarPanel buttons here
         sidebarPanel.getHomeBtn().addActionListener(e -> {
             cardLayout.show(cardsContainer, "DASHBOARD");
@@ -60,6 +69,14 @@ public class CustomerMainPane extends JFrame {
 
         sidebarPanel.getProfileBtn().addActionListener(e -> {
             cardLayout.show(cardsContainer, "PROFILE");
+        });
+
+        sidebarPanel.getHistoryBtn().addActionListener(e -> {
+            cardLayout.show(cardsContainer, "HISTORY");
+        });
+
+        paymentDetailsPane.getBackBtn().addActionListener(e -> {
+            cardLayout.show(cardsContainer, "HISTORY");
         });
     }
 }
