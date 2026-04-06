@@ -1,5 +1,8 @@
-package panes;
+package panes.Customer;
 import javax.swing.*;
+
+import panes.SidebarPanel;
+
 import java.awt.*;
 
 public class CustomerMainPane extends JFrame {

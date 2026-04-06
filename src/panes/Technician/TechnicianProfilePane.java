@@ -1,4 +1,4 @@
-package panes;
+package panes.Technician;
 
 import components.FloatingButton;
 import java.awt.*;
@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-public class CustomerProfilePane extends JPanel {
+public class TechnicianProfilePane extends JPanel {
 
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgColor = new Color(245, 245, 250);
@@ -18,7 +18,7 @@ public class CustomerProfilePane extends JPanel {
     private boolean isEditing = false;
     private FloatingButton updateBtn;
 
-    public CustomerProfilePane(String name, String id, String email, String date, String phone, String address) {
+    public TechnicianProfilePane(String name, String id, String email, String date, String phone, String address) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));

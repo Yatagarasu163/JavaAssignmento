@@ -1,4 +1,4 @@
-package panes;
+package panes.Technician;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;

@@ -5,9 +5,7 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import panes.AccountPane;
 import panes.SidebarPanel;
-import panes.TechnicianProfilePane;
 
 public class CounterStaffMainPane extends JFrame{
 
@@ -28,6 +26,8 @@ public class CounterStaffMainPane extends JFrame{
         mainPane.setLayout(cardLayout);
 
         CounterStaffDashboardPane dashboardPane = new CounterStaffDashboardPane();
+        CounterStaffCustomerList customerListPane = new CounterStaffCustomerList();
+        CounterStaffAppointmentPane appointmentPane = new CounterStaffAppointmentPane();
 
         JScrollPane sidePane = new JScrollPane(sidebarPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         sidePane.setPreferredSize(new Dimension(350, Integer.MAX_VALUE));
@@ -36,13 +36,21 @@ public class CounterStaffMainPane extends JFrame{
         contentPane.add(mainPane, BorderLayout.CENTER);
 
         mainPane.add(dashboardPane, "DASHBOARD");
+        mainPane.add(customerListPane, "CUSTOMER");
+        mainPane.add(appointmentPane, "APPOINTMENT");
+
 
         sidebarPanel.getProfileBtn().addActionListener(e -> {
             cardLayout.show(mainPane, "DASHBOARD");
         });
 
-        sidebarPanel.getAppointmentBtn().addActionListener(e -> {
-            cardLayout.show(mainPane, "DASHBOARD");
+        sidebarPanel.getCustomerListBtn().addActionListener(e -> {
+            cardLayout.show(mainPane, "CUSTOMER");
         });
+        
+        sidebarPanel.getAppointmentBtn().addActionListener(e -> {
+            cardLayout.show(mainPane, "APPOINTMENT");
+        });
+
     }
 }

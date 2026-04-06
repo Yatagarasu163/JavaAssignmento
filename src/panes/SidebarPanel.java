@@ -29,7 +29,6 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton paymentBtn;
     // --- TECHNICIAN BUTTONS--//
     private FloatingToggleButton myProfileBtn;
-    private FloatingToggleButton appointmentBtn;
 
 
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
@@ -161,9 +160,9 @@ public class SidebarPanel extends JPanel {
     public JToggleButton getCustomerListBtn() { return this.customerListBtn; }
     public JToggleButton getAppointmentBtn() { return this.appointmentBtn; }
     public JToggleButton getPaymentBtn() { return this.paymentBtn; }
-}
+
     // --- GETTERS FOR TECHNICIAN ---
     public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}
-    public JToggleButton getAppointmentBtn() {return this.appointmentBtn;}
+    
 }
 

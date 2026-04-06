@@ -1,4 +1,4 @@
-package panes;
+package panes.Manager;
 
 import java.awt.*;
 import javax.swing.*;
@@ -10,8 +10,8 @@ import components.FloatingButton;
 import components.FloatingComboBox;
 
 
-public class AccountPane extends JPanel {
-    public AccountPane() {
+public class ManagerCreateAccountPane extends JPanel {
+    public ManagerCreateAccountPane() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));

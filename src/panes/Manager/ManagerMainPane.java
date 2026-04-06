@@ -2,7 +2,6 @@ package panes.Manager;
 
 import javax.swing.*;
 
-import panes.AccountPane;
 import panes.SidebarPanel;
 import panes.Manager.ManagerPricingPane;
 import panes.Manager.ManagerFeedbackPane;
@@ -26,7 +25,7 @@ public class ManagerMainPane extends JFrame{
 		CardLayout cardLayout = new CardLayout();
 		dashboardPane.setLayout(cardLayout);
 
-		AccountPane accountPane = new AccountPane();
+		ManagerCreateAccountPane accountPane = new ManagerCreateAccountPane();
 		ManagerPricingPane pricingPane = new ManagerPricingPane();
 		ManagerFeedbackPane feedbackPane = new ManagerFeedbackPane();
 		

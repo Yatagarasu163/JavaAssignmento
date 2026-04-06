@@ -1,6 +1,9 @@
-package panes;
+package panes.Technician;
 
 import javax.swing.*;
+
+import panes.SidebarPanel;
+
 import java.awt.*;
 
 public class TechnicianMainPane extends JFrame {
