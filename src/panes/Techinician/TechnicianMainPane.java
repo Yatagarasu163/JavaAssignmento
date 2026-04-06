@@ -1,15 +1,7 @@
-<<<<<<<< HEAD:src/panes/Technician/TechnicianMainPane.java
-package panes.Technician;
-========
 package panes.Techinician;
 
-import panes.SidebarPanel;
->>>>>>>> fb9a3f8190055edfbf45614d90dcfcb1116169cc:src/panes/Techinician/TechnicianMainPane.java
-
 import javax.swing.*;
-
 import panes.SidebarPanel;
-
 import java.awt.*;
 
 public class TechnicianMainPane extends JFrame {

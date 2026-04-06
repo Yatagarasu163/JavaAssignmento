@@ -30,7 +30,6 @@ public class SidebarPanel extends JPanel {
     // --- TECHNICIAN BUTTONS--//
     private FloatingToggleButton myProfileBtn;
 
-
     // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {
         this("Manager"); // If no role is passed, assume it's the Manager
@@ -96,7 +95,7 @@ public class SidebarPanel extends JPanel {
             add(Box.createVerticalStrut(componentSpace));
             add(historyBtn);
             add(Box.createVerticalStrut(componentSpace));
-        } else if(role.equalsIgnoreCase("Counter Staff")){
+        } else if (role.equalsIgnoreCase("Counter Staff")) {
             profileBtn = new FloatingToggleButton("Profile", 20);
             customerListBtn = new FloatingToggleButton("Customer List", 20);
             appointmentBtn = new FloatingToggleButton("Appointment", 20);
@@ -115,7 +114,7 @@ public class SidebarPanel extends JPanel {
             add(Box.createVerticalStrut(componentSpace));
             add(paymentBtn);
             add(Box.createVerticalStrut(componentSpace));
-            
+
         } else if (role.equalsIgnoreCase("Technician")) {
             myProfileBtn = new FloatingToggleButton("My Profile", 20);
             appointmentBtn = new FloatingToggleButton("Appointments", 20);
@@ -142,18 +141,39 @@ public class SidebarPanel extends JPanel {
     }
 
     // --- SHARED GETTERS ---
-    public JButton getHomeBtn() { return this.homeBtn; } // New getter for the logo!
-    public JToggleButton getExitBtn() { return this.exitBtn; }
+    public JButton getHomeBtn() {
+        return this.homeBtn;
+    } // New getter for the logo!
+
+    public JToggleButton getExitBtn() {
+        return this.exitBtn;
+    }
 
     // --- GETTERS FOR MANAGER ---
-    public JToggleButton getPricingBtn() { return this.pricingBtn; }
-    public JToggleButton getAccountBtn() { return this.accountBtn; }
-    public JToggleButton getEditBtn() { return this.editBtn; }
-    public JToggleButton getFeedbackBtn() { return this.feedbackBtn; }
+    public JToggleButton getPricingBtn() {
+        return this.pricingBtn;
+    }
+
+    public JToggleButton getAccountBtn() {
+        return this.accountBtn;
+    }
+
+    public JToggleButton getEditBtn() {
+        return this.editBtn;
+    }
+
+    public JToggleButton getFeedbackBtn() {
+        return this.feedbackBtn;
+    }
 
     // --- GETTERS FOR CUSTOMER ---
-    public JToggleButton getProfileBtn() { return this.profileBtn; } // Returns for the Counter Staff as well
-    public JToggleButton getHistoryBtn() { return this.historyBtn; }
+    public JToggleButton getProfileBtn() {
+        return this.profileBtn;
+    } // Returns for the Counter Staff as well
+
+    public JToggleButton getHistoryBtn() {
+        return this.historyBtn;
+    }
 
 
     // --- GETTERS FOR COUNTER STAFF ---
@@ -165,4 +185,13 @@ public class SidebarPanel extends JPanel {
     public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}
     
 }
+    public JToggleButton getCustomerListBtn() {
+        return this.customerListBtn;
+    }
 
+    // --- GETTERS FOR TECHNICIAN ---
+    public JToggleButton getTechProfileBtn() {
+        return this.myProfileBtn;
+    }
+
+}

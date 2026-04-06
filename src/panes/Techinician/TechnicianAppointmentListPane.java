@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/panes/Technician/TechnicianAppointmentListPane.java
-package panes.Technician;
-========
 package panes.Techinician;
->>>>>>>> fb9a3f8190055edfbf45614d90dcfcb1116169cc:src/panes/Techinician/TechnicianAppointmentListPane.java
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
