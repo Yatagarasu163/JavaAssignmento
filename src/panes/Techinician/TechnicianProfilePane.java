@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/panes/Technician/TechnicianProfilePane.java
-package panes.Technician;
-========
 package panes.Techinician;
->>>>>>>> fb9a3f8190055edfbf45614d90dcfcb1116169cc:src/panes/Techinician/TechnicianProfilePane.java
 
 import components.FloatingButton;
 import java.awt.*;
