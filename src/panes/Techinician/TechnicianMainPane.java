@@ -1,4 +1,6 @@
-package panes;
+package panes.Techinician;
+
+import panes.SidebarPanel;
 
 import javax.swing.*;
 import java.awt.*;
