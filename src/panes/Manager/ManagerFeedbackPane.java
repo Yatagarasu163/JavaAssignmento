@@ -13,6 +13,8 @@ import config.UIConfig;
 
 public class ManagerFeedbackPane extends JPanel{
 
+    private String[] columns;
+
     public ManagerFeedbackPane() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -47,7 +49,7 @@ public class ManagerFeedbackPane extends JPanel{
             {"Major", "I kena scam sia", "13/5/1963"},
             {"Normal", "I came here to look at hot mechanics. I came", "31/8/1957"}
         };
-        String[] columns = {"Service Type", "Feedback", "Date"};
+        columns = new String[]{"Service Type", "Feedback", "Date"};
 
         FeedbackTable feedbackTable = new FeedbackTable(testData, columns);
         feedbackTable.setGridColor(Color.WHITE);
@@ -69,13 +71,43 @@ public class ManagerFeedbackPane extends JPanel{
         JScrollPane scrollPane = new JScrollPane(feedbackTable);
         scrollPane.setOpaque(false);
         scrollPane.setBackground(UIConfig.mainBackground);
-        scrollPane.setForeground(UIConfig.mainBackground);        
+        scrollPane.setForeground(UIConfig.mainForeground);        
         scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-        scrollPane.getViewport().setBackground(UIConfig.mainBackground);
+        scrollPane.getViewport().setBackground(UIConfig.mainForeground);
 
         tablePanel.add(scrollPane, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
+
+
+
+
+
+        //Adds behavior to FloatingComboBox
+        viewTypeComboBox.addActionListener(e -> {
+            int index = viewTypeComboBox.getSelectedIndex();
+            switch (index) {
+                case 0: 
+                    //Set data to feedback values only
+                    columns = new String[]{"Service Type", "Feedback", "Date"};
+                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    break;
+                case 1: 
+                    //Set data to comment values only
+                    columns = new String[]{"Service Type", "Comments", "Date"};
+                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    break;
+                case 2:
+                    //Set data to feedback and comment values
+                    columns = new String[]{"Service Type", "Feedback and Comments", "Date"};
+                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    break;
+                default:
+                    columns = new String[]{"Service Type", "Feedback", "Date"};
+                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    break;
+            }
+        });
     }
 
 }

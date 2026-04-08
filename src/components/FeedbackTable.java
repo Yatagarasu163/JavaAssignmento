@@ -8,8 +8,10 @@ import java.awt.*;
 import config.UIConfig;
 
 public class FeedbackTable extends JTable{
+
+    private DefaultTableModel model;
     
-    public FeedbackTable(String[][] data, String[] columns) {
+    public FeedbackTable(Object[][] data, String[] columns) {
         setFont(new Font("SansSerif", Font.PLAIN, 25));
         setRowHeight(40);
         setOpaque(false);
@@ -29,7 +31,7 @@ public class FeedbackTable extends JTable{
         header.setForeground(UIConfig.mainForeground);
         header.setFont(new Font("SansSerif", Font.BOLD, 25));
 
-        DefaultTableModel model = new DefaultTableModel(data, columns){
+        this.model = new DefaultTableModel(data, columns){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
@@ -38,6 +40,33 @@ public class FeedbackTable extends JTable{
 
 
 
-        setModel(model);
+        setModel(this.model);
+    }
+
+    public FeedbackTable(DefaultTableModel tableModel) {
+        setFont(new Font("SansSerif", Font.PLAIN, 25));
+        setRowHeight(40);
+        setOpaque(false);
+        setAlignmentX(Component.CENTER_ALIGNMENT);
+        getTableHeader().setPreferredSize(new Dimension(0, 40));
+        setIntercellSpacing(new Dimension(10, 10));
+        setFillsViewportHeight(true);
+        getTableHeader().setReorderingAllowed(false);
+        setRowSelectionAllowed(false);
+        setColumnSelectionAllowed(false);
+        setBackground(UIConfig.mainBackground);
+        setForeground(UIConfig.mainForeground);
+        setShowGrid(false);
+
+        JTableHeader header = getTableHeader();
+        header.setBackground(new Color(150, 150, 255));
+        header.setForeground(UIConfig.mainForeground);
+        header.setFont(new Font("SansSerif", Font.BOLD, 25));
+
+        setModel(tableModel);
+    }
+
+    public DefaultTableModel getTableModel(){
+        return model;
     }
 }

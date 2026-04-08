@@ -4,19 +4,33 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import components.TextLabel;
+import panes.Manager.components.AccountsPanelListener;
 import components.FloatingTextField;
 import components.FloatingPasswordField;
 import components.FloatingButton;
 import components.FloatingComboBox;
+import userClass.User;
 
 
 public class ManagerCreateAccountPane extends JPanel {
-    public ManagerCreateAccountPane() {
+
+    private AccountsPanelListener listener;
+    private FloatingTextField userIDTxtField;
+    private FloatingTextField firstNameTxtField;
+    private FloatingTextField lastNameTxtField;
+    private FloatingTextField usernameTxtField; 
+    private FloatingComboBox<String> titleComboBox;
+    private FloatingTextField emailTxtField;
+    private FloatingTextField contactNumberTxtField;
+    private FloatingPasswordField passwordTxtField;
+    private FloatingTextField addressTxtField;
+
+    public ManagerCreateAccountPane(AccountsPanelListener listener) {
+        this.listener = listener; 
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
-
-
 
         TextLabel title = new TextLabel("Account Creation");
         
@@ -26,8 +40,14 @@ public class ManagerCreateAccountPane extends JPanel {
         add(Box.createVerticalStrut(30));
 
         //Create the form panel
-        JPanel formPanel = new JPanel(new GridLayout(1, 2, 50, 0));
+        JPanel formPanel = new JPanel(new BorderLayout(50, 50));
         formPanel.setOpaque(false);
+
+        
+        JPanel topPanel = new JPanel();
+        topPanel.setOpaque(false);
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+        
 
         //Handle layout for left and right columns;
         JPanel leftColumn = new JPanel();
@@ -43,10 +63,12 @@ public class ManagerCreateAccountPane extends JPanel {
         int vgap = 15;
 
         //Declares floating text fields for left columns
-        FloatingTextField userIDTxtField = new FloatingTextField("User ID");
-        FloatingTextField firstNameTxtField = new FloatingTextField("First name");
-        FloatingTextField lastNameTxtField = new FloatingTextField("Last name");
-        FloatingTextField usernameTxtField = new FloatingTextField("Username"); 
+        userIDTxtField = new FloatingTextField("Auto Generated User ID");
+        userIDTxtField.setEditable(false);
+        firstNameTxtField = new FloatingTextField("First Name");
+        lastNameTxtField = new FloatingTextField("Last Name");
+        usernameTxtField = new FloatingTextField("Username");
+        
 
 
         //Adds the text fields with their label text to the left column.
@@ -64,10 +86,10 @@ public class ManagerCreateAccountPane extends JPanel {
 
         //Declares input fields for the right columns
         String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
-        FloatingComboBox<String> titleComboBox = new FloatingComboBox<>(options, 20);
-        FloatingTextField emailTxtField = new FloatingTextField("Email");
-        FloatingTextField contactNumberTxtField = new FloatingTextField("Contact Number");
-        FloatingPasswordField passwordTxtField = new FloatingPasswordField("Auto-generated password");
+        titleComboBox = new FloatingComboBox<>(options, 2);
+        emailTxtField = new FloatingTextField("Email");
+        contactNumberTxtField = new FloatingTextField("Contact Number");
+        passwordTxtField = new FloatingPasswordField("Password");
 
         //Adds the text fields with their label text to the right column.
         rightColumn.add(createField("Title", titleComboBox));
@@ -82,8 +104,19 @@ public class ManagerCreateAccountPane extends JPanel {
         rightColumn.add(createField("Password", passwordTxtField));
 
         //Adds both the left and the right column to the form panel
-        formPanel.add(leftColumn);
-        formPanel.add(rightColumn);
+        topPanel.add(leftColumn);
+        topPanel.add(rightColumn);
+
+        formPanel.add(topPanel, BorderLayout.CENTER);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(false);
+        bottomPanel.setLayout(new BorderLayout(20, 20));
+
+        addressTxtField = new FloatingTextField("Address");
+        bottomPanel.add(addressTxtField, BorderLayout.CENTER);
+
+        formPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         //Adds the formPanel to the main account pane.
         add(formPanel);
@@ -101,6 +134,26 @@ public class ManagerCreateAccountPane extends JPanel {
         add(createBtn);
         add(Box.createVerticalStrut(20));
         add(cancelBtn);
+
+
+        createBtn.addActionListener(e -> {
+            User user = new User();
+
+            user.id = userIDTxtField.getText();
+            user.firstName = firstNameTxtField.getText();
+            user.lastName = lastNameTxtField.getText();
+            user.username = usernameTxtField.getText();
+            user.role = (String) titleComboBox.getSelectedItem();
+            user.email = emailTxtField.getText();
+            user.contact = contactNumberTxtField.getText();
+            user.password = new String(passwordTxtField.getPassword());
+
+            listener.onCreateUser(user);
+        });
+
+        cancelBtn.addActionListener(e -> {
+            listener.onBackToList();
+        });
 
         }
 

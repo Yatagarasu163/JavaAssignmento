@@ -70,5 +70,7 @@ public class QueueCard extends JPanel{
 			g2.setStroke(new BasicStroke(2));
 			g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, radius, radius);
 		}
+
+		g2.dispose();
 	}
 }

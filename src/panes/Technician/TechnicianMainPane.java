@@ -1,4 +1,4 @@
-package panes.Techinician;
+package panes.Technician;
 
 import javax.swing.*;
 import panes.SidebarPanel;

@@ -11,6 +11,8 @@ import config.UIConfig;
 public class FloatingTextField extends JTextField {
     private String placeholder;
     private int textSize = 20;
+    private Color placeholderColor = Color.GRAY;
+    private Color activeColor = new Color(128, 128, 255);
 
     public FloatingTextField(String placeholder) {
         this.placeholder = placeholder;
@@ -18,11 +20,11 @@ public class FloatingTextField extends JTextField {
         setMaximumSize(new Dimension(300, 50));
         setPreferredSize(new Dimension(300, 50));
         setFont(new Font("SansSerif", Font.PLAIN, textSize));
-        setForeground(UIConfig.inputFieldForeground);
-        setCaretColor(UIConfig.caretColor);
+        setForeground(new Color(128, 128, 255));
+        setCaretColor(new Color(128, 128, 255));
 
         setBorder(BorderFactory.createCompoundBorder(
-                new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),
+                new MatteBorder(0, 0, 2, 0, placeholderColor),
                 new EmptyBorder(20, 0, 5, 0)
         ));
 
@@ -30,7 +32,7 @@ public class FloatingTextField extends JTextField {
             @Override
             public void focusGained(FocusEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(
-                        new MatteBorder(0, 0, 2, 0, new Color(128, 128, 255)),
+                        new MatteBorder(0, 0, 2, 0, activeColor),
                         new EmptyBorder(20, 0, 5, 0)
                 ));
                 repaint();
@@ -39,12 +41,22 @@ public class FloatingTextField extends JTextField {
             @Override
             public void focusLost(FocusEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(
-                        new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),
+                        new MatteBorder(0, 0, 2, 0, placeholderColor),
                         new EmptyBorder(20, 0, 5, 0)
                 ));
                 repaint();
             }
         });
+    }
+
+    public void setPlaceHolderColor(Color placeholderColor){
+        this.placeholderColor = placeholderColor;
+        repaint();
+    }
+
+    public void setActiveColor(Color activeColor){
+        this.activeColor = activeColor;
+        repaint();
     }
 
     @Override
@@ -55,11 +67,11 @@ public class FloatingTextField extends JTextField {
 
         if (getText().isEmpty() && !hasFocus()) {
             g2d.setFont(new Font("SansSerif", Font.PLAIN, textSize));
-            g2d.setColor(Color.GRAY);
+            g2d.setColor(placeholderColor);
             g2d.drawString(placeholder, 0, 32);
         } else {
             g2d.setFont(new Font("SansSerif", Font.BOLD, textSize - 5));
-            g2d.setColor(new Color(128, 128, 255));
+            g2d.setColor(activeColor);
             g2d.drawString(placeholder, 0, 15);
         }
     }

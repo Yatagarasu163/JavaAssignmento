@@ -26,7 +26,7 @@ public class CounterStaffMainPane extends JFrame{
         mainPane.setLayout(cardLayout);
 
         CounterStaffDashboardPane dashboardPane = new CounterStaffDashboardPane();
-        CounterStaffCustomerList customerListPane = new CounterStaffCustomerList();
+        CounterStaffMainCustomerPane customerListPane = new CounterStaffMainCustomerPane();
         CounterStaffAppointmentPane appointmentPane = new CounterStaffAppointmentPane();
 
         JScrollPane sidePane = new JScrollPane(sidebarPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

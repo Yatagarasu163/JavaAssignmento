@@ -1,4 +1,4 @@
-package panes.Techinician;
+package panes.Technician;
 
 import components.FloatingButton;
 import java.awt.*;

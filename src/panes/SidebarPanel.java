@@ -65,21 +65,21 @@ public class SidebarPanel extends JPanel {
 
         // --- THE IF-ELSE ROLE LOGIC ---
         if (role.equalsIgnoreCase("Manager")) {
-            accountBtn = new FloatingToggleButton("Account Creation", 20);
-            pricingBtn = new FloatingToggleButton("Profile", 20);
-            editBtn = new FloatingToggleButton("Edit Profile", 20);
+            accountBtn = new FloatingToggleButton("Accounts", 20);
+            pricingBtn = new FloatingToggleButton("Pricing", 20);
+            profileBtn = new FloatingToggleButton("Profile", 20);
             feedbackBtn = new FloatingToggleButton("Feedback and Comments", 20);
 
             navGroup.add(accountBtn);
             navGroup.add(pricingBtn);
-            navGroup.add(editBtn);
+            navGroup.add(profileBtn);
             navGroup.add(feedbackBtn);
 
             add(accountBtn);
             add(Box.createVerticalStrut(componentSpace));
             add(pricingBtn);
             add(Box.createVerticalStrut(componentSpace));
-            add(editBtn);
+            add(profileBtn);
             add(Box.createVerticalStrut(componentSpace));
             add(feedbackBtn);
             add(Box.createVerticalStrut(componentSpace));
@@ -183,15 +183,4 @@ public class SidebarPanel extends JPanel {
 
     // --- GETTERS FOR TECHNICIAN ---
     public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}
-    
-}
-    public JToggleButton getCustomerListBtn() {
-        return this.customerListBtn;
-    }
-
-    // --- GETTERS FOR TECHNICIAN ---
-    public JToggleButton getTechProfileBtn() {
-        return this.myProfileBtn;
-    }
-
 }
