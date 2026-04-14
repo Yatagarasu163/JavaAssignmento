@@ -27,7 +27,8 @@ public class CounterStaffMainPane extends JFrame{
 
         CounterStaffDashboardPane dashboardPane = new CounterStaffDashboardPane();
         CounterStaffMainCustomerPane customerListPane = new CounterStaffMainCustomerPane();
-        CounterStaffAppointmentPane appointmentPane = new CounterStaffAppointmentPane();
+        CounterStaffMainAppointmentPane appointmentPane = new CounterStaffMainAppointmentPane();
+        CounterStaffMainPaymentPane paymentPane = new CounterStaffMainPaymentPane();
 
         JScrollPane sidePane = new JScrollPane(sidebarPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         sidePane.setPreferredSize(new Dimension(350, Integer.MAX_VALUE));
@@ -38,6 +39,8 @@ public class CounterStaffMainPane extends JFrame{
         mainPane.add(dashboardPane, "DASHBOARD");
         mainPane.add(customerListPane, "CUSTOMER");
         mainPane.add(appointmentPane, "APPOINTMENT");
+        mainPane.add(paymentPane, "PAYMENT");
+
 
 
         sidebarPanel.getProfileBtn().addActionListener(e -> {
@@ -50,6 +53,10 @@ public class CounterStaffMainPane extends JFrame{
         
         sidebarPanel.getAppointmentBtn().addActionListener(e -> {
             cardLayout.show(mainPane, "APPOINTMENT");
+        });
+
+        sidebarPanel.getPaymentBtn().addActionListener(e -> {
+            cardLayout.show(mainPane, "PAYMENT");
         });
 
     }

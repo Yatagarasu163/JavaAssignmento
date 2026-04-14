@@ -7,9 +7,14 @@ import components.TextLabel;
 import components.FloatingButton;
 import config.UIConfig;
 import panes.CounterStaff.components.AppointmentBox;
+import panes.CounterStaff.components.AppointmentPanelListener;
 
-public class CounterStaffAppointmentPane extends JPanel{
-    public CounterStaffAppointmentPane() {
+public class CounterStaffAppointmentListPane extends JPanel{
+    private AppointmentPanelListener listener;
+
+    public CounterStaffAppointmentListPane(AppointmentPanelListener listener) {
+        this.listener = listener;
+
         setLayout(new BorderLayout(20, 40));
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -44,5 +49,10 @@ public class CounterStaffAppointmentPane extends JPanel{
 
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+
+
+        addAppointmentBtn.addActionListener(e -> {
+            listener.onCreateAppointment();
+        });
     }   
 }
