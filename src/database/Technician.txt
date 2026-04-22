@@ -1,1 +1,8 @@
-I am a technician
+i ,am, a, technician
+a, o, i ,e
+VKA 1234, In Service, 10:00 AM
+WYU 6469, Pending, 11:30 AM
+VKA 1234, In Service, 10:00 AM
+WYU 6469, Pending, 11:30 AM
+VKA 1234, In Service, 10:00 AM
+WYU 6469, Pending, 11:30 AM
