@@ -48,6 +48,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         descArea.setOpaque(false);
         descArea.setEditable(false);
         descArea.setAlignmentX(Component.LEFT_ALIGNMENT);
+        descArea.setMaximumSize(new Dimension(800, 100));
 
         // --- PART 3: Tasks ---
         JLabel section2Title = new JLabel("Assigned Tasks");
@@ -149,6 +150,8 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         add(Box.createVerticalStrut(30));
         add(completeBtn);
         add(Box.createVerticalStrut(20));
+
+        add(Box.createVerticalGlue());
     }
 
     // Called by the Controller when a new card is clicked
