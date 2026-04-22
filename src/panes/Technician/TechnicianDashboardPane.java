@@ -28,7 +28,7 @@ public class TechnicianDashboardPane extends JPanel {
         cardsContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 
-        // TODO: Replace the unicode strings with your actual SVG/PNG ImageIcons if desired
+        // Box container for summarize daily appointment status
         cardsContainer.add(createSummaryCard("🚘", "Appointments", "5"));
         cardsContainer.add(createSummaryCard("✅", "Completed", "5"));
         cardsContainer.add(createSummaryCard("🕒", "Pending", "5"));
@@ -51,13 +51,12 @@ public class TechnicianDashboardPane extends JPanel {
         tableContent.setLayout(new BoxLayout(tableContent, BoxLayout.Y_AXIS));
         tableContent.setBackground(Color.WHITE);
 
-        // Adding dummy data matching the mockup
+        //TODO: Adding dummy data matching the mockup
         tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Queue"));
         tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Service"));
         tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "Completed"));
         tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Queue"));
         tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Service"));
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "Completed"));
 
         // 3C. Wrap in ScrollPane
         JScrollPane scrollPane = new JScrollPane(tableContent);
@@ -65,6 +64,10 @@ public class TechnicianDashboardPane extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        // limit the table height to only store 5 rows
+        scrollPane.setPreferredSize(new Dimension(1000, 310));
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 310));
 
         // 3D. Outer Table Container (Holds Header + ScrollPane + Rounded Border)
         JPanel tableContainer = new JPanel();
@@ -84,15 +87,17 @@ public class TechnicianDashboardPane extends JPanel {
         add(greetingLabel);
         add(Box.createVerticalStrut(40));
         add(cardsContainer);
-        add(Box.createVerticalStrut(50));
+        add(Box.createVerticalStrut(20));
         add(tableContainer);
+        add(Box.createVerticalGlue());
+
     }
 
     // --- HELPER: Creates the top Summary Cards ---
     private JPanel createSummaryCard(String iconPlaceholder, String title, String count) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setPreferredSize(new Dimension(200, 160));
+        card.setPreferredSize(new Dimension(280, 220));
         card.setBackground(Color.WHITE);
 //        card.setBorder(new LineBorder(primaryPurple, 1, true));
         card.setBorder(BorderFactory.createCompoundBorder(
@@ -140,6 +145,7 @@ public class TechnicianDashboardPane extends JPanel {
         JPanel row = new JPanel(new GridLayout(1, 5, 10, 0));
         row.setBackground(Color.WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        row.setPreferredSize(new Dimension(1000, 60));
         row.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 245))); // Light divider line
 
         // 1. Plate Label
