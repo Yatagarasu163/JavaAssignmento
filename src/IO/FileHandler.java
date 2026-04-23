@@ -26,8 +26,6 @@ public class FileHandler {
             System.err.println("Error writing to file: " + path);
             e.printStackTrace();
         }
-
-
     }
 
     public static List<String[]> read(String filename) {
