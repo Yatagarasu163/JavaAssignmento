@@ -63,19 +63,29 @@ public class CounterStaffPaymentPane extends JPanel{
 
         JPanel tablePanel = new JPanel();
         tablePanel.setOpaque(false);
+        tablePanel.setLayout(new BorderLayout());
         String[][] data = {{"P000001","13/1/2026", "ABC 1234", "Major Service", "Not Paid", "Pay"}};
         String[] columns = {"Payment ID", "Date", "Car Plate", "Service Type", "Status", "Details"};
-        FeedbackTable paymentTable = new FeedbackTable(data, columns);
+        DefaultTableModel model = new DefaultTableModel(data, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5; // "Details" column
+            }
+        };
+        FeedbackTable paymentTable = new FeedbackTable(model);
+        paymentTable.setBackground(UIConfig.mainForeground);
+        paymentTable.setForeground(UIConfig.mainBackground);
         paymentTable.getColumn("Details").setCellRenderer(new ButtonRenderer());
         paymentTable.getColumn("Details").setCellEditor(new ButtonEditor(new JCheckBox(), listener));
+        paymentTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
 
         JScrollPane scrollPane = new JScrollPane(paymentTable);
-        scrollPane.setPreferredSize(new Dimension(600, 200));
+        scrollPane.setPreferredSize(new Dimension(700, 200));
         scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
         scrollPane.setBackground(Color.WHITE);
         scrollPane.getViewport().setBackground(Color.WHITE);
 
-        tablePanel.add(scrollPane);
+        tablePanel.add(scrollPane, BorderLayout.CENTER);
         middlePanel.add(tablePanel);
         add(middlePanel);
 
@@ -119,8 +129,8 @@ public class CounterStaffPaymentPane extends JPanel{
             setFocusPainted(false);
             setBorderPainted(false);
 
-            setBackground(UIConfig.mainBackground);
-            setForeground(UIConfig.mainForeground);
+            setBackground(UIConfig.mainForeground);
+            setForeground(UIConfig.mainBackground);
         }
 
         @Override
@@ -149,6 +159,7 @@ public class CounterStaffPaymentPane extends JPanel{
             button.setOpaque(true);
 
             button.addActionListener(e -> {
+                System.out.println("I AM CLICKED");
                 String paymentID = table.getValueAt(row, 0).toString();
                 String status = table.getValueAt(row, 4).toString();
                 if(listener != null){

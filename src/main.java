@@ -13,8 +13,8 @@ public class main{
 		SwingUtilities.invokeLater(() -> {
 			//ManagerMainPane testPane = new ManagerMainPane();
 //			 CustomerMainPane testPane = new CustomerMainPane();
-//			CounterStaffMainPane testPane = new CounterStaffMainPane();
-			 TechnicianMainPane testPane = new TechnicianMainPane("TC123456");
+			CounterStaffMainPane testPane = new CounterStaffMainPane();
+			//  TechnicianMainPane testPane = new TechnicianMainPane("TC123456");
 			testPane.setVisible(true);
 		});
 

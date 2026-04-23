@@ -28,7 +28,7 @@ public class CounterStaffMainPaymentPane extends JPanel implements PaymentListen
 
 	public void onMakePayment(String paymentId){
 		cardLayout.show(this, "DETAILS");
-		paymentDetailsPane.loadPayment(paymentId);
+		paymentDetailsPane.loadPayment(paymentId, true);
 	}
 	
 	public void onBackToList(){

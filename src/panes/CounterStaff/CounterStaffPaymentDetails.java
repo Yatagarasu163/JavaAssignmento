@@ -14,13 +14,22 @@ import components.TextLabel;
 public class CounterStaffPaymentDetails extends JPanel{
 
     private PaymentListener listener;
-    private String cusName;
-    private String carPlate;
-    private String appointmentDate;
-    private String serviceType;
+    private String cusName = "";
+    private String carPlate = "";
+    private String appointmentDate = "";
+    private String serviceType = "";
     private List<String[]> services = new ArrayList<>(); //{service + price}
-    private String totalAmount;
-    private String payAmount; 
+    private JPanel servicesPanel;
+    private String totalAmount = "";
+    private String payAmount = "";
+    private TextLabel cusNameLbl;
+    private TextLabel appointmentDateLbl;
+    private TextLabel plateLbl;
+    private TextLabel typeLbl;
+    private TextLabel totalLbl;
+    private TextLabel payLbl;
+    private CardLayout cardLayout;
+    private JPanel bottomPanel;
 
     public CounterStaffPaymentDetails(PaymentListener listener) {
             this.listener = listener;
@@ -34,8 +43,13 @@ public class CounterStaffPaymentDetails extends JPanel{
             topPanel.setLayout(new BorderLayout(10, 10));
             FloatingButton backButton = new FloatingButton("Back");
             topPanel.add(backButton, BorderLayout.WEST);
+            topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
             add(topPanel);
             add(Box.createVerticalStrut(50));
+
+            backButton.addActionListener(e -> {
+                listener.onBackToList();
+            });
 
             JPanel middlePanel = new JPanel();
             middlePanel.setOpaque(false);
@@ -48,22 +62,22 @@ public class CounterStaffPaymentDetails extends JPanel{
             middleTopPanel.setOpaque(false);
             middleTopPanel.setLayout(new GridLayout(2, 4));
             TextLabel cusNameTxt = new TextLabel("Customer Name: ");
-            TextLabel cusNameLbl = new TextLabel(cusName);
+            cusNameLbl = new TextLabel(cusName);
             middleTopPanel.add(cusNameTxt);
             middleTopPanel.add(cusNameLbl);
 
             TextLabel appointmentDateTxt = new TextLabel("Appoinment Date: ");
-            TextLabel appointmentDateLbl = new TextLabel(appointmentDate);
+            appointmentDateLbl = new TextLabel(appointmentDate);
             middleTopPanel.add(appointmentDateTxt);
             middleTopPanel.add(appointmentDateLbl);
 
             TextLabel plateTxt = new TextLabel("Car Plate Number: ");
-            TextLabel plateLbl = new TextLabel(carPlate);
+            plateLbl = new TextLabel(carPlate);
             middleTopPanel.add(plateTxt);
             middleTopPanel.add(plateLbl);
 
             TextLabel typeTxt = new TextLabel("Service Type: ");
-            TextLabel typeLbl = new TextLabel(serviceType);
+            typeLbl = new TextLabel(serviceType);
             middleTopPanel.add(typeTxt);
             middleTopPanel.add(typeLbl);
             middlePanel.add(middleTopPanel);
@@ -73,21 +87,21 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(Box.createVerticalStrut(10));
 
             TextLabel servicesTitle = new TextLabel("Services");
-            servicesTitle.setFontSize(18);
+            servicesTitle.setFontSize(25);
             servicesTitle.setFontType(Font.BOLD);
             middlePanel.add(servicesTitle);
             middlePanel.add(Box.createVerticalStrut(10));
-
-            for (String[] service: services) {
-                middlePanel.add(createServiceRow(service[0], service[1]));
-                middlePanel.add(Box.createVerticalStrut(5));
-            }
+            
+            servicesPanel = new JPanel();
+            servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
+            servicesPanel.setOpaque(false);
+            middlePanel.add(servicesPanel);
 
             middlePanel.add(Box.createVerticalStrut(20));
 
-            TextLabel totalLbl = new TextLabel("Total Amount: " + totalAmount);
+            totalLbl = new TextLabel("Total Amount: " + totalAmount);
             totalLbl.setFontType(Font.BOLD);
-            totalLbl.setFontSize(16);
+            totalLbl.setFontSize(20);
             totalLbl.setAlignmentX(Component.RIGHT_ALIGNMENT);
             middlePanel.add(totalLbl);
 
@@ -95,29 +109,41 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(new JSeparator());
             middlePanel.add(Box.createVerticalStrut(10));
 
-            TextLabel payLbl = new TextLabel("Pay: " + payAmount);
+            payLbl = new TextLabel("Pay: " + payAmount);
             payLbl.setFontType(Font.BOLD);
-            payLbl.setFontSize(16);
+            payLbl.setFontSize(20);
             payLbl.setAlignmentX(Component.RIGHT_ALIGNMENT);
             middlePanel.add(payLbl);
 
             add(middlePanel);
 
-            JPanel bottomPanel = new JPanel();
+            bottomPanel = new JPanel();
+            cardLayout = new CardLayout();
             bottomPanel.setOpaque(false);
-            bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            FloatingButton payBtn = new FloatingButton("Make Payment", 20);
-            payBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);
-            bottomPanel.add(payBtn);
-            add(bottomPanel);
+            bottomPanel.setLayout(cardLayout);
+            
 
+            JPanel makePaymentPanel = new JPanel();
+            makePaymentPanel.setOpaque(false);
+            makePaymentPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            FloatingButton payBtn = new FloatingButton("Make Payment", 20);
             payBtn.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Payment Status", "Payment made successfully!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Payment Successful!", "Successfully made payment!", JOptionPane.INFORMATION_MESSAGE);
                 listener.onBackToList();
             });
+            makePaymentPanel.add(payBtn);
+            bottomPanel.add(makePaymentPanel, "PAYMENT");
 
-
-
+            JPanel printReceiptPanel = new JPanel();
+            printReceiptPanel.setOpaque(false);
+            printReceiptPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            FloatingButton receiptBtn = new FloatingButton("Print Receipt", 20);
+            receiptBtn.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Receipt Successful!", "Printed the receipt!", JOptionPane.INFORMATION_MESSAGE);
+            });
+            printReceiptPanel.add(receiptBtn);
+            bottomPanel.add(printReceiptPanel, "RECEIPT");
+            add(bottomPanel);
 
     }
 
@@ -135,18 +161,43 @@ public class CounterStaffPaymentDetails extends JPanel{
 
     }
 
-    public void loadPayment(String paymentID){
+    public void loadPayment(String paymentID, boolean hasPaid){
         if(paymentID != null){
+            System.out.println("Opened!");
             //Read data from file handler here and handle the output
             cusName = "Sum Ting Wong";
+            cusNameLbl.setText(cusName);
             carPlate = "ABC 1234";
+            plateLbl.setText(carPlate);
             appointmentDate = "23 Feb 2026";
+            appointmentDateLbl.setText(appointmentDate);
             serviceType = "Major Service";
+            typeLbl.setText(serviceType);
+
+
+            servicesPanel.removeAll();
             services = new ArrayList<>(List.of(new String[]{"Brake Plate Replacement", "RM3,500.00"}, new String[]{"Fluid Check", "RM9,500.00"}, new String[]{"Oil Filter Replacement", "RM 1,500.00"}));
+            for (String[] service : services){
+                servicesPanel.add(createServiceRow(service[0], service[1]));
+                servicesPanel.add(Box.createVerticalStrut(5));
+            }
+
+            servicesPanel.revalidate();
+            servicesPanel.repaint();           
+            
+            
             totalAmount = "RM16,200.00";
+            totalLbl.setText("Total Amount: " + totalAmount);
             payAmount = totalAmount;
+            payLbl.setText("Pay: " + payAmount);
         } else{
             listener.onBackToList();
+        }
+
+        if(hasPaid){
+            cardLayout.show(bottomPanel, "RECEIPT");
+        } else{
+            cardLayout.show(bottomPanel, "PAYMENT");
         }
     }
 }
