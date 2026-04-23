@@ -1,11 +1,14 @@
 package panes.Technician;
 
 import javax.swing.*;
+
+import IO.FileHandler;
 import panes.SidebarPanel;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class TechnicianMainPane extends JFrame {
-    public TechnicianMainPane() {
+    public TechnicianMainPane(String UserID) {
 
         setTitle("APU-ASC: Technician Portal");
         setSize(1000, 700);
@@ -29,7 +32,7 @@ public class TechnicianMainPane extends JFrame {
         cardContainer.setLayout(cardLayout);
 
         // Initialize the Technician Dashboard
-        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Hou Li Fa");
+        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung");
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
@@ -42,13 +45,17 @@ public class TechnicianMainPane extends JFrame {
 
 
         // Technician Profile Page
+        String[] TechnicianInfo = getTechnicianInfo(UserID);
+
+        System.out.println(TechnicianInfo[0]);
+
         TechnicianProfilePane profilePane = new TechnicianProfilePane(
-                "Ho Li Fa",
-                "TC123456",
-                "LiFa@gmail.com",
-                "03 February 2026",
-                "+60 16-220 9658",
-                "10, Jalan Ayam Hutan, Kampung Bunga Baru, 47130, Puchong, Selangor"
+                TechnicianInfo[1],
+                TechnicianInfo[0],
+                TechnicianInfo[2],
+                TechnicianInfo[3],
+                TechnicianInfo[4],
+                TechnicianInfo[5].replace("\"", "")
         );
 
         // Add into the main container card
@@ -76,8 +83,22 @@ public class TechnicianMainPane extends JFrame {
         sidebarPanel.getAppointmentBtn().addActionListener(e ->{
             cardLayout.show(cardContainer, "Appointment");
         });
+    }
 
+    public String[] getTechnicianInfo(String TechnicianID){
+        ArrayList<String> TechnicianList = FileHandler.read("Technician.txt");
 
+        for (String Technician:TechnicianList) {
 
+            String[] values = Technician.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+            if (values[0].equals(TechnicianID)) {
+                return values;
+            }
+
+        }
+
+        // The loop unable to find a match user information, return null
+        return new String[] {"N/A", "Not Found",  "N/A",  "N/A", "N/A", "N/A"};
     }
 }

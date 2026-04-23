@@ -1,7 +1,9 @@
 package panes.Technician;
 
+import IO.FileHandler;
 import components.FloatingButton;
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -12,8 +14,9 @@ public class TechnicianProfilePane extends JPanel {
     private final Color bgColor = new Color(245, 245, 250);
 
     // Form Fields
-    private JTextField nameField, phoneField, addressField; // Editable
-    private JTextField idField, emailField, dateField;      // Non-editable
+    private JTextField nameField, phoneField, addressField, idField; // Editable
+    private JTextField emailField;
+    private JTextField dateField;      // Non-editable
 
     private boolean isEditing = false;
     private FloatingButton updateBtn;
@@ -142,8 +145,18 @@ public class TechnicianProfilePane extends JPanel {
             disableField(phoneField);
             disableField(addressField);
 
-            // TODO: Add your logic here to save the new data to your file/database!
-            System.out.println("Saving new name: " + nameField.getText());
+            // Adding user info into one list, update into database
+            String[] TechInfoList = new String[] {
+                    idField.getText(),
+                    nameField.getText(),
+                    emailField.getText(),
+                    dateField.getText(),
+                    phoneField.getText(),
+                   "\"" +  addressField.getText() + "\""
+            };
+
+            updateTechnicianInfo(TechInfoList);
+
         }
     }
 
@@ -160,5 +173,38 @@ public class TechnicianProfilePane extends JPanel {
         field.setEditable(false);
         field.setOpaque(false);
         field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    }
+
+    public void updateTechnicianInfo(String[] TechnicianInfo) {
+
+        ArrayList<String> technicianList = FileHandler.read("Technician.txt");
+        boolean found = false;
+
+        for (int i = 0; i < technicianList.size(); i++) {
+            String currentLine = technicianList.get(i);
+
+            // ensure the code exclude the "" symbol when spltting on order to split out address with correct format
+            String[] infoList = currentLine.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+
+            if (infoList[0].equals(TechnicianInfo[0])) {
+
+                // join new data string[] with comma for adding into database
+                String updatedLine = String.join(",", TechnicianInfo);
+
+                // Replace entire specific line with new update data line
+                technicianList.set(i, updatedLine);
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            // 5. Overwrite the file with the updated list
+            FileHandler.write("Technician.txt", technicianList, false);
+            System.out.println("Update successful.");
+        } else {
+            System.out.println("Technician ID not found.");
+        }
     }
 }
