@@ -6,6 +6,7 @@ import IO.FileHandler;
 import panes.SidebarPanel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TechnicianMainPane extends JFrame {
     public TechnicianMainPane(String UserID) {
@@ -55,7 +56,7 @@ public class TechnicianMainPane extends JFrame {
                 TechnicianInfo[2],
                 TechnicianInfo[3],
                 TechnicianInfo[4],
-                TechnicianInfo[5].replace("\"", "")
+                TechnicianInfo[5]
         );
 
         // Add into the main container card
@@ -85,20 +86,17 @@ public class TechnicianMainPane extends JFrame {
         });
     }
 
-    public String[] getTechnicianInfo(String TechnicianID){
-        ArrayList<String> TechnicianList = FileHandler.read("Technician.txt");
+    public String[] getTechnicianInfo(String technicianID) {
 
-        for (String Technician:TechnicianList) {
+        List<String[]> technicianList = FileHandler.read("Technician.txt");
 
-            String[] values = Technician.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        for (String[] technicianData : technicianList) {
 
-            if (values[0].equals(TechnicianID)) {
-                return values;
+            if (technicianData[0].equals(technicianID)) {
+                return technicianData;
             }
-
         }
 
-        // The loop unable to find a match user information, return null
-        return new String[] {"N/A", "Not Found",  "N/A",  "N/A", "N/A", "N/A"};
+        return new String[] {"N/A", "Not Found", "N/A", "N/A", "N/A", "N/A"};
     }
 }
