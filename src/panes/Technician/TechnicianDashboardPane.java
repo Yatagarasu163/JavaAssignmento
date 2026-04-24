@@ -2,18 +2,29 @@ package panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
+import userClass.User;
+
 import java.awt.*;
-import java.util.ArrayList;
+import java.sql.SQLOutput;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TechnicianDashboardPane extends JPanel {
 
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgColor = new Color(248, 248, 250); // Slightly off-white background
 
-    public TechnicianDashboardPane(String userName) {
+    public TechnicianDashboardPane(String userName, String UserID) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
@@ -29,11 +40,20 @@ public class TechnicianDashboardPane extends JPanel {
         cardsContainer.setBackground(bgColor);
         cardsContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // Getting today appointment list
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate =  today.format(formatter);
+        List<String[]> TodayAppointment = getTodayAppointments(UserID, formattedDate);
+
+        long AppointmentQuan = TodayAppointment.size();
+        long CompletedTask = TodayAppointment.stream().filter(row -> row[3].equals("Completed")).count();
+        long PendingTask = AppointmentQuan - CompletedTask;
 
         // Box container for summarize daily appointment status
-        cardsContainer.add(createSummaryCard("🚘", "Appointments", "5"));
-        cardsContainer.add(createSummaryCard("✅", "Completed", "5"));
-        cardsContainer.add(createSummaryCard("🕒", "Pending", "5"));
+        cardsContainer.add(createSummaryCard("🚘", "Appointments", String.valueOf(AppointmentQuan)));
+        cardsContainer.add(createSummaryCard("✅", "Completed", String.valueOf(CompletedTask)));
+        cardsContainer.add(createSummaryCard("🕒", "Pending", String.valueOf(PendingTask)));
 
         // --- PART 3: SCROLLING TABLE ---
         // 3A. Header Row
@@ -53,12 +73,15 @@ public class TechnicianDashboardPane extends JPanel {
         tableContent.setLayout(new BoxLayout(tableContent, BoxLayout.Y_AXIS));
         tableContent.setBackground(Color.WHITE);
 
-        //TODO: Adding dummy data matching the mockup
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Queue"));
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Service"));
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "Completed"));
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Queue"));
-        tableContent.add(createTableRow("WIU 2395", "Myvi Perodua", "Ali Bin Supaman", "In Service"));
+        //Display the appointment recordT
+        for (String[] Appointments: TodayAppointment){
+            tableContent.add(createTableRow(
+                    Appointments[0],
+                    Appointments[1],
+                    Appointments[2],
+                    Appointments[3]
+            ));
+        }
 
         // 3C. Wrap in ScrollPane
         JScrollPane scrollPane = new JScrollPane(tableContent);
@@ -213,4 +236,50 @@ public class TechnicianDashboardPane extends JPanel {
 
         return row;
     }
+
+
+    public static List<String[]> getTodayAppointments(String userId, String appointmentDate) {
+
+        List<String[]> appointmentList = FileHandler.read("Appointment.txt");
+        List<String[]> VehicleList = FileHandler.read("Vehicle.txt");
+        List<String[]> CustomerList = FileHandler.read("Customer.txt");
+        List<String[]> todayAppointments = new ArrayList<>();
+
+        System.out.println(appointmentList);
+
+        for (String[] appointments: appointmentList){
+            if (appointments[5].equals(appointmentDate) && appointments[6].equals(userId)) {
+                String[] appointment = new String[] {
+                        appointments[9],
+                        appointments[9],
+                        appointments[7],
+                        appointments[4]
+                };
+
+                todayAppointments.add(appointment);
+            }
+        }
+
+        for (String[] vehicles: VehicleList){
+            for (String[] appointment: todayAppointments){
+                if (vehicles[0].equals(appointment[0])){
+                    appointment[0] = vehicles[1];
+                    appointment[1] = vehicles[2];
+                }
+            }
+        }
+
+        for (String[] customers : CustomerList){
+            for (String[] appointment: todayAppointments) {
+                if (customers[0].equals(appointment[2])){
+                    appointment[2] = customers[1];
+                }
+            }
+        }
+
+        return todayAppointments;
+
+    }
+
+
 }

@@ -33,7 +33,7 @@ public class TechnicianMainPane extends JFrame {
         cardContainer.setLayout(cardLayout);
 
         // Initialize the Technician Dashboard
-        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung");
+        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung", "TC123456");
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
