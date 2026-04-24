@@ -245,8 +245,6 @@ public class TechnicianDashboardPane extends JPanel {
         List<String[]> CustomerList = FileHandler.read("Customer.txt");
         List<String[]> todayAppointments = new ArrayList<>();
 
-        System.out.println(appointmentList);
-
         for (String[] appointments: appointmentList){
             if (appointments[5].equals(appointmentDate) && appointments[6].equals(userId)) {
                 String[] appointment = new String[] {
