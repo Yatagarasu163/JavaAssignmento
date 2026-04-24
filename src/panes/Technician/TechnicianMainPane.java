@@ -33,6 +33,7 @@ public class TechnicianMainPane extends JFrame {
         cardContainer.setLayout(cardLayout);
 
         // Initialize the Technician Dashboard
+        // TODO: Update with current session user ID and User Name
         TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung", "TC123456");
 
         // Add the Dashboard to card container
@@ -63,7 +64,7 @@ public class TechnicianMainPane extends JFrame {
         cardContainer.add(profilePane, "TechnicianProfile");
 
         // Technician Appointment Page
-        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane();
+        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane("TC123456");
 
         // Add appointment pane into the container card
         cardContainer.add(appointmentPane, "Appointment");
