@@ -22,8 +22,8 @@ public class FeedbackTable extends JTable{
         getTableHeader().setReorderingAllowed(false);
         setRowSelectionAllowed(false);
         setColumnSelectionAllowed(false);
-        setBackground(UIConfig.mainForeground);
-        setForeground(UIConfig.mainBackground);
+        setBackground(UIConfig.mainBackground);
+        setForeground(UIConfig.mainForeground);
         setShowGrid(false);
 
         JTableHeader header = getTableHeader();

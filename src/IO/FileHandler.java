@@ -8,115 +8,50 @@ import java.util.Arrays;
 
 public class FileHandler {
 
-    private static final String separator = "/><\\";
-    // private static final String defaultDataFilePath = "data/";
+    private static final String separator = "/></";
 
-    // private FileHandler() {
-
-    // }
-
-    // public static ArrayList<String> read(String filename) {
-    //     // This list will hold each FULL line as one entry
-    //     ArrayList<String> data = new ArrayList<>();
-    //     String path = "src/database/" + filename;
-
-    //     try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-    //         String line;
-
-    //         while ((line = br.readLine()) != null) {
-    //             data.add(line);
-    //         }
-    //     } catch (IOException e) {
-    //         System.err.println("Error reading from file: " + path);
-    //         e.printStackTrace();
-    //     }
-
-    //     return data;
-    // }
-
-    // public static void write(String filename, ArrayList<String> data, boolean append) {
-    //     String path = "src/database/" + filename;
-
-    //     try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, append))) {
-    //         for (String row : data) {
-    //             // Write the entire string (e.g., "i ,am, a, technician")
-    //             bw.write(row);
-
-    //             // Move to the next line in the text file
-    //             bw.newLine();
-    //         }
-    //     } catch (IOException e) {
-    //         System.err.println("Error writing to file: " + path);
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    public static void write(String filename, List<String> data){
+    public static void write(String filename, List<String[]> data, boolean append) {
         String path = "database/" + filename;
-        System.out.println("Path: " + new File(".").getAbsolutePath());
 
-        try{
-            BufferedWriter bw;
-            File file = new File(path);
-            
-            if(!file.exists()){
-                file.createNewFile();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, append))) {
+
+
+            for (String[] rowData : data) {
+
+                bw.write(String.join(separator, rowData));
+                bw.newLine();
             }
-
-            // if(file.exists() && file.isFile()){
-            //    System.out.println("File exists!"); 
-            //     bw = new BufferedWriter(new FileWriter(path, true));
-            // } else{
-            //     bw = new BufferedWriter(new FileWriter(path));
-            // }
-
-            bw = new BufferedWriter(new FileWriter(file, true));
-
-            StringBuilder inputString = new StringBuilder();
-            for (String info : data){
-                inputString.append(info).append(separator);
-            }
-
-            System.out.println(inputString);
-
-            bw.write(inputString.toString());
-
-            bw.newLine();
-
-            bw.close();
 
         } catch (IOException e) {
             System.err.println("Error writing to file: " + path);
             e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
     }
 
-    public static List<String[]> read(String filename){
-
+    public static List<String[]> read(String filename) {
         List<String[]> output = new ArrayList<>();
 
         String path = "database/" + filename;
 
-        try{
-            BufferedReader br;
-            File file = new File(path);
-            if(file.exists() && file.isFile()){
-                System.out.println("File exists!");
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
-                br = new BufferedReader(new FileReader(path));
+            String line;
+            while ((line = br.readLine()) != null) {
 
-                String line;
-                while ((line = br.readLine()) != null){
-                    String[] array = line.split(separator);
-                    output.add(array);
+                String[] array = line.split(separator);
+
+                //Loop through the new array and trim the spaces off every item
+                //cuz now for every row data, have a space in front after sorting
+                for (int i = 0; i < array.length; i++) {
+                    array[i] = array[i].trim();
                 }
 
-                br.close();
+                output.add(array);
             }
-        } catch (IOException e){
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File does not exist yet: " + path);
+        } catch (IOException e) {
             System.err.println("Error reading from file: " + path);
             e.printStackTrace();
         }

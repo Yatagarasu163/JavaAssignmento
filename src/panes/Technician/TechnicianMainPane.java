@@ -6,6 +6,7 @@ import IO.FileHandler;
 import panes.SidebarPanel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TechnicianMainPane extends JFrame {
     public TechnicianMainPane(String UserID) {
@@ -32,7 +33,8 @@ public class TechnicianMainPane extends JFrame {
         cardContainer.setLayout(cardLayout);
 
         // Initialize the Technician Dashboard
-        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung");
+        // TODO: Update with current session user ID and User Name
+        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung", "TC123456");
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
@@ -55,14 +57,14 @@ public class TechnicianMainPane extends JFrame {
                 TechnicianInfo[2],
                 TechnicianInfo[3],
                 TechnicianInfo[4],
-                TechnicianInfo[5].replace("\"", "")
+                TechnicianInfo[5]
         );
 
         // Add into the main container card
         cardContainer.add(profilePane, "TechnicianProfile");
 
         // Technician Appointment Page
-        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane();
+        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane("TC123456");
 
         // Add appointment pane into the container card
         cardContainer.add(appointmentPane, "Appointment");
@@ -85,20 +87,17 @@ public class TechnicianMainPane extends JFrame {
         });
     }
 
-    public String[] getTechnicianInfo(String TechnicianID){
-        ArrayList<String> TechnicianList = FileHandler.read("Technician.txt");
+    public String[] getTechnicianInfo(String technicianID) {
 
-        for (String Technician:TechnicianList) {
+        List<String[]> technicianList = FileHandler.read("Technician.txt");
 
-            String[] values = Technician.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        for (String[] technicianData : technicianList) {
 
-            if (values[0].equals(TechnicianID)) {
-                return values;
+            if (technicianData[0].equals(technicianID)) {
+                return technicianData;
             }
-
         }
 
-        // The loop unable to find a match user information, return null
-        return new String[] {"N/A", "Not Found",  "N/A",  "N/A", "N/A", "N/A"};
+        return new String[] {"N/A", "Not Found", "N/A", "N/A", "N/A", "N/A"};
     }
 }

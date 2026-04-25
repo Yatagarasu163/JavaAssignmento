@@ -155,24 +155,21 @@ public class ManagerCreateAccountPane extends JPanel {
             user.email = emailTxtField.getText();
             user.contact = contactNumberTxtField.getText();
             user.password = new String(passwordTxtField.getPassword());
+            user.address = addressTxtField.getText();
 
             String newID = generateNewID(filename, rolesPrefix[roleIndex]);
 
-            List<String> inputUser = new ArrayList<>();
-            inputUser.add(user.id);
-            inputUser.add(user.firstName);
-            inputUser.add(user.lastName);
-            inputUser.add(user.username);
-            inputUser.add(user.role);
-            inputUser.add(user.email);
-            inputUser.add(user.contact);
-            inputUser.add(user.password);
+            String[] userDetails = user.getDetails();
+            List<String[]> inputUser = new ArrayList<>();
+            inputUser.add(userDetails);
 
             System.out.println(inputUser);
 
-            FileHandler.write("Users.txt", inputUser);
+            FileHandler.write("Users.txt", inputUser, true);
 
             JOptionPane.showMessageDialog(this, "Saved!", "Saved the user details", JOptionPane.INFORMATION_MESSAGE);
+
+            listener.onBackToList();
         });
 
         cancelBtn.addActionListener(e -> {
@@ -192,6 +189,7 @@ public class ManagerCreateAccountPane extends JPanel {
         int max = 0;
 
         List<String[]> data = FileHandler.read(filename);
+        System.out.println(data);
 
         for (String[] row : data) {
             if (row.length > 0 && row[0].startsWith(prefix)) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.util.List;
 
 public class TechnicianProfilePane extends JPanel {
 
@@ -152,7 +153,7 @@ public class TechnicianProfilePane extends JPanel {
                     emailField.getText(),
                     dateField.getText(),
                     phoneField.getText(),
-                   "\"" +  addressField.getText() + "\""
+                    addressField.getText()
             };
 
             updateTechnicianInfo(TechInfoList);
@@ -177,30 +178,21 @@ public class TechnicianProfilePane extends JPanel {
 
     public void updateTechnicianInfo(String[] TechnicianInfo) {
 
-        ArrayList<String> technicianList = FileHandler.read("Technician.txt");
+        List<String[]> technicianList = FileHandler.read("Technician.txt");
         boolean found = false;
 
         for (int i = 0; i < technicianList.size(); i++) {
-            String currentLine = technicianList.get(i);
+            String[] infoList = technicianList.get(i);
 
-            // ensure the code exclude the "" symbol when spltting on order to split out address with correct format
-            String[] infoList = currentLine.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            if (infoList[0].equals(TechnicianInfo[0].replace("></", ""))) {
 
-
-            if (infoList[0].equals(TechnicianInfo[0])) {
-
-                // join new data string[] with comma for adding into database
-                String updatedLine = String.join(",", TechnicianInfo);
-
-                // Replace entire specific line with new update data line
-                technicianList.set(i, updatedLine);
+                technicianList.set(i, TechnicianInfo);
                 found = true;
                 break;
             }
         }
 
         if (found) {
-            // 5. Overwrite the file with the updated list
             FileHandler.write("Technician.txt", technicianList, false);
             System.out.println("Update successful.");
         } else {
