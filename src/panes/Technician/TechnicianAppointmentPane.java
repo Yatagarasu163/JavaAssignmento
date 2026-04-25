@@ -68,7 +68,9 @@ public class TechnicianAppointmentPane extends JPanel {
         List<String[]> AppointmentList = AppointmentInfo(UserID, appointmentDate);
         List<String[]> AppointmentDetails = AppointmentDetails(UserID, appointmentDate);
 
-        int i = 0;
+        System.out.println(AppointmentDetails);
+
+        int i = 1;
         for (String[] appointment:AppointmentList){
 
             AppointmentData app = new AppointmentData("slot " + i, appointment[0], appointment[1], appointment[2],
@@ -76,10 +78,24 @@ public class TechnicianAppointmentPane extends JPanel {
             for (String[] details : AppointmentDetails){
                 if (details[0].equals(appointment[5])){
                     app.description = details[1];
+                    // Add service task
+                    switch (details[2]) {
+                        case "Normal Service":
+                            app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires"};
+                            break;
+                        case "Major Service":
+                            app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires", "Additional Features"};
+                            break;
+                        default:
+                            app.tasks = new String[]{"Unknown Service"};
+                            break;
+                    }
                 }
             }
-            app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires", "Add aerospace oil", "Nasi Goreng Ayam"};
-            app.taskStates = new boolean[5];
+
+            app.taskStates = new boolean [app.tasks.length];
+            //app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires", "Add aerospace oil", "Nasi Goreng Ayam"};
+            //app.taskStates = new boolean[5];
             app.chatHistory.add(new String[]{"CUSTOMER", "Hearing a grinding voice from left wheels. Me feel cooked..."});
             app.chatHistory.add(new String[]{"TECHNICIAN", "Gud Luck :)"});
             appointments.add(app);
@@ -124,14 +140,14 @@ public class TechnicianAppointmentPane extends JPanel {
         List<String[]> todayAppointments = new ArrayList<>();
 
         for (String[] appointments: appointmentList){
-            if (appointments[5].equals(date) && appointments[6].equals(TechnicianID)) {
+            if (appointments[5].trim().equals(date) && appointments[6].trim().equals(TechnicianID)) {
                 String[] appointment = new String[] {
-                        appointments[9],
-                        appointments[9],
-                        appointments[7],
-                        appointments[7],
-                        appointments[7],
-                        appointments[0]
+                        appointments[9].trim(),
+                        appointments[9].trim(),
+                        appointments[7].trim(),
+                        appointments[7].trim(),
+                        appointments[7].trim(),
+                        appointments[0].trim()
                 };
 
                 todayAppointments.add(appointment);
@@ -140,19 +156,19 @@ public class TechnicianAppointmentPane extends JPanel {
 
         for (String[] vehicles: VehicleList){
             for (String[] appointment: todayAppointments){
-                if (vehicles[0].equals(appointment[0])){
-                    appointment[0] = vehicles[1];
-                    appointment[1] = vehicles[2];
+                if (vehicles[0].trim().equals(appointment[0])){
+                    appointment[0] = vehicles[1].trim();
+                    appointment[1] = vehicles[2].trim();
                 }
             }
         }
 
         for (String[] customers : CustomerList){
             for (String[] appointment: todayAppointments) {
-                if (customers[0].equals(appointment[2])){
-                    appointment[2] = customers[1];
-                    appointment[3] = customers[4];
-                    appointment[4] = customers[5];
+                if (customers[0].trim().equals(appointment[2])){
+                    appointment[2] = customers[1].trim();
+                    appointment[3] = customers[4].trim();
+                    appointment[4] = customers[5].trim();
                 }
             }
         }

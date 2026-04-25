@@ -36,7 +36,16 @@ public class FileHandler {
 
             String line;
             while ((line = br.readLine()) != null) {
-                output.add(line.split(separator));
+
+                String[] array = line.split(separator);
+
+                //Loop through the new array and trim the spaces off every item
+                //cuz now for every row data, have a space in front after sorting
+                for (int i = 0; i < array.length; i++) {
+                    array[i] = array[i].trim();
+                }
+
+                output.add(array);
             }
 
         } catch (FileNotFoundException e) {
