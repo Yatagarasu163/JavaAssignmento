@@ -246,12 +246,12 @@ public class TechnicianDashboardPane extends JPanel {
         List<String[]> todayAppointments = new ArrayList<>();
 
         for (String[] appointments: appointmentList){
-            if (appointments[5].equals(appointmentDate) && appointments[6].equals(userId)) {
+            if (appointments[5].trim().equals(appointmentDate) && appointments[6].trim().equals(userId)) {
                 String[] appointment = new String[] {
-                        appointments[9],
-                        appointments[9],
-                        appointments[7],
-                        appointments[4]
+                        appointments[9].trim(),
+                        appointments[9].trim(),
+                        appointments[7].trim(),
+                        appointments[4].trim()
                 };
 
                 todayAppointments.add(appointment);
