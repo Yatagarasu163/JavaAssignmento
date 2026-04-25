@@ -3,6 +3,8 @@ package panes.Manager;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.util.List;
+import java.util.ArrayList;
 import components.TextLabel;
 import panes.Manager.components.AccountsPanelListener;
 import components.FloatingTextField;
@@ -10,7 +12,7 @@ import components.FloatingPasswordField;
 import components.FloatingButton;
 import components.FloatingComboBox;
 import userClass.User;
-
+import IO.FileHandler;
 
 public class ManagerCreateAccountPane extends JPanel {
 
@@ -24,6 +26,7 @@ public class ManagerCreateAccountPane extends JPanel {
     private FloatingTextField contactNumberTxtField;
     private FloatingPasswordField passwordTxtField;
     private FloatingTextField addressTxtField;
+    private String filename = "Users.txt";
 
     public ManagerCreateAccountPane(AccountsPanelListener listener) {
         this.listener = listener; 
@@ -87,6 +90,7 @@ public class ManagerCreateAccountPane extends JPanel {
         //Declares input fields for the right columns
         String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
         titleComboBox = new FloatingComboBox<>(options, 2);
+        titleComboBox.setSelectedIndex(0);
         emailTxtField = new FloatingTextField("Email");
         contactNumberTxtField = new FloatingTextField("Contact Number");
         passwordTxtField = new FloatingPasswordField("Password");
@@ -112,6 +116,8 @@ public class ManagerCreateAccountPane extends JPanel {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false);
         bottomPanel.setLayout(new BorderLayout(20, 20));
+        TextLabel addressTextLabel = new TextLabel("Address");
+        bottomPanel.add(addressTextLabel, BorderLayout.NORTH);
 
         addressTxtField = new FloatingTextField("Address");
         bottomPanel.add(addressTxtField, BorderLayout.CENTER);
@@ -138,6 +144,8 @@ public class ManagerCreateAccountPane extends JPanel {
 
         createBtn.addActionListener(e -> {
             User user = new User();
+            int roleIndex = titleComboBox.getSelectedIndex();
+            String[] rolesPrefix = {"M", "CS", "T", "C"}; 
 
             user.id = userIDTxtField.getText();
             user.firstName = firstNameTxtField.getText();
@@ -148,14 +156,68 @@ public class ManagerCreateAccountPane extends JPanel {
             user.contact = contactNumberTxtField.getText();
             user.password = new String(passwordTxtField.getPassword());
 
-            listener.onCreateUser(user);
+            String newID = generateNewID(filename, rolesPrefix[roleIndex]);
+
+            List<String> inputUser = new ArrayList<>();
+            inputUser.add(user.id);
+            inputUser.add(user.firstName);
+            inputUser.add(user.lastName);
+            inputUser.add(user.username);
+            inputUser.add(user.role);
+            inputUser.add(user.email);
+            inputUser.add(user.contact);
+            inputUser.add(user.password);
+
+            System.out.println(inputUser);
+
+            FileHandler.write("Users.txt", inputUser);
+
+            JOptionPane.showMessageDialog(this, "Saved!", "Saved the user details", JOptionPane.INFORMATION_MESSAGE);
         });
 
         cancelBtn.addActionListener(e -> {
             listener.onBackToList();
         });
 
+        titleComboBox.addActionListener(e -> {
+            int roleIndex = titleComboBox.getSelectedIndex();
+            String[] rolesPrefix = {"M", "CS", "T", "C"};
+
+            userIDTxtField.setText(generateNewID(filename, rolesPrefix[roleIndex]));
+        });
+
+    }
+
+    public static int getLatestNumber(String filename, String prefix) {
+        int max = 0;
+
+        List<String[]> data = FileHandler.read(filename);
+
+        for (String[] row : data) {
+            if (row.length > 0 && row[0].startsWith(prefix)) {
+                try {
+                    String numberPart = row[0].substring(prefix.length());
+                    int num = Integer.parseInt(numberPart);
+
+                    if (num > max) {
+                        max = num;
+                    }
+                } catch (NumberFormatException e) {
+                    // skip bad data instead of crashing
+                    System.err.println("Invalid ID format: " + row[0]);
+                }
+            }
         }
+
+        return max;
+    }
+
+    public static String generateNewID(String filename, String prefix) {
+        int next = getLatestNumber(filename, prefix) + 1;
+        return prefix + String.format("%06d", next);
+    }
+
+
 
     private JPanel createField(String labelText, JComponent field){
         JPanel panel = new JPanel();

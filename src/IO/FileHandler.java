@@ -51,34 +51,46 @@ public class FileHandler {
     //     }
     // }
 
-    public static void write(String filename, ArrayList<String> data){
-        String path = "src/database/" + filename;
+    public static void write(String filename, List<String> data){
+        String path = "database/" + filename;
+        System.out.println("Path: " + new File(".").getAbsolutePath());
 
         try{
             BufferedWriter bw;
             File file = new File(path);
-
-            if(file.exists() && file.isFile()){
-               System.out.println("File exists!"); 
-                bw = new BufferedWriter(new FileWriter(path, true));
-            } else{
-                bw = new BufferedWriter(new FileWriter(path));
+            
+            if(!file.exists()){
+                file.createNewFile();
             }
 
-            String inputString = "";
+            // if(file.exists() && file.isFile()){
+            //    System.out.println("File exists!"); 
+            //     bw = new BufferedWriter(new FileWriter(path, true));
+            // } else{
+            //     bw = new BufferedWriter(new FileWriter(path));
+            // }
+
+            bw = new BufferedWriter(new FileWriter(file, true));
+
+            StringBuilder inputString = new StringBuilder();
             for (String info : data){
-                inputString += info + separator;
+                inputString.append(info).append(separator);
             }
 
-            bw.write(inputString);
+            System.out.println(inputString);
+
+            bw.write(inputString.toString());
 
             bw.newLine();
 
             bw.close();
+
         } catch (IOException e) {
             System.err.println("Error writing to file: " + path);
             e.printStackTrace();
-        } 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -86,7 +98,7 @@ public class FileHandler {
 
         List<String[]> output = new ArrayList<>();
 
-        String path = "src/database/" + filename;
+        String path = "database/" + filename;
 
         try{
             BufferedReader br;

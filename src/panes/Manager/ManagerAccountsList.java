@@ -89,6 +89,8 @@ public class ManagerAccountsList extends JPanel{
         FeedbackTable userTable = new FeedbackTable(tableModel);
         userTable.getColumn("Details").setCellRenderer(new ButtonRenderer());
         userTable.getColumn("Details").setCellEditor(new ButtonEditor(new JCheckBox(), listener));
+        userTable.setBackground(UIConfig.mainForeground);
+        userTable.setForeground(UIConfig.mainBackground);
 
         JScrollPane scrollPane = new JScrollPane(userTable);
         scrollPane.setPreferredSize(new Dimension(600,200));
