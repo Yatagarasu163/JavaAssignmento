@@ -1,7 +1,14 @@
 package panes.Technician;
 
+import IO.FileHandler;
 import components.FloatingButton;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -102,11 +109,35 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         sendIcon.setBorder(new EmptyBorder(0,10,0,10));
 
         // Chat Submit Logic
+        LocalDateTime today = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formatted =  today.format(formatter);
         sendIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if(!inputField.getText().trim().isEmpty() && currentData != null) {
-                    currentData.chatHistory.add(new String[]{"TECHNICIAN", inputField.getText()});
+
+                // Grab text first
+                String messageText = inputField.getText().trim();
+
+                if (!messageText.isEmpty() && currentData != null) {
+
+                    // 1. GENERATE TIME INSIDE THE LISTENER (so it is perfectly accurate)
+                    String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+                    currentData.chatHistory.add(new String[]{"TECHNICIAN", messageText});
                     inputField.setText("");
+
+                    String[] technicianComment = new String[] {
+                            generateId("Comments.txt"),
+                            messageText,
+                            "TECHNICIAN",
+                            formattedDateTime,
+                            currentData.appointmentID
+                    };
+
+                    List<String[]> comment = new ArrayList<>();
+                    comment.add(technicianComment);
+
+                    FileHandler.write("Comments.txt", comment, true);
                     refreshChat();
                 }
             }
@@ -281,5 +312,34 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         wrapper.setOpaque(false);
         wrapper.add(bubble);
         return wrapper;
+    }
+
+    public String generateId(String filename) {
+        List<String[]> dataList = FileHandler.read(filename);
+
+        Random random = new Random();
+        String newID = "";
+        boolean isUnique = false;
+
+        while (!isUnique) {
+
+            int randomInt = random.nextInt(1000000);
+
+            newID = "C" + String.valueOf(randomInt);
+
+            isUnique = true; // Assume it is unique until proven otherwise
+
+            for (String[] row : dataList) {
+
+
+                if (row[0].equals(newID)) {
+                    System.out.println("Repeated ID detected (" + newID + "). Regenerating...");
+                    isUnique = false;
+                    break;
+                }
+            }
+        }
+
+        return newID;
     }
 }

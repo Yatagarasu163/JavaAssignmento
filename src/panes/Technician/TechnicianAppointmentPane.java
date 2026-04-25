@@ -56,6 +56,16 @@ public class TechnicianAppointmentPane extends JPanel {
     public void updateAppointmentStatus(AppointmentData data, String newStatus) {
         data.status = newStatus;
         listPanel.refreshList(); // Redraw the left panel to update the status pill
+
+        List<String[]> AppointmentList = FileHandler.read("Appointment.txt");
+
+        for (String[] appointments : AppointmentList){
+            if (appointments[0].equals(data.appointmentID)){
+                appointments[4] = newStatus;
+            }
+        }
+
+        FileHandler.write("Appointment.txt", AppointmentList, false);
     }
 
     // Called by the List Panel when a card is clicked
@@ -67,6 +77,7 @@ public class TechnicianAppointmentPane extends JPanel {
         appointments = new ArrayList<>();
         List<String[]> AppointmentList = AppointmentInfo(UserID, appointmentDate);
         List<String[]> AppointmentDetails = AppointmentDetails(UserID, appointmentDate);
+        List<String[]> commentHistory = FileHandler.read("Comments.txt");
 
         System.out.println(AppointmentDetails);
 
@@ -78,6 +89,8 @@ public class TechnicianAppointmentPane extends JPanel {
             for (String[] details : AppointmentDetails){
                 if (details[0].equals(appointment[5])){
                     app.description = details[1];
+                    app.appointmentID = details[0];
+                    app.status = details[4];
                     // Add service task
                     switch (details[2]) {
                         case "Normal Service":
@@ -89,15 +102,23 @@ public class TechnicianAppointmentPane extends JPanel {
                         default:
                             app.tasks = new String[]{"Unknown Service"};
                             break;
+
+
                     }
+                }
+            }
+
+            for (String[] comments : commentHistory) {
+                if (app.appointmentID.equals(comments[4])) {
+                    app.chatHistory.add(new String[]{comments[2], comments[1]});
                 }
             }
 
             app.taskStates = new boolean [app.tasks.length];
             //app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires", "Add aerospace oil", "Nasi Goreng Ayam"};
             //app.taskStates = new boolean[5];
-            app.chatHistory.add(new String[]{"CUSTOMER", "Hearing a grinding voice from left wheels. Me feel cooked..."});
-            app.chatHistory.add(new String[]{"TECHNICIAN", "Gud Luck :)"});
+//            app.chatHistory.add(new String[]{"CUSTOMER", "Hearing a grinding voice from left wheels. Me feel cooked..."});
+//            app.chatHistory.add(new String[]{"TECHNICIAN", "Gud Luck :)"});
             appointments.add(app);
             i++;
         }
@@ -178,8 +199,8 @@ public class TechnicianAppointmentPane extends JPanel {
 
     // --- DATA CLASS TO HOLD STATE ---
     public static class AppointmentData {
-        public String time, model, plate, name, contact, email, description;
-        public String status = "In Queue";
+        public String time, model, plate, name, contact, email, description, appointmentID;
+        public String status;
         public String[] tasks;
         public boolean[] taskStates; // Remembers checked boxes
         public List<String[]> chatHistory = new ArrayList<>(); // [Sender, Message]
@@ -188,5 +209,6 @@ public class TechnicianAppointmentPane extends JPanel {
             this.time = time; this.model = model; this.plate = plate;
             this.name = name; this.contact = contact; this.email = email;
         }
+
     }
 }
