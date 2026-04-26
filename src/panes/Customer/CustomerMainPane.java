@@ -28,7 +28,7 @@ public class CustomerMainPane extends JFrame {
         cardsContainer.setLayout(cardLayout);
 
         // 3. Initialize the Dashboard (Passing the name from the mockup)
-        CustomerDashboardPane dashboardPane = new CustomerDashboardPane("Sum Ting Wong");
+        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane("CT123456");
 
         // 4. Add the Dashboard to our "deck" of cards
         cardsContainer.add(dashboardPane, "DASHBOARD");
@@ -40,23 +40,16 @@ public class CustomerMainPane extends JFrame {
         cardLayout.show(cardsContainer, "DASHBOARD");
 
         // Pass the starting data into the constructor
-        CustomerProfilePane profilePane = new CustomerProfilePane(
-                "Sum Ting Wong",
-                "CT123456",
-                "tingwong@gmail.com",
-                "03 March 2026",
-                "+60 12 - 345 6789",
-                "10, Jalan Ayam Hutan, Kampung Bunga Baru, 47130, Puchong, Selangor"
-        );
+        panes.Customer.CustomerProfilePane profilePane = new panes.Customer.CustomerProfilePane("CT123456");
 
         // Add it to your card layout container
         cardsContainer.add(profilePane, "PROFILE");
 
-        CustomerHistoryPane historyPane = new CustomerHistoryPane(cardsContainer, cardLayout);
+        panes.Customer.CustomerHistoryPane historyPane = new panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout);
 
         cardsContainer.add(historyPane, "HISTORY");
 
-        CustomerPaymentDetailsPane paymentDetailsPane = new CustomerPaymentDetailsPane();
+        panes.Customer.CustomerPaymentDetailsPane paymentDetailsPane = new panes.Customer.CustomerPaymentDetailsPane();
         cardsContainer.add(paymentDetailsPane, "PAYMENT_DETAILS");
 
         // TODO: In the future, add ActionListeners for your sidebarPanel buttons here
