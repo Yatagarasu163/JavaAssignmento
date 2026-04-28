@@ -9,6 +9,12 @@ import java.util.Arrays;
 public class FileHandler {
 
     private static final String separator = "/></";
+    public static final String users = "Users.txt";
+    public static final String vehicles = "Vehicle.txt";
+    public static final String appointments = "Appointment.txt";
+    public static final String currentUser = "CurrentUser.txt";
+    public static final String prices = "Price.txt";
+    
 
     public static void write(String filename, List<String[]> data, boolean append) {
         String path = "database/" + filename;

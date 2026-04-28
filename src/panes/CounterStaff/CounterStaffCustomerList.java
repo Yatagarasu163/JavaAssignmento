@@ -5,17 +5,21 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.FeedbackTable;
 import components.FloatingButton;
 import config.UIConfig;
 import panes.CounterStaff.components.CustomerPanelListener;
 import components.TextLabel;
+import IO.FileHandler;
 
 
 public class CounterStaffCustomerList extends JPanel{
 
     private CustomerPanelListener listener;
+    private static final String filename = "Users.txt";
     
     public CounterStaffCustomerList(CustomerPanelListener listener) {
         this.listener = listener;
@@ -38,6 +42,7 @@ public class CounterStaffCustomerList extends JPanel{
             new EmptyBorder(20, 20, 20, 20)
         ));
         addCustomer.setBorderPainted(true);
+
         addPanel.add(addCustomer, BorderLayout.EAST);
 
 
@@ -57,8 +62,9 @@ public class CounterStaffCustomerList extends JPanel{
         filterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
         
         String[] columns = {"Customer ID", "Customer Name", "Date Joined", "Details"};
-        Object[][] data = {{"CS123456", "Hao Ni Ma", "11/9/2001", "View"}, 
-                           {"CS124567", "Bin Laden", "12/9/2001", "View"}};
+        // Object[][] data = {{"CS123456", "Hao Ni Ma", "11/9/2001", "View"}, 
+        //                    {"CS124567", "Bin Laden", "12/9/2001", "View"}};
+        String[][] data = getAccounts();
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columns){
             @Override 
@@ -90,6 +96,11 @@ public class CounterStaffCustomerList extends JPanel{
         add(addPanel);
         add(Box.createVerticalStrut(50));
         add(customerDetailsPanel);
+
+
+        addCustomer.addActionListener(e -> {
+            listener.onCreateCustomer();
+        });
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer{
@@ -109,6 +120,24 @@ public class CounterStaffCustomerList extends JPanel{
             }
     }
     
+    public String[][] getAccounts(){
+        List<String[]> accounts = FileHandler.read(filename);
+
+        List<String[]> cleanedAccounts = new ArrayList<>();
+        if (accounts.size() > 0){
+            for(String[] account : accounts){
+                if(account[0].startsWith("CT")){
+                    String[] arr = {account[0], account[1] + " " + account[2], account[9], "View"};
+                    cleanedAccounts.add(arr);
+                }
+            }
+        }
+
+        String[][] array = cleanedAccounts.toArray(new String[0][]);
+
+        return array;
+    }
+
     class ButtonEditor extends DefaultCellEditor{
         private JButton button;
         private String label;

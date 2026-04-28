@@ -4,14 +4,19 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import javax.swing.border.LineBorder;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.FloatingButton;
 import panes.Manager.components.AccountsPanelListener;
 import config.UIConfig;
+import IO.FileHandler;
+
 
 public class ManagerUserDetailsPane extends JPanel{
     private int componentSpace = 10;
     private AccountsPanelListener listener;
+    private static final String filename = "Users.txt";
 
     private JPanel buttonPanel = new JPanel();
     private JTextField nameField, phoneField, addressField;
@@ -166,9 +171,24 @@ public class ManagerUserDetailsPane extends JPanel{
 
             if (result == JOptionPane.YES_OPTION){
                 // Add delete logic here
+
+                String id = idField.getText();
+
+                List<String[]> accounts = FileHandler.read(filename);
+                for (int i = 0; i < accounts.size(); i++){
+                    if (accounts.get(i)[0].equalsIgnoreCase(id)){
+                        accounts.remove(i);
+                        break;
+                    }
+                }
+
+                FileHandler.write(filename, accounts, false);
+
+                JOptionPane.showMessageDialog(this, "Account has been successfully deleted!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+
                 isEditing = true;
                 toggleEditMode(false);
-                listener.onDeleteUser(idField.getText());
+                listener.onBackToList();
             }
         });
 
@@ -226,14 +246,30 @@ public class ManagerUserDetailsPane extends JPanel{
 
         } else {
             isEditing = false;
+
+            String id = idField.getText();
+            String name = nameField.getText();
+            String phone = phoneField.getText();
+            String address = addressField.getText();
+
+
             cardLayout.show(buttonPanel, "UPDATE");
 
             if(isSaving){
                 // Foo
-            } else {
-                // Un foo
-            }
+                List<String[]> accounts = FileHandler.read(filename);
+                for (String[] account : accounts){
+                    if (account[0].equalsIgnoreCase(id)){
+                        account[3] = name;
+                        account[6] = phone;
+                        account[8] = address;
+                        JOptionPane.showMessageDialog(this, "Details saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                }
 
+                FileHandler.write(filename, accounts, false);
+            }
             disableField(nameField);
             disableField(phoneField);
             disableField(addressField);
@@ -255,6 +291,17 @@ public class ManagerUserDetailsPane extends JPanel{
 
     public void loadUser(String userID) {
         System.out.println("Load User: " + userID);
+        List<String[]> accounts = FileHandler.read(filename);
+        for (String[] account : accounts){
+            if (account[0].equalsIgnoreCase(userID)){
+                idField.setText(account[0]);
+                nameField.setText(account[3]);
+                phoneField.setText(account[6]);
+                addressField.setText(account[8]);
+                emailField.setText(account[5]);
+                dateField.setText(account[9]);
+            }
+        }
         idField.setText(userID);
     }
 }

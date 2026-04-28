@@ -4,10 +4,13 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.FloatingButton;
 import config.UIConfig;
 import panes.CounterStaff.components.CustomerPanelListener;
+import IO.FileHandler;
 
 public class CounterStaffCustomerDetailsPane extends JPanel{
 
@@ -19,6 +22,7 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
     private JTextField idField, emailField, dateField;                 // Non-editable
     private boolean isEditing = false;
     private CardLayout cardLayout = new CardLayout();
+    private static final String filename = "Users.txt";
 
 
     private FloatingButton updateBtn = new FloatingButton("Update", 20);
@@ -131,6 +135,9 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         gbc.anchor = GridBagConstraints.NORTH;
         savePanel.add(saveBtn, gbc);
         buttonPanel.add(savePanel, "SAVE");
+        
+
+        FloatingButton vehicleBtn = new FloatingButton("Add vehicle", 20);
 
         add(Box.createVerticalStrut(componentSpace));
         add(avatarContainer);
@@ -139,6 +146,7 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         add(Box.createVerticalStrut(componentSpace));
         add(buttonPanel);
         add(Box.createVerticalStrut(componentSpace));
+        add(vehicleBtn);
 
 
         updateBtn.addActionListener(e -> {
@@ -157,6 +165,12 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
 
         cancelBtn.addActionListener(e -> {
             toggleEditMode(false);
+        });
+
+        vehicleBtn.addActionListener(e -> {
+            isEditing = false;
+            toggleEditMode(false);
+            listener.onAddVehicle((String) idField.getText());
         });
     }
 
@@ -199,12 +213,28 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
 
         } else {
             isEditing = false;
+
+            String id = idField.getText();
+            String name = nameField.getText();
+            String phone = phoneField.getText();
+            String address = addressField.getText();
+
+
             cardLayout.show(buttonPanel, "UPDATE");
 
             if(isSaving){
                 // Foo
-            } else {
-                // Un foo
+                List<String[]> accounts = FileHandler.read(filename);
+                for(String[] account : accounts){
+                    if(account[0].equalsIgnoreCase(id)){
+                        account[3] = name;
+                        account[6] = phone;
+                        account[8] = address;
+                        JOptionPane.showMessageDialog(this, "Details saved", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+
+                FileHandler.write(filename, accounts, false);
             }
 
             disableField(nameField);
@@ -229,6 +259,18 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
     public void loadCustomer(String customerID) {
         System.out.println("Load customer: " + customerID);
         idField.setText(customerID);
+
+        List<String[]> accounts = FileHandler.read(filename);
+        for(String[] account: accounts){
+            if(account[0].equalsIgnoreCase(customerID)){
+                idField.setText(account[0]);
+                nameField.setText(account[3]);
+                phoneField.setText(account[6]);
+                addressField.setText(account[8]);
+                emailField.setText(account[5]);
+                dateField.setText(account[9]);
+            }
+        }
     }
 }
 

@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import components.FloatingComboBox;
 import components.TextLabel;
@@ -12,11 +14,15 @@ import config.UIConfig;
 import panes.CounterStaff.components.AppointmentPanelListener;
 import components.FloatingButton;
 import components.FloatingCheckBox;
+import IO.FileHandler;
 
 public class CounterStaffCreateAppointmentPane extends JPanel{
 
     private AppointmentPanelListener listener;
     private int componentSpace = 20;
+
+    private List<String[]> accounts = FileHandler.read("Users.txt");
+    private List<String[]> customers = new ArrayList<>();
 
     private String customerName = "Sum Ting Wong"; // CHANGE THIS VALUE LATER
     private String[] customerIDList = {"CT123456", "CT123457", "CT000001"};  //CHANGE THIS TO ACTUAL DATA
@@ -24,10 +30,38 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
     private String email = "tingwong@gmail.com"; //CHANGE THIS VALUE LATER
     private String vehicleModel = "Perodua Myvi"; //CHANGE THIS VALUE LATER
     private String[] vehiclePlateOptions = {"ABC 1234"}; //CHANGE THIS VALUE LATER
+    private String[] technicianList = {"Ali", "Muthu", "Ah Hock"};
 
 
     public CounterStaffCreateAppointmentPane(AppointmentPanelListener listener){
         this.listener = listener;
+
+        List<String> customerIDs = new ArrayList<>();
+        for(String[] account : accounts){
+            if (account[0].startsWith("CT")){
+                customers.add(account);
+                customerIDs.add(account[0]);
+            }
+        }
+
+        List<String[]> technicians = new ArrayList<>();
+        List<String> technicianNames = new ArrayList<>();
+        for(String[] account: accounts){
+            if(account[0].startsWith("T")){
+                technicians.add(account);
+                technicianNames.add(account[1] + " " + account[2]);
+            }
+        }
+        technicianList = technicianNames.toArray(new String[0]);
+        if(technicianList.length <= 0){
+            technicianList = new String[]{"Null"};
+        }
+
+        
+        customerIDList = customerIDs.toArray(new String[0]);
+        if (customerIDList.length <= 0){
+            customerIDList = new String[]{"Null"};
+        }
 
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -196,8 +230,7 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         JPanel techSelectPanel = new JPanel();
         techSelectPanel.setOpaque(false);
         techSelectPanel.setLayout(new BorderLayout());
-        String[] options = {"Ali", "Muthu", "Ah Hock"};
-        FloatingComboBox<String> techComboBox = new FloatingComboBox<>(options);
+        FloatingComboBox<String> techComboBox = new FloatingComboBox<>(technicianList);
         techComboBox.setPreferredSize(new Dimension(250, 40));
         techComboBox.setMaximumSize(new Dimension(300, 40));
         techSelectPanel.add(techComboBox, BorderLayout.CENTER);
@@ -215,9 +248,113 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
     
 
         createAppointment.addActionListener(e -> {
+            
+            String appointmentID = generateNewAppointmentID("Appointment.txt");
+            Date selectedDate = (Date) dateSpinner.getValue();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String dateString = sdf.format(selectedDate);
+            String customerID = (String) customerIDComboBox.getSelectedItem();
+            String plate = (String) plateComboBox.getSelectedItem();
+            String serviceType = (String) typeComboBox.getSelectedItem();
+            List<String> selectedServices = new ArrayList<>();
+
+            List<FloatingCheckBox> activeList = typeComboBox.getSelectedIndex() == 0 ? normalList : majorList;
+
+            for (FloatingCheckBox cb : activeList) {
+                if(cb.isSelected()){
+                    selectedServices.add(cb.getText());
+                }
+            }
+            String servicesString = String.join(",", selectedServices);
+
+            int selectedTechnician = techComboBox.getSelectedIndex();
+            String technicianID = technicians.get(selectedTechnician)[0];
+
+
+            String selectedServiceType = (String) typeComboBox.getSelectedItem();
+            List<String[]> user = FileHandler.read("CurrentUser.txt");
+            String staffID = user.get(0)[0]; 
+
+            List<String[]> vehicles = FileHandler.read("Vehicle.txt");
+            String selectedPlate = (String) plateComboBox.getSelectedItem();
+            String selectedVehicle = "";
+            for(String[] vehicle : vehicles){
+                if(vehicle[1].equalsIgnoreCase(selectedPlate)){
+                    selectedVehicle = vehicle[0];
+                    break;
+                }
+            }
+
+            String[] appointmentArray = {appointmentID, "", selectedServiceType, servicesString, "In Queue", dateString, technicianID, customerID, staffID, selectedVehicle};
+            List<String[]> appointmentList = new ArrayList<>();
+            appointmentList.add(appointmentArray);
+            FileHandler.write("Appointment.txt", appointmentList, true);
+
+            JOptionPane.showMessageDialog(this, "Appointment added!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
             listener.onBackToList();
         });
+
+        customerIDComboBox.addActionListener(e -> {
+            String[] customer = new String[0];
+            String customerID = (String) customerIDComboBox.getSelectedItem();
+            for (String[] account : customers){
+                if(account[0].equals((String) customerIDComboBox.getSelectedItem())){
+                    customer = account;
+                    break;
+                }
+            }
+
+            customerNameValue.setText(customer[1] + customer[2]);
+            emailValue.setText(customer[5]);
+            contactNumValue.setText(customer[6]);
+
+            List<String[]> vehicles = FileHandler.read("Vehicle.txt");
+            List<String[]> selectedVehicles = new ArrayList<>();
+            List<String> vehiclePlates = new ArrayList<>();
+            for (String[] vehicle : vehicles){
+                if (vehicle[4].equals(customerID)){
+                    selectedVehicles.add(vehicle);
+                    vehiclePlates.add(vehicle[1]);
+                }
+            }
+            vehiclePlateOptions = vehiclePlates.toArray(new String[0]);
+            plateComboBox.removeAllItems();
+            for (String plate : vehiclePlateOptions){
+                plateComboBox.addItem(plate);
+            }
+        });
     }
+
+
+    public static int getLatestAppointmentNumber(String filename){
+        int max = 0;
+
+        List<String[]> data = FileHandler.read(filename);
+
+        for(String[] row : data){
+            if(row.length > 0 && row[0].startsWith("A")){
+                try{
+                    String numberPart = row[0].substring(1);
+                    int num = Integer.parseInt(numberPart);
+
+                    if (num > max){
+                        max = num;
+                    }
+                } catch(NumberFormatException e){
+                    System.err.println("Invalid vehicle ID: " + row[0]);
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public static String generateNewAppointmentID(String filename) {
+        int next = getLatestAppointmentNumber(filename) + 1;
+        return "A" + String.format("%06d", next);
+    }
+
 
     private TextLabel createTxtLabel(String label){
         TextLabel txtLbl = new TextLabel(label);

@@ -4,14 +4,23 @@ import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.util.List;
+import java.util.ArrayList;
 import components.FloatingButton;
 import components.FloatingComboBox;
 import components.TextLabel;
 import components.FloatingTextField;
+import IO.FileHandler;
 
 public class ManagerPricingPane extends JPanel{
 
-    private double currentPrice = 67.69;
+    private double currentPrice = 0.00;
+    private static final String filename = "Price.txt";
+    private TextLabel currentPriceLabel;
+    private FloatingTextField newPriceField;
+    private List<String[]> prices = FileHandler.read(filename);
+    private String normalPrice = prices.get(0)[0];
+    private String majorPrice = prices.get(1)[0];
 
     public ManagerPricingPane() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -33,15 +42,16 @@ public class ManagerPricingPane extends JPanel{
         //Sets the input fields
         String[] options = {"Normal service type", "Major service type"};
         FloatingComboBox<String> serviceTypeComboBox = new FloatingComboBox<>(options);
-        FloatingTextField newPriceTxtField = new FloatingTextField("New Price");
+        newPriceField = new FloatingTextField("New Price");
+        currentPriceLabel = new TextLabel(String.format("RM%.2f", currentPrice));
 
         //Adds content to the new formPanel
         formPanel.add(new TextLabel("Service type: "));
         formPanel.add(serviceTypeComboBox);
         formPanel.add(new TextLabel("Current Price: "));
-        formPanel.add(new TextLabel(String.format("RM%.2f", currentPrice)));
+        formPanel.add(currentPriceLabel);
         formPanel.add(new TextLabel("New Price: "));
-        formPanel.add(newPriceTxtField);
+        formPanel.add(newPriceField);
 
 
         //Creates button for the window
@@ -54,6 +64,38 @@ public class ManagerPricingPane extends JPanel{
         add(updateButton);
         add(Box.createVerticalStrut(20));
         add(cancelButton);
+
+        serviceTypeComboBox.addActionListener(e -> {
+            prices = FileHandler.read(filename);
+            normalPrice = prices.get(0)[0];
+            majorPrice = prices.get(1)[0];
+
+
+            if (serviceTypeComboBox.getSelectedIndex() == 0){
+                currentPrice = Double.parseDouble(normalPrice);
+            } else{
+                currentPrice = Double.parseDouble(majorPrice);
+            }
+            currentPriceLabel.setText(String.format("RM%.2f", currentPrice));
+        });
+
+        updateButton.addActionListener(e -> {
+            if (serviceTypeComboBox.getSelectedIndex() == 0){
+                prices.get(0)[0] = newPriceField.getText();
+                currentPriceLabel.setText(prices.get(0)[0]);
+            } else{
+                prices.get(1)[0] = newPriceField.getText();
+                currentPriceLabel.setText(prices.get(1)[0]);
+            }
+
+            FileHandler.write(filename, prices, false);
+
+            JOptionPane.showMessageDialog(this, "New price saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        cancelButton.addActionListener(e -> {
+            newPriceField.setText("0.00");
+        });
 
     }
 }

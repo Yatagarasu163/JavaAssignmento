@@ -4,7 +4,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
 
 import panes.Manager.components.AccountsPanelListener;
@@ -13,9 +14,13 @@ import components.FloatingButton;
 import components.FloatingTextField;
 import config.UIConfig;
 import components.TextLabel;
+import IO.FileHandler;
 
 public class ManagerAccountsList extends JPanel{
     private AccountsPanelListener listener;
+    private String filename = "Users.txt";
+    private String[] columns = {"User ID", "User Name", "Date Joined", "Details"};
+    private FeedbackTable userTable;
 
     public ManagerAccountsList(AccountsPanelListener listener) {
         setLayout(new BorderLayout());
@@ -75,9 +80,7 @@ public class ManagerAccountsList extends JPanel{
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.X_AXIS));
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
 
-        String[] columns = {"User ID", "User Name", "Date Joined", "Details"};
-        Object[][] data = {{"CS123456", "Hao Ni Ma", "11/9/2001", "View"}, 
-                    {"CS124567", "Bin Laden", "12/9/2001", "View"}};
+        Object[][] data = getAccounts();
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columns){
             @Override
@@ -86,7 +89,7 @@ public class ManagerAccountsList extends JPanel{
             }
         };
 
-        FeedbackTable userTable = new FeedbackTable(tableModel);
+        userTable = new FeedbackTable(tableModel);
         userTable.getColumn("Details").setCellRenderer(new ButtonRenderer());
         userTable.getColumn("Details").setCellEditor(new ButtonEditor(new JCheckBox(), listener));
         userTable.setBackground(UIConfig.mainForeground);
@@ -109,6 +112,31 @@ public class ManagerAccountsList extends JPanel{
         });
     }
 
+    public String[][] getAccounts(){
+        List<String[]> accounts = FileHandler.read(filename);
+
+        List<String[]> cleanedAccounts = new ArrayList<>();
+        if (accounts.size() > 0) {
+            for (String[] account : accounts){
+                String[] arr = {account[0], account[3], account[9], "View"};
+                cleanedAccounts.add(arr);
+            }
+        }
+        String[][] array = cleanedAccounts.toArray(new String[0][]);
+
+        return array;
+    }
+
+    public void updateAccounts() {
+        DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+
+        model.setRowCount(0);
+
+        String[][] accounts = getAccounts();
+        for (String[] row : accounts) {
+            model.addRow(row);
+        }
+    }
 
     class ButtonRenderer extends JButton implements TableCellRenderer{
         public ButtonRenderer(){

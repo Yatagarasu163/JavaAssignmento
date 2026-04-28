@@ -38,6 +38,8 @@ public class ManagerMainAccountPage extends JPanel implements AccountsPanelListe
 
     public void onBackToList(){
         cardLayout.show(this, "LIST");
+
+        listPage.updateAccounts();
     }
 
     public void toCreateUser(){

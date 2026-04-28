@@ -1,4 +1,4 @@
-package panes.Manager;
+package panes.CounterStaff;
 
 import java.awt.*;
 import javax.swing.*;
@@ -17,10 +17,12 @@ import components.FloatingButton;
 import components.FloatingComboBox;
 import userClass.User;
 import IO.FileHandler;
+import panes.CounterStaff.components.CustomerPanelListener;
 
-public class ManagerCreateAccountPane extends JPanel {
 
-    private AccountsPanelListener listener;
+public class CounterStaffCreateCustomerPane extends JPanel{
+    
+    private CustomerPanelListener listener;
     private FloatingTextField userIDTxtField;
     private FloatingTextField firstNameTxtField;
     private FloatingTextField lastNameTxtField;
@@ -32,7 +34,7 @@ public class ManagerCreateAccountPane extends JPanel {
     private FloatingTextField addressTxtField;
     private String filename = "Users.txt";
 
-    public ManagerCreateAccountPane(AccountsPanelListener listener) {
+    public CounterStaffCreateCustomerPane(CustomerPanelListener listener){
         this.listener = listener; 
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -72,6 +74,7 @@ public class ManagerCreateAccountPane extends JPanel {
         //Declares floating text fields for left columns
         userIDTxtField = new FloatingTextField("Auto Generated User ID");
         userIDTxtField.setEditable(false);
+        userIDTxtField.setText(generateNewID(filename, "CT"));
         firstNameTxtField = new FloatingTextField("First Name");
         lastNameTxtField = new FloatingTextField("Last Name");
         usernameTxtField = new FloatingTextField("Username");
@@ -92,17 +95,12 @@ public class ManagerCreateAccountPane extends JPanel {
 
 
         //Declares input fields for the right columns
-        String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
-        titleComboBox = new FloatingComboBox<>(options, 2);
-        titleComboBox.setSelectedIndex(0);
         emailTxtField = new FloatingTextField("Email");
         contactNumberTxtField = new FloatingTextField("Contact Number");
         passwordTxtField = new FloatingPasswordField("Password");
 
+         
         //Adds the text fields with their label text to the right column.
-        rightColumn.add(createField("Title", titleComboBox));
-        rightColumn.add(Box.createVerticalStrut(vgap));
-
         rightColumn.add(createField("Email", emailTxtField));
         rightColumn.add(Box.createVerticalStrut(vgap));
 
@@ -148,8 +146,6 @@ public class ManagerCreateAccountPane extends JPanel {
 
         createBtn.addActionListener(e -> {
             User user = new User();
-            int roleIndex = titleComboBox.getSelectedIndex();
-            String[] rolesPrefix = {"M", "CS", "T", "CT"}; 
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String formattedDate = today.format(formatter);
@@ -158,14 +154,14 @@ public class ManagerCreateAccountPane extends JPanel {
             user.firstName = firstNameTxtField.getText();
             user.lastName = lastNameTxtField.getText();
             user.username = usernameTxtField.getText();
-            user.role = (String) titleComboBox.getSelectedItem();
+            user.role = "Customer";
             user.email = emailTxtField.getText();
             user.contact = contactNumberTxtField.getText();
             user.password = new String(passwordTxtField.getPassword());
             user.address = addressTxtField.getText();
             user.dateJoined = formattedDate;
 
-            String newID = generateNewID(filename, rolesPrefix[roleIndex]);
+            String newID = generateNewID(filename, "CT");
 
             String[] userDetails = user.getDetails();
             List<String[]> inputUser = new ArrayList<>();
@@ -180,13 +176,6 @@ public class ManagerCreateAccountPane extends JPanel {
 
         cancelBtn.addActionListener(e -> {
             listener.onBackToList();
-        });
-
-        titleComboBox.addActionListener(e -> {
-            int roleIndex = titleComboBox.getSelectedIndex();
-            String[] rolesPrefix = {"M", "CS", "T", "CT"};
-
-            userIDTxtField.setText(generateNewID(filename, rolesPrefix[roleIndex]));
         });
 
     }
@@ -236,4 +225,5 @@ public class ManagerCreateAccountPane extends JPanel {
 
         return panel;
     }
-}
+
+    }

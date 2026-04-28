@@ -13,6 +13,8 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
     private CardLayout cardLayout = new CardLayout();
     private CounterStaffCustomerList customerListPane;
     private CounterStaffCustomerDetailsPane detailsPane;
+    private CounterStaffCreateCustomerPane createPane;
+    private CounterStaffAddVehiclePane vehiclePane;
 
     public CounterStaffMainCustomerPane() {
         setBackground(Color.WHITE);
@@ -21,9 +23,13 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
     
         customerListPane = new CounterStaffCustomerList(this);
         detailsPane = new CounterStaffCustomerDetailsPane(this);
+        createPane = new CounterStaffCreateCustomerPane(this);
+        vehiclePane = new CounterStaffAddVehiclePane(this);
         
         add(customerListPane, "LIST");
         add(detailsPane, "DETAILS");
+        add(createPane, "CREATE");
+        add(vehiclePane, "VEHICLE");
         cardLayout.show(this, "LIST");
     }
 
@@ -33,6 +39,16 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
         detailsPane.loadCustomer(customerID);
 
         cardLayout.show(this, "DETAILS");
+    }
+
+    public void onCreateCustomer(){
+        System.out.println("wtfgng");
+        cardLayout.show(this, "CREATE");
+    }
+
+    public void onAddVehicle(String customerID){
+        vehiclePane.loadCustomer(customerID);
+        cardLayout.show(this, "VEHICLE");
     }
 
     @Override

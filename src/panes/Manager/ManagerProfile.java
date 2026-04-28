@@ -3,13 +3,18 @@ package panes.Manager;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
+import java.util.List;
 
+import IO.FileHandler;
 import components.FloatingButton;
 import config.UIConfig;
 
 public class ManagerProfile extends JPanel{
 
     private int componentSpace = 10;
+    private List<String[]> rawData = FileHandler.read("CurrentUser.txt");
+    private String[] userData = rawData.get(0);
+    private static final String filename = "Users.txt";
 
     private JPanel buttonPanel = new JPanel();
     private JTextField nameField, phoneField, addressField; // Editable
@@ -62,12 +67,12 @@ public class ManagerProfile extends JPanel{
         detailsCard.setLayout(new BoxLayout(detailsCard, BoxLayout.Y_AXIS));
 
 
-        idField = createReadOnlyField("CS123456");
-        nameField = createReadOnlyField("Hao Ni Ma");
-        emailField = createReadOnlyField("haonima@gmail.com");
-        phoneField = createReadOnlyField("+6012234402");
-        dateField = createReadOnlyField("5/5/2005");
-        addressField = createReadOnlyField("5, Lasnf, 12342, Jln.Chao, Ni Ma, China");
+        idField = createReadOnlyField(userData[0]);
+        nameField = createReadOnlyField(userData[3]);
+        emailField = createReadOnlyField(userData[5]);
+        phoneField = createReadOnlyField(userData[6]);
+        dateField = createReadOnlyField(userData[9]);
+        addressField = createReadOnlyField(userData[8]);
 
         JPanel topDetailsPanel = new JPanel();
         topDetailsPanel.setOpaque(false);
@@ -174,11 +179,30 @@ public class ManagerProfile extends JPanel{
             cardLayout.show(buttonPanel, "UPDATE");
 
             if(isSaving){
-                // Foo
-            } else {
-                // Un foo
-            }
+                String id = userData[0];
+                String name = nameField.getText();
+                String phone = phoneField.getText();
+                String address = addressField.getText();
+                List<String[]> accounts = FileHandler.read(filename);
+                for (String[] account: accounts){
+                    if(account[0].equalsIgnoreCase(id)){
+                        account[3] = name;
+                        account[6] = phone;
+                        account[8] = address;
+                        rawData.set(0, account);
 
+                        nameField.setText(name);
+                        phoneField.setText(phone);
+                        addressField.setText(address);
+
+                        FileHandler.write("CurrentUser.txt", rawData, false);
+                        JOptionPane.showMessageDialog(this, "Details saved!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                }
+
+                FileHandler.write(filename, accounts, false);
+            }
             disableField(nameField);
             disableField(phoneField);
             disableField(addressField);

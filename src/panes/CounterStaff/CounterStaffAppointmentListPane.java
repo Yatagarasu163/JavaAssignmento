@@ -9,10 +9,33 @@ import config.UIConfig;
 import panes.CounterStaff.components.AppointmentBox;
 import panes.CounterStaff.components.AppointmentPanelListener;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import IO.FileHandler;
+
 public class CounterStaffAppointmentListPane extends JPanel{
     private AppointmentPanelListener listener;
+    private List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+    private List<String[]> users = FileHandler.read(FileHandler.users);
+
 
     public CounterStaffAppointmentListPane(AppointmentPanelListener listener) {
+
+        List<String[]> technicians = new ArrayList<>();
+        for (String[] user : users){
+            if (user[0].startsWith("T")){
+                technicians.add(user);
+            }
+        }
+
+        Set<String> selectedTechnicians = new HashSet<>();
+        for (String[] appointment : appointments){
+            selectedTechnicians.add(appointment[6]);
+        } 
+
         this.listener = listener;
 
         setLayout(new BorderLayout(20, 40));
@@ -39,8 +62,14 @@ public class CounterStaffAppointmentListPane extends JPanel{
         JPanel middlePanel = new JPanel();
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
         middlePanel.setBackground(UIConfig.mainForeground);
-        AppointmentBox testBox = new AppointmentBox("Timmy");
-        middlePanel.add(testBox);
+        //Loop through the amount of technicians and make the appointment boxes here.        
+        for (String technicianID : selectedTechnicians){
+            AppointmentBox appointmentBox = new AppointmentBox(technicianID);
+            middlePanel.add(appointmentBox);
+            middlePanel.add(Box.createVerticalStrut(30));
+        }
+
+
         JScrollPane scrollPane = new JScrollPane(middlePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
