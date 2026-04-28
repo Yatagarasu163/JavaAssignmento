@@ -2,6 +2,7 @@ package panes.Customer;
 
 import components.FloatingButton;
 import java.awt.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -18,11 +19,29 @@ public class CustomerProfilePane extends JPanel {
     private boolean isEditing = false;
     private FloatingButton updateBtn;
 
-    public CustomerProfilePane(String name, String id, String email, String date, String phone, String address) {
+    private String loggedInCustomerID;
+
+    public CustomerProfilePane(String id) {
+        this.loggedInCustomerID = id;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
+        String name = "Not found", email = "Not found", date = "Not found", phone = "Not found", address = "Not found";
+
+        List<String[]> CustomerList = IO.FileHandler.read("Customer.txt");
+
+        for (String[] row: CustomerList){
+            if (row[0].equals(loggedInCustomerID)){
+                name = row[1];
+                date = row[2];
+                address = row [3];
+                phone = row[4];
+                email = row[5];
+                break;
+            }
+        }
         // --- PART 1: USER PROFILE ICON ---
         // Using a large Unicode character as a placeholder for the avatar
         JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
@@ -143,7 +162,43 @@ public class CustomerProfilePane extends JPanel {
             disableField(addressField);
 
             // TODO: Add your logic here to save the new data to your file/database!
-            System.out.println("Saving new name: " + nameField.getText());
+            saveUpdatedProfileData();
+        }
+    }
+
+    private void saveUpdatedProfileData() {
+        try {
+            List<String[]> CustomerList = IO.FileHandler.read("Customer.txt");
+            boolean dataUpdated = false;
+
+            for (int i = 0; i < CustomerList.size(); i++) {
+                String[] row = CustomerList.get(i);
+
+                if (row[0].equals(loggedInCustomerID)) {
+                    row[1] = nameField.getText().trim();
+                    row[3] = addressField.getText().trim();
+                    row[4] = phoneField.getText().trim();
+
+                    dataUpdated = true;
+                    break;
+                }
+            }
+
+            if (dataUpdated) {
+                IO.FileHandler.write("Customer.txt", CustomerList, false);
+                JOptionPane.showMessageDialog(this,
+                        "Profile successfully updated!",
+                        "Update Complete",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Failed to save profile updates.");
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "An error occurred while saving your profile.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
