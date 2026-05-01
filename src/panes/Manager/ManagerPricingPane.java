@@ -19,10 +19,37 @@ public class ManagerPricingPane extends JPanel{
     private TextLabel currentPriceLabel;
     private FloatingTextField newPriceField;
     private List<String[]> prices = FileHandler.read(filename);
-    private String normalPrice = prices.get(0)[0];
-    private String majorPrice = prices.get(1)[0];
+    private List<String[]> normalPrices;
+    private List<String[]> majorPrices;
+    private String[] options; 
 
     public ManagerPricingPane() {
+
+        normalPrices = new ArrayList<>();
+        majorPrices = new ArrayList<>();
+
+        for(String[] price : prices){
+            if (price[2].equalsIgnoreCase("N")){
+                normalPrices.add(price);
+            } else if (price[2].equalsIgnoreCase("M")){
+                majorPrices.add(price);
+            }
+        }
+
+        List<String> normalPricesList = new ArrayList<>();
+        for(String[] price : normalPrices){
+            normalPricesList.add(price[1]);
+        }
+        String[] normalPricesStrings = normalPricesList.toArray(new String[0]);
+
+        List<String> majorPricesList = new ArrayList<>();
+        for(String[] price : majorPrices){
+            majorPricesList.add(price[1]);
+        }
+        String[] majorPricesStrings = majorPricesList.toArray(new String[0]);
+
+        options = normalPricesStrings;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -36,18 +63,22 @@ public class ManagerPricingPane extends JPanel{
 
         //Create form panel
         JPanel formPanel = new JPanel();
-        formPanel.setLayout(new GridLayout(3, 2, 30, 10));
+        formPanel.setLayout(new GridLayout(4, 2, 30, 10));
         formPanel.setOpaque(false);
 
         //Sets the input fields
-        String[] options = {"Normal service type", "Major service type"};
-        FloatingComboBox<String> serviceTypeComboBox = new FloatingComboBox<>(options);
+        String[] priceOptions = {"Normal service type", "Major service type"};
+        FloatingComboBox<String> serviceTypeComboBox = new FloatingComboBox<>(priceOptions);
+        FloatingComboBox<String> priceTypeComboBox = new FloatingComboBox<>(options);
         newPriceField = new FloatingTextField("New Price");
         currentPriceLabel = new TextLabel(String.format("RM%.2f", currentPrice));
+        
 
         //Adds content to the new formPanel
         formPanel.add(new TextLabel("Service type: "));
         formPanel.add(serviceTypeComboBox);
+        formPanel.add(new TextLabel("Service: "));
+        formPanel.add(priceTypeComboBox);
         formPanel.add(new TextLabel("Current Price: "));
         formPanel.add(currentPriceLabel);
         formPanel.add(new TextLabel("New Price: "));
@@ -66,27 +97,54 @@ public class ManagerPricingPane extends JPanel{
         add(cancelButton);
 
         serviceTypeComboBox.addActionListener(e -> {
-            prices = FileHandler.read(filename);
-            normalPrice = prices.get(0)[0];
-            majorPrice = prices.get(1)[0];
+            Integer selectedIndex = (int) serviceTypeComboBox.getSelectedIndex();
 
-
-            if (serviceTypeComboBox.getSelectedIndex() == 0){
-                currentPrice = Double.parseDouble(normalPrice);
-            } else{
-                currentPrice = Double.parseDouble(majorPrice);
+            if(selectedIndex == 0){
+                priceTypeComboBox.removeAllItems();
+                for(String name : normalPricesStrings){
+                    priceTypeComboBox.addItem(name);
+                }
+            } else {
+                priceTypeComboBox.removeAllItems();
+                for(String name : majorPricesStrings) {
+                    priceTypeComboBox.addItem(name);
+                }
             }
-            currentPriceLabel.setText(String.format("RM%.2f", currentPrice));
+            
+            newPriceField.setText("");
+        });
+
+        priceTypeComboBox.addActionListener(e -> {
+            Integer selectedIndex = (int) serviceTypeComboBox.getSelectedIndex();
+            Integer selectedPriceType = (int) priceTypeComboBox.getSelectedIndex();
+            if(selectedIndex == 0){
+                double selectedPrice = Double.parseDouble(prices.get(selectedPriceType)[3]);
+                currentPriceLabel.setText(String.format("RM%.2f", selectedPrice));
+            } else{
+                double selectedPrice = Double.parseDouble(prices.get(selectedPriceType + 6)[3]);
+                currentPriceLabel.setText(String.format("RM%.2f", selectedPrice));
+            }
+
+            newPriceField.setText("");
         });
 
         updateButton.addActionListener(e -> {
-            if (serviceTypeComboBox.getSelectedIndex() == 0){
-                prices.get(0)[0] = newPriceField.getText();
-                currentPriceLabel.setText(prices.get(0)[0]);
-            } else{
-                prices.get(1)[0] = newPriceField.getText();
-                currentPriceLabel.setText(prices.get(1)[0]);
+            double newPrice = parsePrice(newPriceField.getText());
+            Integer serviceTypeIndex = serviceTypeComboBox.getSelectedIndex();
+            Integer priceTypeIndex = priceTypeComboBox.getSelectedIndex();
+
+            if(newPrice <= 0){
+                JOptionPane.showMessageDialog(this, "Invalid price input!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            
+            if(serviceTypeIndex == 0){
+                prices.get(priceTypeIndex)[3] = String.format("%.2f", newPrice);
+            } else{
+                prices.get(priceTypeIndex + normalPricesList.size())[3] = String.format("%.2f", newPrice);
+            }
+
+            currentPriceLabel.setText(String.format("RM%.2f", newPrice));
 
             FileHandler.write(filename, prices, false);
 
@@ -98,4 +156,17 @@ public class ManagerPricingPane extends JPanel{
         });
 
     }
+
+    private static double parsePrice(String input) {
+    if (input == null || input.isEmpty()) return 0.0;
+
+    // Remove everything except digits and decimal point
+    String cleaned = input.replaceAll("[^0-9.]", "");
+
+    try {
+        return Double.parseDouble(cleaned);
+    } catch (NumberFormatException e) {
+        return 0.0; // or throw error / show message
+    }
+}
 }

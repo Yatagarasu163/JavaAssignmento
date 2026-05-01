@@ -10,6 +10,7 @@ import panes.CounterStaff.components.PaymentListener;
 import components.FloatingButton;
 import config.UIConfig;
 import components.TextLabel;
+import IO.FileHandler;
 
 public class CounterStaffPaymentDetails extends JPanel{
 
@@ -21,8 +22,17 @@ public class CounterStaffPaymentDetails extends JPanel{
     private List<String[]> services = new ArrayList<>(); //{service + price}
     private String totalAmount;
     private String payAmount; 
+    private TextLabel cusNameLbl;
+    private TextLabel appointmentDateLbl;
+    private TextLabel plateLbl;
+    private TextLabel typeLbl;
+    private TextLabel totalLbl;
+    private TextLabel payLbl;
+    private JPanel servicesPanel;
+    private String paymentID;
 
     public CounterStaffPaymentDetails(PaymentListener listener) {
+        
             this.listener = listener;
            
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -31,11 +41,11 @@ public class CounterStaffPaymentDetails extends JPanel{
             
             JPanel topPanel = new JPanel();
             topPanel.setOpaque(false);
-            topPanel.setLayout(new BorderLayout(10, 10));
-            FloatingButton backButton = new FloatingButton("Back");
-            topPanel.add(backButton, BorderLayout.WEST);
+            topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            FloatingButton backButton = new FloatingButton("Back", 20);
+            topPanel.add(backButton);
             add(topPanel);
-            add(Box.createVerticalStrut(50));
+            add(Box.createVerticalStrut(10));
 
             JPanel middlePanel = new JPanel();
             middlePanel.setOpaque(false);
@@ -48,22 +58,22 @@ public class CounterStaffPaymentDetails extends JPanel{
             middleTopPanel.setOpaque(false);
             middleTopPanel.setLayout(new GridLayout(2, 4));
             TextLabel cusNameTxt = new TextLabel("Customer Name: ");
-            TextLabel cusNameLbl = new TextLabel(cusName);
+            cusNameLbl = new TextLabel(cusName);
             middleTopPanel.add(cusNameTxt);
             middleTopPanel.add(cusNameLbl);
 
             TextLabel appointmentDateTxt = new TextLabel("Appoinment Date: ");
-            TextLabel appointmentDateLbl = new TextLabel(appointmentDate);
+            appointmentDateLbl = new TextLabel(appointmentDate);
             middleTopPanel.add(appointmentDateTxt);
             middleTopPanel.add(appointmentDateLbl);
 
             TextLabel plateTxt = new TextLabel("Car Plate Number: ");
-            TextLabel plateLbl = new TextLabel(carPlate);
+            plateLbl = new TextLabel(carPlate);
             middleTopPanel.add(plateTxt);
             middleTopPanel.add(plateLbl);
 
             TextLabel typeTxt = new TextLabel("Service Type: ");
-            TextLabel typeLbl = new TextLabel(serviceType);
+            typeLbl = new TextLabel(serviceType);
             middleTopPanel.add(typeTxt);
             middleTopPanel.add(typeLbl);
             middlePanel.add(middleTopPanel);
@@ -78,14 +88,21 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(servicesTitle);
             middlePanel.add(Box.createVerticalStrut(10));
 
-            for (String[] service: services) {
-                middlePanel.add(createServiceRow(service[0], service[1]));
-                middlePanel.add(Box.createVerticalStrut(5));
-            }
+
+            servicesPanel = new JPanel();
+            servicesPanel.setOpaque(false);
+            servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
+            middlePanel.add(servicesPanel);
+
+
+            // for (String[] service: services) {
+            //     middlePanel.add(createServiceRow(service[0], service[1]));
+            //     middlePanel.add(Box.createVerticalStrut(5));
+            // }
 
             middlePanel.add(Box.createVerticalStrut(20));
 
-            TextLabel totalLbl = new TextLabel("Total Amount: " + totalAmount);
+            totalLbl = new TextLabel("Total Amount: " + totalAmount);
             totalLbl.setFontType(Font.BOLD);
             totalLbl.setFontSize(16);
             totalLbl.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -95,7 +112,7 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(new JSeparator());
             middlePanel.add(Box.createVerticalStrut(10));
 
-            TextLabel payLbl = new TextLabel("Pay: " + payAmount);
+            payLbl = new TextLabel("Pay: " + payAmount);
             payLbl.setFontType(Font.BOLD);
             payLbl.setFontSize(16);
             payLbl.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -112,11 +129,23 @@ public class CounterStaffPaymentDetails extends JPanel{
             add(bottomPanel);
 
             payBtn.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Payment Status", "Payment made successfully!", JOptionPane.INFORMATION_MESSAGE);
+                List<String[]> payments = FileHandler.read(FileHandler.payment);
+                for (String[] payment : payments){
+                    if(payment[0].equalsIgnoreCase(paymentID)){
+                        payment[6] = "Paid";
+                        break;
+                    }
+                }
+
+                FileHandler.write(FileHandler.payment, payments, false);
+                JOptionPane.showMessageDialog(this, "Payment made successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
                 listener.onBackToList();
             });
 
-
+            backButton.addActionListener(e -> {
+                listener.onBackToList();
+            });
 
 
     }
@@ -137,14 +166,95 @@ public class CounterStaffPaymentDetails extends JPanel{
 
     public void loadPayment(String paymentID){
         if(paymentID != null){
-            //Read data from file handler here and handle the output
-            cusName = "Sum Ting Wong";
-            carPlate = "ABC 1234";
-            appointmentDate = "23 Feb 2026";
-            serviceType = "Major Service";
-            services = new ArrayList<>(List.of(new String[]{"Brake Plate Replacement", "RM3,500.00"}, new String[]{"Fluid Check", "RM9,500.00"}, new String[]{"Oil Filter Replacement", "RM 1,500.00"}));
-            totalAmount = "RM16,200.00";
+            this.paymentID = paymentID;
+
+            List<String[]> payments = FileHandler.read(FileHandler.payment);
+            String[] selectedPayment = null;
+            for (String[] payment : payments){
+                if (payment[0].equalsIgnoreCase(paymentID)){
+                    selectedPayment = payment;
+                    break;
+                }
+            } 
+            String customerID = "";
+            String vehicleID = selectedPayment[4];
+            String appointmentID = selectedPayment[5];
+            if(selectedPayment.length > 0){
+                customerID = selectedPayment[3];
+            } else{
+               listener.onBackToList(); 
+            }
+
+            List<String[]> users = FileHandler.read(FileHandler.users);
+            String[] selectedUser = null;
+            for (String[] user : users){
+                if (user[0].equalsIgnoreCase(customerID)){
+                    selectedUser = user;
+                    break;
+                }
+            }
+            
+            List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
+            String[] selectedVehicle = null;
+            for(String[] vehicle : vehicles) {
+                if(vehicle[0].equalsIgnoreCase(vehicleID)){
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+            
+            List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+            String[] selectedAppointment = null;
+            for(String[] appointment : appointments){
+                if(appointment[0].equalsIgnoreCase(appointmentID)){
+                    selectedAppointment = appointment;
+                    break;
+                }
+            }
+            String[] selectedServices = selectedAppointment[3].split(",");
+            List<String[]> prices = FileHandler.read(FileHandler.prices);
+            List<String[]> compiledServices = new ArrayList<>();
+            double total = 0.00;
+            for(String service : selectedServices){
+                for (String[] price : prices){
+                    if (price[1].equalsIgnoreCase(service)){
+                        double priceValue = Double.parseDouble(price[3]);
+                        compiledServices.add(new String[]{service, String.format("%.2f", priceValue)});
+                        total += priceValue;
+                        break;
+                    }
+                }
+            }
+            
+            cusName = selectedUser[1] + " " + selectedUser[2];
+            carPlate = selectedVehicle[1];
+            appointmentDate = selectedAppointment[5];
+            serviceType = selectedAppointment[2];
+            services = compiledServices;
+            totalAmount = String.format("%.2f", total);
             payAmount = totalAmount;
+
+            // Update labels
+            cusNameLbl.setText(cusName);
+            appointmentDateLbl.setText(appointmentDate);
+            plateLbl.setText(carPlate);
+            typeLbl.setText(serviceType);
+
+            totalLbl.setText("Total Amount: RM" + totalAmount);
+            payLbl.setText("Pay: RM" + payAmount);
+
+            // Update services list
+            servicesPanel.removeAll();
+
+            for (String[] service : services) {
+                servicesPanel.add(createServiceRow(service[0], "RM" + service[1]));
+                servicesPanel.add(Box.createVerticalStrut(5));
+            }
+
+            // Refresh UI
+            servicesPanel.revalidate();
+            servicesPanel.repaint();
+            
         } else{
             listener.onBackToList();
         }

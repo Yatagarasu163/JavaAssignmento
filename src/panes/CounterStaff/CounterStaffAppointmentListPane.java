@@ -3,6 +3,7 @@ package panes.CounterStaff;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.awt.event.*;
 import components.TextLabel;
 import components.FloatingButton;
 import config.UIConfig;
@@ -20,7 +21,7 @@ public class CounterStaffAppointmentListPane extends JPanel{
     private AppointmentPanelListener listener;
     private List<String[]> appointments = FileHandler.read(FileHandler.appointments);
     private List<String[]> users = FileHandler.read(FileHandler.users);
-
+    private JPanel middlePanel;
 
     public CounterStaffAppointmentListPane(AppointmentPanelListener listener) {
 
@@ -59,15 +60,20 @@ public class CounterStaffAppointmentListPane extends JPanel{
         topPanel.add(labelText, BorderLayout.WEST);
         topPanel.add(addAppointmentBtn, BorderLayout.EAST);
     
-        JPanel middlePanel = new JPanel();
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-        middlePanel.setBackground(UIConfig.mainForeground);
-        //Loop through the amount of technicians and make the appointment boxes here.        
-        for (String technicianID : selectedTechnicians){
-            AppointmentBox appointmentBox = new AppointmentBox(technicianID);
-            middlePanel.add(appointmentBox);
-            middlePanel.add(Box.createVerticalStrut(30));
-        }
+        middlePanel = new JPanel();
+        loadAppointments();
+
+        Timer timer = new Timer(3000, e -> loadAppointments());
+
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                if (isShowing()) {
+                    timer.start();
+                } else {
+                    timer.stop();
+                }
+            }
+        });
 
 
         JScrollPane scrollPane = new JScrollPane(middlePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -84,4 +90,24 @@ public class CounterStaffAppointmentListPane extends JPanel{
             listener.onCreateAppointment();
         });
     }   
+
+    private void loadAppointments() {
+        middlePanel.removeAll();
+
+        List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+
+        Set<String> selectedTechnicians = new HashSet<>();
+        for (String[] appointment : appointments){
+            selectedTechnicians.add(appointment[6]);
+        }
+
+        for (String technicianID : selectedTechnicians){
+            AppointmentBox box = new AppointmentBox(technicianID);
+            middlePanel.add(box);
+            middlePanel.add(Box.createVerticalStrut(30));
+        }
+
+        middlePanel.revalidate();
+        middlePanel.repaint();
+    }
 }

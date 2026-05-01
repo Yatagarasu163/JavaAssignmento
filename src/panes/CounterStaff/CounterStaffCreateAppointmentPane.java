@@ -31,10 +31,24 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
     private String vehicleModel = "Perodua Myvi"; //CHANGE THIS VALUE LATER
     private String[] vehiclePlateOptions = {"ABC 1234"}; //CHANGE THIS VALUE LATER
     private String[] technicianList = {"Ali", "Muthu", "Ah Hock"};
+    private List<String[]> prices = FileHandler.read("Price.txt");
+    private List<String[]> normalPriceList;
+    private List<String[]> majorPriceList;
 
 
     public CounterStaffCreateAppointmentPane(AppointmentPanelListener listener){
         this.listener = listener;
+
+        normalPriceList = new ArrayList<>();
+        majorPriceList = new ArrayList<>();
+
+        for(String[] price : prices){
+            if(price[2].equalsIgnoreCase("N")){
+                normalPriceList.add(price);
+            } else if (price[2].equalsIgnoreCase("M")){
+                majorPriceList.add(price);
+            }
+        }
 
         List<String> customerIDs = new ArrayList<>();
         for(String[] account : accounts){
@@ -184,23 +198,17 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         normalServPanel.setOpaque(false);
         normalServPanel.setLayout(new GridLayout(3, 2, 10, 10));
         normalServPanel.setMaximumSize(new Dimension(700, 100));
-        addCheckBox(normalList, normalServPanel, "Brake Inspection and Adjustment");
-        addCheckBox(normalList, normalServPanel, "Chassis Lubrication");
-        addCheckBox(normalList, normalServPanel, "Carburetor Tuning");
-        addCheckBox(normalList, normalServPanel, "Engine Oil and Filter Change");
-        addCheckBox(normalList, normalServPanel, "Ignition Tune-Up");
-        addCheckBox(normalList, normalServPanel, "Comprehensive Fluid Check");
+        for (String[] price : normalPriceList){
+            addCheckBox(normalList, normalServPanel, price[1]);
+        }
 
         JPanel majorServPanel = new JPanel();
         majorServPanel.setOpaque(false);
         majorServPanel.setLayout(new GridLayout(3, 2, 10, 10));
         majorServPanel.setMaximumSize(new Dimension(700, 100));
-        addCheckBox(majorList, majorServPanel, "Buff out body");
-        addCheckBox(majorList, majorServPanel, "Fix broken windshield");
-        addCheckBox(majorList, majorServPanel, "Wheel Replacement");
-        addCheckBox(majorList, majorServPanel, "Polishing");
-        addCheckBox(majorList, majorServPanel, "Recalibrate steering");
-        addCheckBox(majorList, majorServPanel, "Clean exhaust");
+        for (String[] price : majorPriceList){
+            addCheckBox(majorList, majorServPanel, price[1]);
+        }
 
 
         requestsPanel.add(normalServPanel, "NORMAL");
@@ -265,7 +273,17 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
                     selectedServices.add(cb.getText());
                 }
             }
-            String servicesString = String.join(",", selectedServices);
+            List<String[]> selectedServicesArray = new ArrayList<>();
+            List<String> selectedServicesStrings = new ArrayList<>();
+            for(String service : selectedServices){
+                for(String[] price : normalPriceList){
+                    if (price[1].equalsIgnoreCase(service)){
+                        selectedServicesArray.add(price);
+                        selectedServicesStrings.add(price[0]);
+                    }
+                }
+            }
+            String servicesString = String.join(",", selectedServicesStrings);
 
             int selectedTechnician = techComboBox.getSelectedIndex();
             String technicianID = technicians.get(selectedTechnician)[0];
@@ -287,8 +305,22 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
 
             String[] appointmentArray = {appointmentID, "", selectedServiceType, servicesString, "In Queue", dateString, technicianID, customerID, staffID, selectedVehicle};
             List<String[]> appointmentList = new ArrayList<>();
+            
             appointmentList.add(appointmentArray);
             FileHandler.write("Appointment.txt", appointmentList, true);
+            
+
+            String paymentID = generateNewPaymentID(FileHandler.payment);
+            String totalAmount = "";
+            double total = 0;
+            for (String[] service : selectedServicesArray){
+                total += Double.parseDouble(service[3]);
+            }
+            totalAmount = String.format("%.2f", total);
+            String[] paymentArray = {paymentID, totalAmount, dateString, customerID, selectedVehicle, appointmentID, "Not Paid"}; // Add payment details here
+            List<String[]> paymentList = new ArrayList<>();
+            paymentList.add(paymentArray);
+            FileHandler.write("Payment.txt", paymentList, true);
 
             JOptionPane.showMessageDialog(this, "Appointment added!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
@@ -354,6 +386,36 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         int next = getLatestAppointmentNumber(filename) + 1;
         return "A" + String.format("%06d", next);
     }
+
+
+    public static int getLatestPaymentNumber(String filename){
+        int max = 0;
+
+        List<String[]> data = FileHandler.read(filename);
+
+        for(String[] row : data){
+            if(row.length > 0 && row[0].startsWith("PY")){
+                try{
+                    String numberPart = row[0].substring(2);
+                    int num = Integer.parseInt(numberPart);
+
+                    if (num > max){
+                        max = num;
+                    }
+                } catch(NumberFormatException e){
+                    System.err.println("Invalid payment ID: " + row[0]);
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public static String generateNewPaymentID(String filename) {
+        int next = getLatestPaymentNumber(filename) + 1;
+        return "PY" + String.format("%06d", next);
+    }
+
 
 
     private TextLabel createTxtLabel(String label){

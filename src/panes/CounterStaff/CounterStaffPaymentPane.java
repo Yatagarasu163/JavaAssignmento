@@ -5,16 +5,23 @@ import java.awt.*;
 import javax.swing.border.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.TextLabel;
 import config.UIConfig;
 import components.FloatingComboBox;
 import panes.CounterStaff.components.PaymentListener;
 import components.FeedbackTable;
+import IO.FileHandler;
 
 public class CounterStaffPaymentPane extends JPanel{
 
 	private PaymentListener listener;
+    private Timer timer;
+    private int lastCount = -1;
 
 	public CounterStaffPaymentPane(PaymentListener listener){
 		this.listener = listener;
@@ -22,31 +29,62 @@ public class CounterStaffPaymentPane extends JPanel{
        	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       	setBackground(Color.WHITE);
        	setBorder(new EmptyBorder(20, 20, 20, 20));
-		
+
+        timer = new Timer(3000, e -> {
+            List<String[]> payments = FileHandler.read(FileHandler.payment);
+
+            if (payments.size() != lastCount) {
+                    lastCount = payments.size();
+                    loadPayments();
+                }
+        });
+
+        loadPayments();
+        
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                if (isShowing()) {
+                    timer.start();
+                } else {
+                    timer.stop();
+                }
+            }
+        });
+	}
+
+    private void loadPayments(){
+        removeAll();
+
 		JPanel topPanel = new JPanel();
 		topPanel.setOpaque(false);
-		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
+		topPanel.setLayout(new BorderLayout());
 		TextLabel titleLbl = new TextLabel("Payment List");
+        titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLbl.setFontSize(50);
-		topPanel.add(titleLbl);
+		topPanel.add(titleLbl, BorderLayout.CENTER);
 		add(topPanel);
-		add(Box.createVerticalStrut(50));
+		add(Box.createVerticalStrut(10));
 
 		mainPanel middlePanel = new mainPanel();
 		middlePanel.setBackground(UIConfig.mainBackground);
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+        middlePanel.setLayout(new BorderLayout(20,20));
 
         JPanel filtersPanel = new JPanel();
         filtersPanel.setOpaque(false);
-        filtersPanel.setLayout(new GridLayout(1, 4));
+        filtersPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
         TextLabel serviceType = new TextLabel("Service Type: ");
         serviceType.setFontType(Font.BOLD);
         serviceType.setForeground(Color.WHITE);
         filtersPanel.add(serviceType);
 
+        Dimension fixed = new Dimension(200, 40);
+
+
         String[] options = {"Normal", "Major"};
         FloatingComboBox<String> typeComboBox = new FloatingComboBox<>(options);
+        typeComboBox.setPreferredSize(fixed);
+        typeComboBox.setMaximumSize(fixed);
         filtersPanel.add(typeComboBox);
 
         TextLabel statusTxt = new TextLabel("Status: ");
@@ -56,27 +94,33 @@ public class CounterStaffPaymentPane extends JPanel{
 
         String[] options2 = {"Paid", "Not Paid"};
         FloatingComboBox<String> statusBox = new FloatingComboBox<>(options2);
+        statusBox.setPreferredSize(fixed);
+        statusBox.setMaximumSize(fixed);
         filtersPanel.add(statusBox); 
 
-        middlePanel.add(filtersPanel);
-        middlePanel.add(Box.createVerticalStrut(20));
+        middlePanel.add(filtersPanel, BorderLayout.NORTH);
 
-        JPanel tablePanel = new JPanel();
-        tablePanel.setOpaque(false);
-        String[][] data = {{"P000001","13/1/2026", "ABC 1234", "Major Service", "Not Paid", "Pay"}};
+        String[][] data = getPayments();
         String[] columns = {"Payment ID", "Date", "Car Plate", "Service Type", "Status", "Details"};
-        FeedbackTable paymentTable = new FeedbackTable(data, columns);
+        DefaultTableModel model = new DefaultTableModel(data, columns){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return column == 5;
+            }
+        };
+        FeedbackTable paymentTable = new FeedbackTable(model);
         paymentTable.getColumn("Details").setCellRenderer(new ButtonRenderer());
         paymentTable.getColumn("Details").setCellEditor(new ButtonEditor(new JCheckBox(), listener));
+        paymentTable.setBackground(UIConfig.mainForeground);
+        paymentTable.setForeground(UIConfig.mainBackground);
+        paymentTable.setFillsViewportHeight(true);
 
         JScrollPane scrollPane = new JScrollPane(paymentTable);
-        scrollPane.setPreferredSize(new Dimension(600, 200));
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 400));
         scrollPane.setBackground(Color.WHITE);
         scrollPane.getViewport().setBackground(Color.WHITE);
 
-        tablePanel.add(scrollPane);
-        middlePanel.add(tablePanel);
+        middlePanel.add(scrollPane, BorderLayout.CENTER);
         add(middlePanel);
 
 
@@ -87,7 +131,47 @@ public class CounterStaffPaymentPane extends JPanel{
         statusBox.addActionListener(e -> {
 
         });
-	}
+
+        revalidate();
+        repaint();
+    }
+
+    private String[][] getPayments(){
+        List<String[]> paymentList = FileHandler.read(FileHandler.payment);
+        List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
+        List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+        List<String[]> payments = new ArrayList<>();
+        for (String[] payment : paymentList){
+            String paymentID = payment[0];
+            String date = payment[2];
+            String vehicleID = payment[4];
+            String status = payment[6];
+
+            String carPlate = "";
+
+            String appointmentID = payment[5];
+            String serviceType = "";
+
+            for (String[] vehicle : vehicles){
+                if(vehicle[0].equalsIgnoreCase(vehicleID)){
+                    carPlate = vehicle[1];
+                    break;
+                }
+            }
+                
+            for(String[] appointment : appointments){
+                if(appointment[0].equalsIgnoreCase(appointmentID)){
+                    serviceType = appointment[2];
+                }
+            }
+
+
+            payments.add(new String[]{paymentID, date, carPlate, serviceType, status, "View"});
+        }
+
+        String[][] finalData = payments.toArray(new String[0][]);
+        return finalData;
+    }
 
 	class mainPanel extends JPanel{
 
@@ -119,8 +203,8 @@ public class CounterStaffPaymentPane extends JPanel{
             setFocusPainted(false);
             setBorderPainted(false);
 
-            setBackground(UIConfig.mainBackground);
-            setForeground(UIConfig.mainForeground);
+            setBackground(UIConfig.mainForeground);
+            setForeground(UIConfig.mainBackground);
         }
 
         @Override
@@ -149,18 +233,21 @@ public class CounterStaffPaymentPane extends JPanel{
             button.setOpaque(true);
 
             button.addActionListener(e -> {
-                String paymentID = table.getValueAt(row, 0).toString();
-                String status = table.getValueAt(row, 4).toString();
-                if(listener != null){
-                    if(status == "Paid"){
-                        listener.onViewReceipt(paymentID);
-                    } else if (status == "Not Paid"){
-                        listener.onMakePayment(paymentID);
-                    } else {
-                        listener.onMakePayment(paymentID);
+                fireEditingStopped();
+
+                if (table != null) {
+                    String paymentID = table.getValueAt(row, 0).toString();
+                    String status = table.getValueAt(row, 4).toString();
+                    if(listener != null){
+                        if(status.equalsIgnoreCase("Paid")){
+                            listener.onViewReceipt(paymentID);
+                        } else if (status.equalsIgnoreCase("Not Paid")){
+                            listener.onMakePayment(paymentID);
+                        } else {
+                            listener.onMakePayment(paymentID);
+                        }
                     }
                 }
-                fireEditingStopped();
             });
         }
 

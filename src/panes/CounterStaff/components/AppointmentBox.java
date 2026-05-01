@@ -5,6 +5,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import config.UIConfig;
 import components.TextLabel;
 import IO.FileHandler;
@@ -12,19 +14,55 @@ import IO.FileHandler;
 public class AppointmentBox extends JPanel{
 
     private int radius = 30; 
-    private List<String[]> users = FileHandler.read(FileHandler.users);
-   private List<String[]> appointments = FileHandler.read(FileHandler.appointments);
-    private List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
+    private Timer timer;
+    private String technicianID;
+    private int lastCount = -1;
     
     public AppointmentBox(String technicianID){
+        this.technicianID = technicianID;
 
-        
+        setLayout(new BorderLayout(20, 10));
+        setBackground(UIConfig.mainBackground);
+        setBorder(new EmptyBorder(10, 10, 10, 10));
+        setPreferredSize(new Dimension(0, 250));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+        setOpaque(false);
+    
+        loadAppointments(this.technicianID);
+
+
+        timer = new Timer(3000, e -> {
+            List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+
+            if (appointments.size() != lastCount) {
+                lastCount = appointments.size();
+                loadAppointments(this.technicianID);
+            }
+        });
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                if (isShowing()) {
+                    timer.start();
+                } else {
+                    timer.stop();
+                }
+            }
+        });
+    }
+
+    public void loadAppointments(String technicianID) {
+        removeAll(); // clear UI
+
+        List<String[]> users = FileHandler.read(FileHandler.users);
+        List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+        List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
+
         List<String[]> technician = new ArrayList<>();
         for(String[] user : users){
-           if(user[0].equalsIgnoreCase(technicianID)){
+            if(user[0].equalsIgnoreCase(technicianID)){
                 technician.add(user);
                 break;
-           } 
+            } 
         }
 
         String[] technicianArr = technician.get(0);
@@ -54,64 +92,72 @@ public class AppointmentBox extends JPanel{
         for (String[] appointment : selectedAppointments){
             for (String[] vehicle : selectedVehicles){
                 if(appointment[9].equalsIgnoreCase(vehicle[0])){
-                    queueData.add(new String[]{appointment[5], vehicle[2], vehicle[1], appointment[4]});
-                    // date, car model, plate, status, highlighted;
+                    queueData.add(new String[]{
+                        appointment[5], // date
+                        vehicle[2],     // model
+                        vehicle[1],     // plate
+                        appointment[4]  // status
+                    });
                 }
             }
         }
 
-        // appointments will have {date, car plate, car model, status}
-
+        // --- rebuild UI ---
         setLayout(new BorderLayout(20, 10));
-        setBackground(UIConfig.mainBackground);
-        setBorder(new EmptyBorder(10, 10, 10, 10));
-        setPreferredSize(new Dimension(0, 250));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
-        setOpaque(false);
-        
+
         JPanel topPanel = new JPanel();
         topPanel.setOpaque(false);
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+
         TextLabel PICText = new TextLabel("Person-in-Charge: ");
         PICText.setForeground(Color.WHITE);
+
         PillLabel technicianNameLabel = new PillLabel(technicianArr[1] + " " + technicianArr[2]);
         technicianNameLabel.setForeground(UIConfig.mainBackground);
         technicianNameLabel.setBackground(Color.WHITE);
         technicianNameLabel.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(UIConfig.mainForeground, 2,  true),
+            new LineBorder(UIConfig.mainForeground, 2, true),
             new EmptyBorder(5, 5, 5, 5)
         ));
+
         topPanel.add(PICText);
         topPanel.add(Box.createHorizontalStrut(5));
         topPanel.add(technicianNameLabel);
-
         add(topPanel, BorderLayout.NORTH);
 
         JPanel middlePanel = new JPanel();
         middlePanel.setOpaque(false);
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
-        middlePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        //Add queue cards here
+
         for(int i = 0; i < queueData.size(); i++){
-            QueueCard queueCard;
             String[] queue = queueData.get(i);
-            if(i <= 0){
-                queueCard = new QueueCard(queue[0], queue[1], queue[2], queue[3], true);
-            } else{
-                queueCard = new QueueCard(queue[0], queue[1], queue[2], queue[3], false);
-            }
-            middlePanel.add(queueCard);
-            if(i < (queueData.size() - 1)){
+
+            QueueCard card = new QueueCard(
+                queue[0], queue[1], queue[2], queue[3],
+                i == 0
+            );
+
+            middlePanel.add(card);
+            if(i < queueData.size() - 1){
                 middlePanel.add(Box.createHorizontalStrut(20));
             }
         }
 
-        JScrollPane scrollPanel = new JScrollPane(middlePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPanel = new JScrollPane(
+            middlePanel,
+            JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        );
+
         scrollPanel.setOpaque(false);
         scrollPanel.getViewport().setOpaque(false);
         scrollPanel.setBorder(null);
-        scrollPanel.getHorizontalScrollBar().setUnitIncrement(16);
+
         add(scrollPanel, BorderLayout.CENTER);
+
+        // refresh UI
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -132,4 +178,5 @@ public class AppointmentBox extends JPanel{
         super.paintComponent(g);
         g2.dispose();
     }
+
 }
