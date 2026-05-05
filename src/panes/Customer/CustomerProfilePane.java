@@ -12,9 +12,10 @@ public class CustomerProfilePane extends JPanel {
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgColor = new Color(245, 245, 250);
 
-    // Form Fields
-    private JTextField nameField, phoneField, addressField; // Editable
-    private JTextField idField, emailField, dateField;      // Non-editable
+    //Editable Fields
+    private JTextField nameField, phoneField, addressField;
+    //Non-editable Fields
+    private JTextField idField, emailField, dateField;
 
     private boolean isEditing = false;
     private FloatingButton updateBtn;
@@ -30,26 +31,22 @@ public class CustomerProfilePane extends JPanel {
 
         String name = "Not found", email = "Not found", date = "Not found", phone = "Not found", address = "Not found";
 
-        List<String[]> CustomerList = IO.FileHandler.read("Customer.txt");
+        List<String[]> currentUserData = IO.FileHandler.read("CurrentUser.txt");
 
-        for (String[] row: CustomerList){
-            if (row[0].equals(loggedInCustomerID)){
-                name = row[1];
-                date = row[2];
-                address = row [3];
-                phone = row[4];
-                email = row[5];
-                break;
-            }
+        if (!currentUserData.isEmpty() && currentUserData.get(0).length >= 10) {
+            String[] row = currentUserData.get(0);
+            name = row[1].trim() + " " + row[2].trim();
+            email = row[5].trim();
+            phone = row[6].trim();
+            address = row[8].trim();
+            date = row[9].trim();
         }
-        // --- PART 1: USER PROFILE ICON ---
-        // Using a large Unicode character as a placeholder for the avatar
-        JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
+
+        JLabel avatarLabel = new JLabel("👤", SwingConstants.CENTER);
         avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
         avatarLabel.setForeground(Color.LIGHT_GRAY);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Wrap it in a panel to draw the circle around it
         JPanel avatarContainer = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -57,7 +54,7 @@ public class CustomerProfilePane extends JPanel {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(primaryPurple);
-                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20); // Draw outer circle
+                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20);
             }
         };
         avatarContainer.setPreferredSize(new Dimension(150, 150));
@@ -66,7 +63,6 @@ public class CustomerProfilePane extends JPanel {
         avatarContainer.setLayout(new BorderLayout());
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
 
-        // --- PART 2: USER DETAILS CARD ---
         JPanel detailsCard = new JPanel(new GridBagLayout());
         detailsCard.setBackground(Color.WHITE);
         detailsCard.setMaximumSize(new Dimension(800, 300));
@@ -75,32 +71,26 @@ public class CustomerProfilePane extends JPanel {
                 new EmptyBorder(20, 20, 20, 20)
         ));
 
-        // Initialize all fields (using our helper method to make them look like labels initially)
         nameField = createReadOnlyField(name);
-        idField = createReadOnlyField(id);
+        idField = createReadOnlyField(loggedInCustomerID);
         emailField = createReadOnlyField(email);
         dateField = createReadOnlyField(date);
         phoneField = createReadOnlyField(phone);
         addressField = createReadOnlyField(address);
 
-        // Add fields to the GridBagLayout (Icon, Field, X, Y, Width)
         addFormField(detailsCard, "👤", nameField, 0, 0, 1);
         addFormField(detailsCard, "🪪", idField, 2, 0, 1);
         addFormField(detailsCard, "✉️", emailField, 0, 1, 1);
         addFormField(detailsCard, "📅", dateField, 2, 1, 1);
-        addFormField(detailsCard, "📞", phoneField, 0, 2, 3); // Spans across
-        addFormField(detailsCard, "📍", addressField, 0, 3, 3); // Spans across
+        addFormField(detailsCard, "📞", phoneField, 0, 2, 3);
+        addFormField(detailsCard, "📍", addressField, 0, 3, 3);
 
-
-        // --- PART 3: THE UPDATE BUTTON ---
         updateBtn = new FloatingButton("Update", 20);
         updateBtn.setPreferredSize(new Dimension(150, 40));
         updateBtn.setMaximumSize(new Dimension(150, 40));
 
-        // The Toggle Logic
         updateBtn.addActionListener(e -> toggleEditMode());
 
-        // --- ASSEMBLE EVERYTHING ---
         add(Box.createVerticalStrut(20));
         add(avatarContainer);
         add(Box.createVerticalStrut(30));
@@ -109,22 +99,20 @@ public class CustomerProfilePane extends JPanel {
         add(updateBtn);
     }
 
-    // --- HELPER: Formats a TextField to look like a plain Label ---
     private JTextField createReadOnlyField(String text) {
         JTextField field = new JTextField(text);
         field.setFont(new Font("Serif", Font.BOLD, 16));
         field.setEditable(false);
-        field.setOpaque(false); // Transparent background
-        field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // No visible border
+        field.setOpaque(false);
+        field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return field;
     }
 
-    // --- HELPER: Adds a row to the GridBagLayout ---
     private void addFormField(JPanel panel, String icon, JTextField field, int x, int y, int width) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x; gbc.gridy = y;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(15, 15, 15, 5); // Padding around items
+        gbc.insets = new Insets(15, 15, 15, 5);
 
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
@@ -137,55 +125,66 @@ public class CustomerProfilePane extends JPanel {
         panel.add(field, gbc);
     }
 
-    // --- THE MAGIC: Toggles between reading and editing ---
     private void toggleEditMode() {
         if (!isEditing) {
-            // ENTER EDIT MODE
             isEditing = true;
             updateBtn.setText("Save Changes");
             updateBtn.setBackground(new Color(100, 200, 100)); // Change button to green
 
-            // Turn on specific fields
             enableField(nameField);
             enableField(phoneField);
             enableField(addressField);
 
         } else {
-            // SAVE AND EXIT EDIT MODE
             isEditing = false;
             updateBtn.setText("Update");
-            updateBtn.setBackground(primaryPurple); // Change back to purple
+            updateBtn.setBackground(primaryPurple);
 
-            // Turn off fields
             disableField(nameField);
             disableField(phoneField);
             disableField(addressField);
 
-            // TODO: Add your logic here to save the new data to your file/database!
             saveUpdatedProfileData();
         }
     }
 
     private void saveUpdatedProfileData() {
         try {
-            List<String[]> CustomerList = IO.FileHandler.read("Customer.txt");
+            List<String[]> usersList = IO.FileHandler.read("Users.txt");
             boolean dataUpdated = false;
+            String[] updatedRow = null;
 
-            for (int i = 0; i < CustomerList.size(); i++) {
-                String[] row = CustomerList.get(i);
+            for (int i = 0; i < usersList.size(); i++) {
+                String[] row = usersList.get(i);
 
                 if (row[0].equals(loggedInCustomerID)) {
-                    row[1] = nameField.getText().trim();
-                    row[3] = addressField.getText().trim();
-                    row[4] = phoneField.getText().trim();
+                    String fullName = nameField.getText().trim();
+                    String firstName = fullName;
+                    String lastName = "";
 
+                    if (fullName.contains(" ")) {
+                        firstName = fullName.substring(0, fullName.indexOf(" "));
+                        lastName = fullName.substring(fullName.indexOf(" ") + 1);
+                    }
+
+                    row[1] = firstName;
+                    row[2] = lastName;
+                    row[6] = phoneField.getText().trim();
+                    row[8] = addressField.getText().trim();
+
+                    updatedRow = row;
                     dataUpdated = true;
                     break;
                 }
             }
 
             if (dataUpdated) {
-                IO.FileHandler.write("Customer.txt", CustomerList, false);
+                IO.FileHandler.write("Users.txt", usersList, false);
+
+                try (java.io.FileWriter writer = new java.io.FileWriter("src/database/CurrentUser.txt", false)) {
+                    writer.write(String.join("/></", updatedRow));
+                }
+
                 JOptionPane.showMessageDialog(this,
                         "Profile successfully updated!",
                         "Update Complete",
@@ -202,15 +201,13 @@ public class CustomerProfilePane extends JPanel {
         }
     }
 
-    // Turns a "label" back into a real text box
     private void enableField(JTextField field) {
         field.setEditable(true);
         field.setOpaque(true);
-        field.setBackground(new Color(245, 245, 255)); // Light blue editing background
+        field.setBackground(new Color(245, 245, 255));
         field.setBorder(BorderFactory.createLineBorder(primaryPurple, 1, true));
     }
 
-    // Turns a text box back into a "label"
     private void disableField(JTextField field) {
         field.setEditable(false);
         field.setOpaque(false);

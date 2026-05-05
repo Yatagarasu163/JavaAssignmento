@@ -21,22 +21,17 @@ public class CustomerDashboardPane extends JPanel {
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
         String customerName = "Customer";
-        List<String[]> CustomerList = FileHandler.read("Customer.txt");
+        List<String[]> currentUserData = FileHandler.read("CurrentUser.txt");
 
-        for (String[] row: CustomerList){
-            if (row[0].equals(loggedInCustomerID)){
-                customerName = row[1];
-                break;
-            }
+        if (!currentUserData.isEmpty() && currentUserData.get(0).length > 1) {
+            customerName = currentUserData.get(0)[3].trim();
         }
 
-        // --- PART 1: WELCOME MESSAGE ---
         JLabel welcomeLabel = new JLabel("Welcome, " + customerName);
         welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 32));
         welcomeLabel.setForeground(primaryPurple);
         welcomeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- PART 2: MY VEHICLES ---
         JLabel vehiclesTitle = new JLabel("My Vehicles");
         vehiclesTitle.setFont(new Font("SansSerif", Font.BOLD, 24));
         vehiclesTitle.setForeground(primaryPurple);
@@ -70,13 +65,11 @@ public class CustomerDashboardPane extends JPanel {
             vehiclesContainer.add(noVehiclesLabel);
         }
 
-        // --- PART 3: APPOINTMENTS (Now with Headers & Scrolling) ---
         JLabel appointmentsTitle = new JLabel("Appointments");
         appointmentsTitle.setFont(new Font("SansSerif", Font.BOLD, 24));
         appointmentsTitle.setForeground(primaryPurple);
         appointmentsTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // 3A. Create the Header Row (Fixed at the top)
         JPanel headerRow = new JPanel(new GridLayout(1, 4, 10, 0));
         headerRow.setBackground(Color.WHITE);
         headerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -86,7 +79,6 @@ public class CustomerDashboardPane extends JPanel {
         headerRow.add(createHeaderLabel("Service Type"));
         headerRow.add(createHeaderLabel("Action"));
 
-        // 3B. Create the panel that holds the actual data rows
         JPanel appointmentsTable = new JPanel();
         appointmentsTable.setLayout(new BoxLayout(appointmentsTable, BoxLayout.Y_AXIS));
         appointmentsTable.setBackground(Color.WHITE);
@@ -95,58 +87,50 @@ public class CustomerDashboardPane extends JPanel {
         int apptCount = 0;
 
         for (String[] apptRow : apptList) {
-            // Safety check: ensure the row has at least 10 columns
             if (apptRow.length >= 10) {
-                // Check if this appointment belongs to the logged-in customer (Index 7)
                 if (apptRow[7].equals(loggedInCustomerID)) {
 
                     String serviceType = apptRow[2];
                     String status = apptRow[4];
                     String vehicleId = apptRow[9];
-                    String displayPlate = vehicleId; // Default fallback
+                    String displayPlate = vehicleId;
 
-                    // Let's find the real Plate Number by searching the vehicleList we made in Part 2!
                     for (String[] vRow : vehicleList) {
                         if (vRow[0].equals(vehicleId)) {
-                            displayPlate = vRow[1]; // Found the plate number!
+                            displayPlate = vRow[1];
                             break;
                         }
                     }
 
-                    // Determine the color based on the status text
-                    Color statusColor = Color.LIGHT_GRAY; // Default
+                    Color statusColor = Color.LIGHT_GRAY;
                     if (status.equalsIgnoreCase("In Queue")) {
-                        statusColor = new Color(255, 200, 200); // Red/Pink
+                        statusColor = new Color(255, 200, 200);
                     } else if (status.equalsIgnoreCase("In Service")) {
-                        statusColor = new Color(255, 230, 150); // Yellow
+                        statusColor = new Color(255, 230, 150);
                     } else if (status.equalsIgnoreCase("Completed")) {
-                        statusColor = new Color(180, 255, 180); // Green
+                        statusColor = new Color(180, 255, 180);
                     }
 
-                    // Generate the row dynamically!
                     appointmentsTable.add(createAppointmentRow(status, statusColor, displayPlate, serviceType));
-                    appointmentsTable.add(Box.createVerticalStrut(10)); // Gap between rows
+                    appointmentsTable.add(Box.createVerticalStrut(10));
                     apptCount++;
                 }
             }
         }
 
-        // UX Bonus: If they have no appointments
         if (apptCount == 0) {
-            JLabel noApptLabel = new JLabel("   No appointments scheduled.");
+            JLabel noApptLabel = new JLabel("No appointments scheduled.");
             noApptLabel.setFont(new Font("SansSerif", Font.ITALIC, 14));
             noApptLabel.setForeground(Color.GRAY);
             appointmentsTable.add(noApptLabel);
         }
 
-        // 3C. Wrap the data rows in a JScrollPane
         JScrollPane scrollPane = new JScrollPane(appointmentsTable);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        // 3D. Create the outer container
         JPanel tableContainer = new JPanel();
         tableContainer.setLayout(new BoxLayout(tableContainer, BoxLayout.Y_AXIS));
         tableContainer.setBackground(Color.WHITE);
@@ -156,12 +140,10 @@ public class CustomerDashboardPane extends JPanel {
                 new EmptyBorder(15, 15, 15, 15)
         ));
 
-        // Assemble the table
         tableContainer.add(headerRow);
         tableContainer.add(Box.createVerticalStrut(10));
         tableContainer.add(scrollPane);
 
-        // --- ASSEMBLE THE PAGE ---
         add(welcomeLabel);
         add(Box.createVerticalStrut(40));
 
@@ -175,7 +157,6 @@ public class CustomerDashboardPane extends JPanel {
         add(tableContainer);
     }
 
-    // --- HELPER METHOD: Creates a Header Label ---
     private JLabel createHeaderLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -183,7 +164,6 @@ public class CustomerDashboardPane extends JPanel {
         return label;
     }
 
-    // --- HELPER METHOD: Creates a Vehicle Card ---
     private JPanel createVehicleCard(String plate, String model) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -211,13 +191,11 @@ public class CustomerDashboardPane extends JPanel {
         return card;
     }
 
-    // --- HELPER METHOD: Creates an Appointment Row ---
     private JPanel createAppointmentRow(String statusText, Color statusColor, String plate, String serviceType) {
         JPanel row = new JPanel(new GridLayout(1, 4, 10, 0));
         row.setBackground(Color.WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        // Column 1: Status Pill
         JLabel statusLabel = new JLabel(statusText, SwingConstants.CENTER);
         statusLabel.setOpaque(true);
         statusLabel.setBackground(statusColor);
@@ -227,15 +205,12 @@ public class CustomerDashboardPane extends JPanel {
         statusLabel.setPreferredSize(new Dimension(100, 25));
         statusContainer.add(statusLabel);
 
-        // Column 2: Plate Number
         JLabel plateLabel = new JLabel(plate, SwingConstants.CENTER);
         plateLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // Column 3: Service Type
         JLabel serviceLabel = new JLabel(serviceType, SwingConstants.CENTER);
         serviceLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // Column 4: Comments Button
         FloatingButton commentBtn = new FloatingButton("Comments \u270E", 15);
         commentBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
         commentBtn.setPreferredSize(new Dimension(110, 30));

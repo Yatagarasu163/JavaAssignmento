@@ -3,57 +3,55 @@ package panes.Customer;
 import javax.swing.*;
 import panes.SidebarPanel;
 import java.awt.*;
+import java.util.List;
+import IO.FileHandler;
 
 public class CustomerMainPane extends JFrame {
+    private String loggedInUserID = "UNKNOWN";
+
     public CustomerMainPane() {
         setTitle("APU-ASC: Customer Portal");
-        setSize(1000, 700); // Slightly larger to fit the table nicely
+        setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        List<String[]> currentUserData = FileHandler.read("CurrentUser.txt");
+
+        if (!currentUserData.isEmpty() && currentUserData.get(0).length > 0) {
+            loggedInUserID = currentUserData.get(0)[0].trim();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error reading user session. Please log in again.", "Session Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         JPanel contentPane = new JPanel();
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout());
 
-        // 1. Set up the Sidebar
         SidebarPanel sidebarPanel = new SidebarPanel("Customer");
 
         JScrollPane sidePane = new JScrollPane(sidebarPanel);
         sidePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contentPane.add(sidePane, BorderLayout.WEST);
 
-        // 2. Set up the CardLayout Container (The Main Content Area)
         JPanel cardsContainer = new JPanel();
         CardLayout cardLayout = new CardLayout();
         cardsContainer.setLayout(cardLayout);
 
-        // 3. Initialize the Dashboard (Passing the name from the mockup)
-        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane("CT123456");
-
-        // 4. Add the Dashboard to our "deck" of cards
+        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane(loggedInUserID);
         cardsContainer.add(dashboardPane, "DASHBOARD");
 
-        // 5. Add the cards container to the center of the screen
         contentPane.add(cardsContainer, BorderLayout.CENTER);
 
-        // 6. Force the window to show the Dashboard as the default view
         cardLayout.show(cardsContainer, "DASHBOARD");
 
-        // Pass the starting data into the constructor
-        panes.Customer.CustomerProfilePane profilePane = new panes.Customer.CustomerProfilePane("CT123456");
-
-        // Add it to your card layout container
+        panes.Customer.CustomerProfilePane profilePane = new panes.Customer.CustomerProfilePane(loggedInUserID);
         cardsContainer.add(profilePane, "PROFILE");
 
-        panes.Customer.CustomerHistoryPane historyPane = new panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout, "CT123456");
-
+        panes.Customer.CustomerHistoryPane historyPane = new panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(historyPane, "HISTORY");
 
-        // TODO: In the future, add ActionListeners for your sidebarPanel buttons here
         sidebarPanel.getHomeBtn().addActionListener(e -> {
             cardLayout.show(cardsContainer, "DASHBOARD");
-
-            // Clear the other buttons "White Background"
             sidebarPanel.clearSelection();
         });
 

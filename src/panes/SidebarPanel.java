@@ -1,15 +1,13 @@
-package panes;
+package src.panes;
 import javax.swing.*;
 import java.awt.*;
 import components.FloatingToggleButton;
-// You can remove the TextLabel import if you aren't using it anywhere else!
 
 public class SidebarPanel extends JPanel {
 
     private ButtonGroup navGroup;
 
     // --- SHARED BUTTONS ---
-    // Added the home button (logo) here so we can access it later
     private JButton homeBtn;
     private FloatingToggleButton exitBtn = new FloatingToggleButton("Log Out", 20);
 
@@ -27,28 +25,25 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton customerListBtn;
     private FloatingToggleButton appointmentBtn;
     private FloatingToggleButton paymentBtn;
-    // --- TECHNICIAN BUTTONS--//
+
+    // --- TECHNICIAN BUTTONS--
     private FloatingToggleButton myProfileBtn;
 
-    // CONSTRUCTOR 1: The Default (Keeps your teammate's code from breaking)
     public SidebarPanel() {
-        this("Manager"); // If no role is passed, assume it's the Manager
+        this("Manager");
     }
 
-    // CONSTRUCTOR 2: The Dynamic Role Selector
     public SidebarPanel(String role) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(128, 128, 255));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // --- CREATE THE LOGO / HOME BUTTON ---
         homeBtn = new JButton("APU - ASC");
         homeBtn.setForeground(Color.BLACK);
-        homeBtn.setFont(new Font("SansSerif", Font.BOLD, 28)); // Match your TextLabel size
+        homeBtn.setFont(new Font("SansSerif", Font.BOLD, 28));
         homeBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        homeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Show the pointing finger
+        homeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // These 3 lines make it look like text instead of a chunky button
         homeBtn.setContentAreaFilled(false);
         homeBtn.setBorderPainted(false);
         homeBtn.setFocusPainted(false);
@@ -57,13 +52,9 @@ public class SidebarPanel extends JPanel {
         navGroup = new ButtonGroup();
 
         add(Box.createVerticalStrut(componentSpace));
-
-        // Add the new clickable logo instead of the TextLabel
         add(homeBtn);
-
         add(Box.createVerticalStrut(componentSpace));
 
-        // --- THE IF-ELSE ROLE LOGIC ---
         if (role.equalsIgnoreCase("Manager")) {
             accountBtn = new FloatingToggleButton("Accounts", 20);
             pricingBtn = new FloatingToggleButton("Pricing", 20);
@@ -95,6 +86,7 @@ public class SidebarPanel extends JPanel {
             add(Box.createVerticalStrut(componentSpace));
             add(historyBtn);
             add(Box.createVerticalStrut(componentSpace));
+
         } else if (role.equalsIgnoreCase("Counter Staff")) {
             profileBtn = new FloatingToggleButton("Profile", 20);
             customerListBtn = new FloatingToggleButton("Customer List", 20);
@@ -128,10 +120,34 @@ public class SidebarPanel extends JPanel {
             add(Box.createVerticalStrut(componentSpace));
         }
 
-        // Add the shared Exit button at the bottom for everyone
         navGroup.add(exitBtn);
         add(exitBtn);
         add(Box.createVerticalStrut(componentSpace));
+
+        exitBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to log out?",
+                    "Confirm Logout",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                try (java.io.FileWriter writer = new java.io.FileWriter("src/database/CurrentUser.txt", false)) {
+                    writer.write("");
+                } catch (Exception ex) {
+                    System.out.println("Error clearing session: " + ex.getMessage());
+                }
+
+                Window currentWindow = SwingUtilities.getWindowAncestor(this);
+                if (currentWindow != null) {
+                    currentWindow.dispose();
+                }
+
+                new LoginPage().setVisible(true);
+
+            } else {
+                clearSelection();
+            }
+        });
     }
 
     public void clearSelection() {
@@ -140,16 +156,14 @@ public class SidebarPanel extends JPanel {
         }
     }
 
-    // --- SHARED GETTERS ---
     public JButton getHomeBtn() {
         return this.homeBtn;
-    } // New getter for the logo!
+    }
 
     public JToggleButton getExitBtn() {
         return this.exitBtn;
     }
 
-    // --- GETTERS FOR MANAGER ---
     public JToggleButton getPricingBtn() {
         return this.pricingBtn;
     }
@@ -169,12 +183,11 @@ public class SidebarPanel extends JPanel {
     // --- GETTERS FOR CUSTOMER ---
     public JToggleButton getProfileBtn() {
         return this.profileBtn;
-    } // Returns for the Counter Staff as well
+    }
 
     public JToggleButton getHistoryBtn() {
         return this.historyBtn;
     }
-
 
     // --- GETTERS FOR COUNTER STAFF ---
     public JToggleButton getCustomerListBtn() { return this.customerListBtn; }

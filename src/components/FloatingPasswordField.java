@@ -9,7 +9,6 @@ import config.UIConfig;
 
 public class FloatingPasswordField extends JPasswordField {
     private String placeholder;
-    private FloatingButton toggleButton;
     private char defaultEchoChar = '•';
 
     public FloatingPasswordField(String placeholder) {
@@ -18,44 +17,15 @@ public class FloatingPasswordField extends JPasswordField {
         setMaximumSize(new Dimension(300, 50));
         setPreferredSize(new Dimension(300, 50));
         setFont(new Font("SansSerif", Font.PLAIN, 16));
-        setForeground(UIConfig.inputFieldForeground);
+        setForeground(UIConfig.passwordFieldFont);
         setCaretColor(UIConfig.caretColor);
         setEchoChar(defaultEchoChar); // Mask by default
 
-        // Notice the right padding is now 40 to prevent text from going under the button
+        // Changed right padding from 40 to 0 since the button is gone
         setBorder(BorderFactory.createCompoundBorder(
                 new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),
-                new EmptyBorder(20, 0, 5, 40)
+                new EmptyBorder(20, 0, 5, 0)
         ));
-
-        // Set Absolute Positioning to place the button exactly where we want it inside the field
-        setLayout(null);
-
-        // Create the Toggle Button
-        toggleButton = new FloatingButton("👁");
-        toggleButton.setFont(new Font("Dialog", Font.PLAIN, 16)); // Font that supports emojis well
-
-        // Position the button on the far right: x=260, y=18, width=40, height=30
-        toggleButton.setBounds(260, 18, 40, 30);
-
-        // Add the Click Logic
-        toggleButton.addActionListener(e -> {
-            if (getEchoChar() == defaultEchoChar) {
-                // It is currently hidden, so reveal it
-                setEchoChar((char) 0);
-                toggleButton.setText("😊"); // Change to lock icon
-                toggleButton.setForeground(new Color(128, 128, 255)); // Highlight color
-        repaint();
-            } else {
-                // It is currently revealed, so hide it
-                setEchoChar(defaultEchoChar);
-                toggleButton.setText("👁"); // Change to eye icon
-                toggleButton.setForeground(Color.GRAY);
-        repaint();
-            }
-        });
-
-        add(toggleButton); // Add the button into the text field
 
         // Handle the bottom border color on focus
         addFocusListener(new FocusAdapter() {
@@ -63,7 +33,7 @@ public class FloatingPasswordField extends JPasswordField {
             public void focusGained(FocusEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(
                         new MatteBorder(0, 0, 2, 0, new Color(128, 128, 255)),
-                        new EmptyBorder(20, 0, 5, 40)
+                        new EmptyBorder(20, 0, 5, 0) // Padding updated here too
                 ));
                 repaint();
             }
@@ -72,7 +42,7 @@ public class FloatingPasswordField extends JPasswordField {
             public void focusLost(FocusEvent e) {
                 setBorder(BorderFactory.createCompoundBorder(
                         new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),
-                        new EmptyBorder(20, 0, 5, 40)
+                        new EmptyBorder(20, 0, 5, 0) // Padding updated here too
                 ));
                 repaint();
             }
