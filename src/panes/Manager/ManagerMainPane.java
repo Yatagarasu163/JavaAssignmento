@@ -2,7 +2,7 @@ package panes.Manager;
 
 import javax.swing.*;
 
-import panes.SidebarPanel;
+import src.panes.SidebarPanel;
 
 import java.awt.*;
 public class ManagerMainPane extends JFrame{

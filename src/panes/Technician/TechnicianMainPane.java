@@ -3,7 +3,7 @@ package panes.Technician;
 import javax.swing.*;
 
 import IO.FileHandler;
-import panes.SidebarPanel;
+import src.panes.SidebarPanel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

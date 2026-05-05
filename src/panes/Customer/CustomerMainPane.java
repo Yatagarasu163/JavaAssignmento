@@ -1,7 +1,7 @@
 package panes.Customer;
 
 import javax.swing.*;
-import panes.SidebarPanel;
+import src.panes.SidebarPanel;
 import java.awt.*;
 import java.util.List;
 import IO.FileHandler;

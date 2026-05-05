@@ -5,7 +5,7 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import panes.SidebarPanel;
+import src.panes.SidebarPanel;
 
 public class CounterStaffMainPane extends JFrame{
 
