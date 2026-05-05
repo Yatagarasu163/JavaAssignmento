@@ -26,7 +26,7 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton appointmentBtn;
     private FloatingToggleButton paymentBtn;
 
-    // --- TECHNICIAN BUTTONS--
+    // --- TECHNICIAN BUTTONS ---
     private FloatingToggleButton myProfileBtn;
 
     public SidebarPanel() {
@@ -125,7 +125,9 @@ public class SidebarPanel extends JPanel {
         add(Box.createVerticalStrut(componentSpace));
 
         exitBtn.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
+            Window currentWindow = SwingUtilities.getWindowAncestor(this);
+
+            int confirm = JOptionPane.showConfirmDialog(currentWindow,
                     "Are you sure you want to log out?",
                     "Confirm Logout",
                     JOptionPane.YES_NO_OPTION);
@@ -137,7 +139,6 @@ public class SidebarPanel extends JPanel {
                     System.out.println("Error clearing session: " + ex.getMessage());
                 }
 
-                Window currentWindow = SwingUtilities.getWindowAncestor(this);
                 if (currentWindow != null) {
                     currentWindow.dispose();
                 }
