@@ -6,11 +6,12 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import config.UIConfig;
 
 public class CustomerPaymentDetailsPane extends JPanel {
 
-    private final Color primaryPurple = new Color(128, 128, 255);
-    private final Color bgColor = new Color(250, 250, 255);
+    private final Color primaryPurple = UIConfig.mainBackground;
+    private final Color bgColor = UIConfig.whiteBackground2;
     private JButton backBtn;
 
     private String loggedInCustomerID;
@@ -147,7 +148,7 @@ public class CustomerPaymentDetailsPane extends JPanel {
 
                         contentPanel.add(createServiceRow(itemName, formattedPrice));
                         contentPanel.add(Box.createVerticalStrut(10));
-                        break; // Stop looping once we found the match for this ID
+                        break;
                     }
                 }
             }

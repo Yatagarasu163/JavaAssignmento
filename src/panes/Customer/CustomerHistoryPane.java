@@ -8,11 +8,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import config.UIConfig;
 
 public class CustomerHistoryPane extends JPanel {
 
-    private final Color primaryPurple = new Color(128, 128, 255);
-    private final Color bgColor = new Color(250, 250, 255);
+    private final Color primaryPurple = UIConfig.mainBackground;
+    private final Color bgColor = UIConfig.whiteBackground2;
     private JTable historyTable;
     private DefaultTableModel tableModel;
 

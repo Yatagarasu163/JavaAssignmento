@@ -6,11 +6,12 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import config.UIConfig;
 
 public class CustomerProfilePane extends JPanel {
 
-    private final Color primaryPurple = new Color(128, 128, 255);
-    private final Color bgColor = new Color(245, 245, 250);
+    private final Color primaryPurple = UIConfig.mainBackground;
+    private final Color bgColor = UIConfig.whiteBackground;
 
     //Editable Fields
     private JTextField nameField, phoneField, addressField;
@@ -129,7 +130,7 @@ public class CustomerProfilePane extends JPanel {
         if (!isEditing) {
             isEditing = true;
             updateBtn.setText("Save Changes");
-            updateBtn.setBackground(new Color(100, 200, 100)); // Change button to green
+            updateBtn.setBackground(UIConfig.saveBtn);
 
             enableField(nameField);
             enableField(phoneField);
@@ -204,7 +205,7 @@ public class CustomerProfilePane extends JPanel {
     private void enableField(JTextField field) {
         field.setEditable(true);
         field.setOpaque(true);
-        field.setBackground(new Color(245, 245, 255));
+        field.setBackground(UIConfig.whiteBackground);
         field.setBorder(BorderFactory.createLineBorder(primaryPurple, 1, true));
     }
 

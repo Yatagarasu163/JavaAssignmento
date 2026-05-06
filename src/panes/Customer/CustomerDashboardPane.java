@@ -7,17 +7,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import IO.FileHandler;
 import java.util.List;
+import config.UIConfig;
 
 public class CustomerDashboardPane extends JPanel {
 
-    private final Color primaryPurple = new Color(128, 128, 255);
+    private final Color primaryPurple = UIConfig.mainBackground;
     private String loggedInCustomerID;
 
     public CustomerDashboardPane(String cusID) {
         this.loggedInCustomerID = cusID;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(new Color(245, 245, 250));
+        setBackground(UIConfig.whiteBackground);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
         String customerName = "Customer";
@@ -104,11 +105,11 @@ public class CustomerDashboardPane extends JPanel {
 
                     Color statusColor = Color.LIGHT_GRAY;
                     if (status.equalsIgnoreCase("In Queue")) {
-                        statusColor = new Color(255, 200, 200);
+                        statusColor = UIConfig.inQueueStatus;
                     } else if (status.equalsIgnoreCase("In Service")) {
-                        statusColor = new Color(255, 230, 150);
+                        statusColor = UIConfig.inServiceStatus;
                     } else if (status.equalsIgnoreCase("Completed")) {
-                        statusColor = new Color(180, 255, 180);
+                        statusColor = UIConfig.completedStatus;
                     }
 
                     appointmentsTable.add(createAppointmentRow(status, statusColor, displayPlate, serviceType));
