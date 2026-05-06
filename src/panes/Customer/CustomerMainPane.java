@@ -37,17 +37,17 @@ public class CustomerMainPane extends JFrame {
         CardLayout cardLayout = new CardLayout();
         cardsContainer.setLayout(cardLayout);
 
-        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane(cardsContainer, cardLayout, loggedInUserID);
+        src.panes.Customer.CustomerDashboardPane dashboardPane = new src.panes.Customer.CustomerDashboardPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(dashboardPane, "DASHBOARD");
 
         contentPane.add(cardsContainer, BorderLayout.CENTER);
 
         cardLayout.show(cardsContainer, "DASHBOARD");
 
-        panes.Customer.CustomerProfilePane profilePane = new panes.Customer.CustomerProfilePane(loggedInUserID);
+        src.panes.Customer.CustomerProfilePane profilePane = new src.panes.Customer.CustomerProfilePane(loggedInUserID);
         cardsContainer.add(profilePane, "PROFILE");
 
-        panes.Customer.CustomerHistoryPane historyPane = new panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout, loggedInUserID);
+        src.panes.Customer.CustomerHistoryPane historyPane = new src.panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(historyPane, "HISTORY");
 
         sidebarPanel.getHomeBtn().addActionListener(e -> {
