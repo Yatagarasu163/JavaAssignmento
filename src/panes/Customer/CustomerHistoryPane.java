@@ -196,8 +196,7 @@ public class CustomerHistoryPane extends JPanel {
                 String selectedAppId = (String) tableModel.getValueAt(viewRow, 4);
                 String selectedVehId = (String) tableModel.getValueAt(viewRow, 5);
 
-                panes.Customer.CustomerPaymentDetailsPane customPaymentPane =
-                        new panes.Customer.CustomerPaymentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, selectedAppId, selectedVehId);
+                src.panes.Customer.CustomerPaymentDetailsPane customPaymentPane = new src.panes.Customer.CustomerPaymentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, selectedAppId, selectedVehId);
 
                 cardsContainer.add(customPaymentPane, "DYNAMIC_PAYMENT");
                 cardLayout.show(cardsContainer, "DYNAMIC_PAYMENT");

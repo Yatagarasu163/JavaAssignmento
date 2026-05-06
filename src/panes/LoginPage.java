@@ -101,7 +101,7 @@ public class LoginPage extends JFrame {
                             JOptionPane.showMessageDialog(this, "Login Successful! Welcome, " + dbUserName, "Success", JOptionPane.INFORMATION_MESSAGE);
 
                             if (dbRole.equalsIgnoreCase("Customer")) {
-                                new panes.Customer.CustomerMainPane().setVisible(true);
+                                new src.panes.Customer.CustomerMainPane().setVisible(true);
                                 this.dispose();
 
                             } else if (dbRole.equalsIgnoreCase("Manager")) {
