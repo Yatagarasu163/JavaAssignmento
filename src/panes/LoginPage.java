@@ -5,6 +5,7 @@ import components.FloatingPasswordField;
 import components.FloatingTextField;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import config.UIConfig;
 
 public class LoginPage extends JFrame {
 
@@ -19,7 +20,7 @@ public class LoginPage extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(new Color(248, 248, 250));
+        mainPanel.setBackground(UIConfig.whiteBackground);
         mainPanel.setLayout(new GridBagLayout());
         setContentPane(mainPanel);
 
@@ -29,7 +30,7 @@ public class LoginPage extends JFrame {
 
         JLabel lblLogo = new JLabel("APU - ASC");
         lblLogo.setFont(new Font("Serif", Font.PLAIN, 36));
-        lblLogo.setForeground(new Color(128, 128, 255));
+        lblLogo.setForeground(UIConfig.mainBackground);
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         txtUsername = new FloatingTextField("User ID");
@@ -137,7 +138,7 @@ public class LoginPage extends JFrame {
         btnSignIn.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnSignIn.setMaximumSize(new Dimension(300, 45));
         btnSignIn.setPreferredSize(new Dimension(300, 45));
-        btnSignIn.setBackground(new Color(128, 128, 255));
+        btnSignIn.setBackground(UIConfig.mainBackground);
         btnSignIn.setForeground(Color.WHITE);
         btnSignIn.setFont(new Font("SansSerif", Font.PLAIN, 18));
 

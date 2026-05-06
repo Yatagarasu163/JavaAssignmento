@@ -1,4 +1,4 @@
-package panes.Customer;
+package src.panes.Customer;
 
 import components.FloatingButton;
 import java.awt.*;

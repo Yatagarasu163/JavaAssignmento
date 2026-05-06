@@ -1,4 +1,4 @@
-package panes.Customer;
+package src.panes.Customer;
 
 import javax.swing.*;
 import src.panes.SidebarPanel;
@@ -37,7 +37,7 @@ public class CustomerMainPane extends JFrame {
         CardLayout cardLayout = new CardLayout();
         cardsContainer.setLayout(cardLayout);
 
-        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane(loggedInUserID);
+        panes.Customer.CustomerDashboardPane dashboardPane = new panes.Customer.CustomerDashboardPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(dashboardPane, "DASHBOARD");
 
         contentPane.add(cardsContainer, BorderLayout.CENTER);

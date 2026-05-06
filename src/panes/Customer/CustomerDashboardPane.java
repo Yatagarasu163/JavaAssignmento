@@ -1,4 +1,4 @@
-package panes.Customer;
+package src.panes.Customer;
 
 import components.FloatingButton;
 import java.awt.*;
@@ -14,7 +14,12 @@ public class CustomerDashboardPane extends JPanel {
     private final Color primaryPurple = UIConfig.mainBackground;
     private String loggedInCustomerID;
 
-    public CustomerDashboardPane(String cusID) {
+    private JPanel cardsContainer;
+    private CardLayout cardLayout;
+
+    public CustomerDashboardPane(JPanel cardsContainer, CardLayout cardLayout, String cusID) {
+        this.cardsContainer = cardsContainer;
+        this.cardLayout = cardLayout;
         this.loggedInCustomerID = cusID;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -91,6 +96,7 @@ public class CustomerDashboardPane extends JPanel {
             if (apptRow.length >= 10) {
                 if (apptRow[7].equals(loggedInCustomerID)) {
 
+                    String appId = apptRow[0];
                     String serviceType = apptRow[2];
                     String status = apptRow[4];
                     String vehicleId = apptRow[9];
@@ -112,7 +118,7 @@ public class CustomerDashboardPane extends JPanel {
                         statusColor = UIConfig.completedStatus;
                     }
 
-                    appointmentsTable.add(createAppointmentRow(status, statusColor, displayPlate, serviceType));
+                    appointmentsTable.add(createAppointmentRow(appId, status, statusColor, displayPlate, serviceType));
                     appointmentsTable.add(Box.createVerticalStrut(10));
                     apptCount++;
                 }
@@ -192,7 +198,7 @@ public class CustomerDashboardPane extends JPanel {
         return card;
     }
 
-    private JPanel createAppointmentRow(String statusText, Color statusColor, String plate, String serviceType) {
+    private JPanel createAppointmentRow(String appId, String statusText, Color statusColor, String plate, String serviceType) {
         JPanel row = new JPanel(new GridLayout(1, 4, 10, 0));
         row.setBackground(Color.WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -201,7 +207,7 @@ public class CustomerDashboardPane extends JPanel {
         statusLabel.setOpaque(true);
         statusLabel.setBackground(statusColor);
         statusLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-        JPanel statusContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 7)); // Center the pill vertically
+        JPanel statusContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 7));
         statusContainer.setBackground(Color.WHITE);
         statusLabel.setPreferredSize(new Dimension(100, 25));
         statusContainer.add(statusLabel);
@@ -212,17 +218,29 @@ public class CustomerDashboardPane extends JPanel {
         JLabel serviceLabel = new JLabel(serviceType, SwingConstants.CENTER);
         serviceLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        FloatingButton commentBtn = new FloatingButton("Comments \u270E", 15);
-        commentBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        commentBtn.setPreferredSize(new Dimension(110, 30));
+        String buttonText = statusText.equalsIgnoreCase("Completed") ? "Review \u270E" : "Comments \u270E";
+        FloatingButton actionBtn = new FloatingButton(buttonText, 15);
 
-        commentBtn.addActionListener(e -> {
-            System.out.println("Navigating to comments for appointment: " + plate);
+        actionBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        actionBtn.setPreferredSize(new Dimension(110, 30));
+
+        if (statusText.equalsIgnoreCase("Completed")) {
+            actionBtn.setBackground(UIConfig.reviewBtn);
+            actionBtn.setForeground(Color.WHITE);
+        } else {
+            actionBtn.setBackground(primaryPurple);
+            actionBtn.setForeground(Color.WHITE);
+        }
+
+        actionBtn.addActionListener(e -> {
+            src.panes.Customer.CustomerAppointmentDetailsPane detailsPane = new src.panes.Customer.CustomerAppointmentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, appId);
+            cardsContainer.add(detailsPane, "APPT_DETAILS");
+            cardLayout.show(cardsContainer, "APPT_DETAILS");
         });
 
         JPanel btnContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
         btnContainer.setBackground(Color.WHITE);
-        btnContainer.add(commentBtn);
+        btnContainer.add(actionBtn);
 
         row.add(statusContainer);
         row.add(plateLabel);
