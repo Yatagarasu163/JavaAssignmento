@@ -26,8 +26,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
         setBackground(bgColor);
         setBorder(new EmptyBorder(30, 40, 40, 40));
 
-        // --- DATA RETRIEVAL ---
-        // 1. Set default fallback values
         String invoiceNo = "N/A";
         String invoiceDate = "N/A";
         String custName = "Customer";
@@ -35,25 +33,23 @@ public class CustomerPaymentDetailsPane extends JPanel {
         String plateNo = "N/A";
         String serviceType = "Unknown Service";
         String totalAmountStr = "RM 0.00";
+        String serviceIDs = "";
 
-        // 2. Read all databases
-        List<String[]> paymentList = FileHandler.read("Payment_History.txt");
-        List<String[]> customerList = FileHandler.read("Customer.txt");
+        List<String[]> paymentList = FileHandler.read("Payment.txt");
+        List<String[]> customerList = FileHandler.read("Users.txt");
         List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
         List<String[]> apptList = FileHandler.read("Appointment.txt");
+        List<String[]> priceList = FileHandler.read("Price.txt");
 
-        // 3. Extract Payment Details
         for (String[] row : paymentList) {
-            // Format: PaymentID ></ TotalAmount ></ DateTime ></ CusID ></ VehicleID ></ AppointmentId
             if (row.length >= 6 && row[5].equals(appointmentId)) {
                 invoiceNo = row[0];
-                totalAmountStr = row[1];
+                totalAmountStr = "RM " + row[1];
                 invoiceDate = row[2];
                 break;
             }
         }
 
-        // 4. Extract Customer Name
         for (String[] row : customerList) {
             if (row[0].equals(loggedInCustomerID)) {
                 custName = row[1];
@@ -61,7 +57,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
             }
         }
 
-        // 5. Extract Plate Number
         for (String[] row : vehicleList) {
             if (row[0].equals(vehicleId)) {
                 plateNo = row[1];
@@ -69,21 +64,24 @@ public class CustomerPaymentDetailsPane extends JPanel {
             }
         }
 
-        // 6. Extract Appointment Date and Service Type
         for (String[] row : apptList) {
             if (row[0].equals(appointmentId)) {
                 serviceType = row[2];
-                apptDate = row[5];
+                if (row.length > 3) {
+                    serviceIDs = row[3];
+                }
+                if (row.length > 5) {
+                    apptDate = row[5];
+                }
                 break;
             }
         }
 
-        // --- 1. BACK BUTTON ---
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         topPanel.setBackground(bgColor);
         topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        backBtn = new JButton("\u2190");
+        backBtn = new JButton("←");
         backBtn.setFont(new Font("SansSerif", Font.PLAIN, 24));
         backBtn.setForeground(Color.DARK_GRAY);
         backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -95,7 +93,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
 
         topPanel.add(backBtn);
 
-        // --- 2. RECEIPT CARD CONTAINER ---
         JPanel receiptCard = new JPanel();
         receiptCard.setLayout(new BoxLayout(receiptCard, BoxLayout.Y_AXIS));
         receiptCard.setBackground(Color.WHITE);
@@ -105,7 +102,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
                 new EmptyBorder(30, 40, 30, 40)
         ));
 
-        // --- 2i. RECEIPT HEADER (Now Dynamic!) ---
         JPanel headerPanel = new JPanel(new GridLayout(3, 4, 15, 15));
         headerPanel.setBackground(Color.WHITE);
         headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
@@ -121,7 +117,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
         separator1.setForeground(Color.GRAY);
         separator1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
 
-        // --- 2ii. RECEIPT CONTENT (Dynamic Services) ---
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
@@ -133,20 +128,31 @@ public class CustomerPaymentDetailsPane extends JPanel {
         JPanel titleRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         titleRow.setBackground(Color.WHITE);
         titleRow.add(servicesTitle);
+        titleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
         contentPanel.add(titleRow);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        // Call the ServicePricing utility we made earlier!
-        Object[][] serviceItems = IO.ServicePricing.getServiceDetails(serviceType);
+        if (serviceIDs != null && !serviceIDs.isEmpty()) {
+            String[] individualIds = serviceIDs.split(",");
 
-        // Loop through the 2D array and generate a row for each item
-        for (int i = 0; i < serviceItems.length; i++) {
-            String itemName = (String) serviceItems[i][0];
-            double itemPrice = (Double) serviceItems[i][1];
-            String formattedPrice = String.format("RM %.2f", itemPrice);
+            for (String id : individualIds) {
+                String cleanId = id.trim();
 
-            contentPanel.add(createServiceRow(itemName, formattedPrice));
+                for (String[] priceRow : priceList) {
+                    if (priceRow.length >= 4 && priceRow[0].equals(cleanId)) {
+                        String itemName = priceRow[1];
+                        double itemPrice = Double.parseDouble(priceRow[3]);
+                        String formattedPrice = String.format("RM %.2f", itemPrice);
+
+                        contentPanel.add(createServiceRow(itemName, formattedPrice));
+                        contentPanel.add(Box.createVerticalStrut(10));
+                        break; // Stop looping once we found the match for this ID
+                    }
+                }
+            }
+        } else {
+            contentPanel.add(createServiceRow("No Services Listed", "RM 0.00"));
             contentPanel.add(Box.createVerticalStrut(10));
         }
 
@@ -154,7 +160,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
         separator2.setForeground(Color.GRAY);
         separator2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
 
-        // --- 2iii. RECEIPT FOOTER (Now Dynamic!) ---
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         footerPanel.setBackground(Color.WHITE);
         footerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -168,18 +173,17 @@ public class CustomerPaymentDetailsPane extends JPanel {
         footerPanel.add(totalLabel);
         footerPanel.add(totalAmountLbl);
 
-        // --- ASSEMBLE RECEIPT CARD ---
         receiptCard.add(headerPanel);
         receiptCard.add(Box.createVerticalStrut(15));
         receiptCard.add(separator1);
         receiptCard.add(Box.createVerticalStrut(20));
         receiptCard.add(contentPanel);
+        receiptCard.add(Box.createVerticalGlue());
         receiptCard.add(Box.createVerticalStrut(40));
         receiptCard.add(separator2);
         receiptCard.add(Box.createVerticalStrut(15));
         receiptCard.add(footerPanel);
 
-        // --- ASSEMBLE ENTIRE PAGE ---
         add(topPanel);
         add(Box.createVerticalStrut(20));
         add(receiptCard);

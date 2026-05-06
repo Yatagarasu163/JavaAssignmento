@@ -29,20 +29,17 @@ public class CustomerHistoryPane extends JPanel {
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
-        // --- 1. TITLE ---
         JLabel titleLabel = new JLabel("History");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 42));
         titleLabel.setForeground(primaryPurple);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- 2. TABLE CONTAINER ---
         JPanel tableContainer = new JPanel();
         tableContainer.setLayout(new BoxLayout(tableContainer, BoxLayout.Y_AXIS));
         tableContainer.setBackground(primaryPurple);
         tableContainer.setBorder(new EmptyBorder(15, 20, 20, 20));
         tableContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // 2a. Filter Row Setup
         JPanel filterRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
         filterRow.setBackground(primaryPurple);
 
@@ -82,7 +79,6 @@ public class CustomerHistoryPane extends JPanel {
         filterRow.add(dateLabel);
         filterRow.add(dateComboGroup);
 
-        // 2b. Initial JTable setup (Starts Empty!)
         String[] columns = {"Date", "Car Plate No.", "Service Type", "Payment", "AppID", "VehID"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -103,8 +99,8 @@ public class CustomerHistoryPane extends JPanel {
         header.setBackground(Color.WHITE);
         header.setPreferredSize(new Dimension(header.getWidth(), 40));
 
-        historyTable.removeColumn(historyTable.getColumnModel().getColumn(5)); // Removes VehID view
-        historyTable.removeColumn(historyTable.getColumnModel().getColumn(4)); // Removes AppID view
+        historyTable.removeColumn(historyTable.getColumnModel().getColumn(5));
+        historyTable.removeColumn(historyTable.getColumnModel().getColumn(4));
 
         Runnable loadDataFromDatabase = () -> {
             tableModel.setRowCount(0);
@@ -114,18 +110,27 @@ public class CustomerHistoryPane extends JPanel {
             String selectedMonth = (String) monthCombo.getSelectedItem();
             String selectedYear = (String) yearCombo.getSelectedItem();
 
+            List<String[]> paymentList = FileHandler.read("Payment.txt");
             List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
             List<String[]> apptList = FileHandler.read("Appointment.txt");
 
-            for (String[] row : apptList) {
-                if (row.length >= 10) {
-                    String appId = row[0];
-                    String status = row[4];
-                    String custId = row[7];
+            for (String[] payRow : paymentList) {
+                if (payRow.length >= 7) {
+                    String custId = payRow[3].trim();
+                    String paymentStatus = payRow[6].trim();
 
-                    if (status.equalsIgnoreCase("Completed") && custId.equals(loggedInCustomerID)) {
-                        String date = row[5];
-                        String serviceType = row[2];
+                    if (custId.equals(loggedInCustomerID) && paymentStatus.equalsIgnoreCase("Paid")) {
+                        String date = payRow[2];
+                        String vehId = payRow[4];
+                        String appId = payRow[5];
+
+                        String serviceType = "Unknown";
+                        for (String[] apptRow : apptList) {
+                            if (apptRow.length >= 3 && apptRow[0].equals(appId)) {
+                                serviceType = apptRow[2];
+                                break;
+                            }
+                        }
 
                         if (!"All".equals(selectedService) && !selectedService.equals(serviceType)) {
                             continue;
@@ -142,30 +147,27 @@ public class CustomerHistoryPane extends JPanel {
                             if (!"Day".equals(selectedDay) && Integer.parseInt(selectedDay) != Integer.parseInt(d)) continue;
                         }
 
-                        String vehicleId = row[9];
-                        String plate = vehicleId;
+                        String plate = vehId;
                         for (String[] vRow : vehicleList) {
-                            if (vRow[0].equals(vehicleId)) {
+                            if (vRow.length >= 2 && vRow[0].equals(vehId)) {
                                 plate = vRow[1];
                                 break;
                             }
                         }
 
-                        String totalPrice = IO.ServicePricing.getTotalPriceFormatted(serviceType);
+                        String totalAmount = "RM " + payRow[1] + " (Paid)";
 
-                        tableModel.addRow(new Object[]{date, plate, serviceType, totalPrice, appId, vehicleId});
+                        tableModel.addRow(new Object[]{date, plate, serviceType, totalAmount, appId, vehId});
                     }
                 }
             }
         };
 
-        // Attach the loading logic to all dropdowns
         serviceCombo.addActionListener(e -> loadDataFromDatabase.run());
         dayCombo.addActionListener(e -> loadDataFromDatabase.run());
         monthCombo.addActionListener(e -> loadDataFromDatabase.run());
         yearCombo.addActionListener(e -> loadDataFromDatabase.run());
 
-        // Run it ONCE right now to populate the table when the screen first opens!
         loadDataFromDatabase.run();
 
         JScrollPane scrollPane = new JScrollPane(historyTable);
@@ -175,7 +177,6 @@ public class CustomerHistoryPane extends JPanel {
         tableContainer.add(Box.createVerticalStrut(10));
         tableContainer.add(scrollPane);
 
-        // --- 3. ACTION BUTTON ---
         JButton viewDetailsBtn = new JButton("View Details");
         viewDetailsBtn.setFont(new Font("Serif", Font.BOLD, 16));
         viewDetailsBtn.setForeground(primaryPurple);
@@ -191,15 +192,12 @@ public class CustomerHistoryPane extends JPanel {
                 JOptionPane.showMessageDialog(this, "Please select an appointment from the table first.", "No Selection", JOptionPane.WARNING_MESSAGE);
             } else {
 
-                // 1. Grab the hidden IDs from column 4 and 5!
                 String selectedAppId = (String) tableModel.getValueAt(viewRow, 4);
                 String selectedVehId = (String) tableModel.getValueAt(viewRow, 5);
 
-                // 2. YOUR WAY: Create the new pane using your custom constructor!
                 panes.Customer.CustomerPaymentDetailsPane customPaymentPane =
                         new panes.Customer.CustomerPaymentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, selectedAppId, selectedVehId);
 
-                // 3. Add it to the deck of cards and flip to it immediately
                 cardsContainer.add(customPaymentPane, "DYNAMIC_PAYMENT");
                 cardLayout.show(cardsContainer, "DYNAMIC_PAYMENT");
             }
