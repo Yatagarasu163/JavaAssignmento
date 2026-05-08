@@ -1,4 +1,4 @@
-package panes.Technician;
+package src.panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
@@ -18,6 +18,7 @@ public class TechnicianProfilePane extends JPanel {
     private JTextField nameField, phoneField, addressField, idField; // Editable
     private JTextField emailField;
     private JTextField dateField;      // Non-editable
+    private record parsedName(String firstName, String lastName){};
 
     private boolean isEditing = false;
     private FloatingButton updateBtn;
@@ -146,17 +147,7 @@ public class TechnicianProfilePane extends JPanel {
             disableField(phoneField);
             disableField(addressField);
 
-            // Adding user info into one list, update into database
-            String[] TechInfoList = new String[] {
-                    idField.getText(),
-                    nameField.getText(),
-                    emailField.getText(),
-                    dateField.getText(),
-                    phoneField.getText(),
-                    addressField.getText()
-            };
-
-            updateTechnicianInfo(TechInfoList);
+            updateTechnicianInfo();
 
         }
     }
@@ -176,24 +167,64 @@ public class TechnicianProfilePane extends JPanel {
         field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
 
-    public void updateTechnicianInfo(String[] TechnicianInfo) {
+    public static parsedName splitName(String fullName){
+        String[] parts = fullName.trim().split(" ", 2);
 
-        List<String[]> technicianList = FileHandler.read("Technician.txt");
+        String first = parts[0];
+        String last = (parts.length > 1) ? parts[1] : "";
+
+        return new parsedName(first, last);
+    }
+
+    public void updateTechnicianInfo() {
+
+        List<String[]> userList = FileHandler.read("Users.txt");
+        List<String[]> currentUser = FileHandler.read("CurrentUser.txt");
+
+        // Set to null initially so we can easily check if we found someone
+        String[] updatedInfo = null;
         boolean found = false;
 
-        for (int i = 0; i < technicianList.size(); i++) {
-            String[] infoList = technicianList.get(i);
+        // Assuming splitName() returns your parsedName object correctly
+        parsedName userName = splitName(nameField.getText());
 
-            if (infoList[0].equals(TechnicianInfo[0].replace("></", ""))) {
+        // 1. Update the Current User
+        for (String[] user: currentUser) {
+            if (user[0].equals(idField.getText())) {
+                user[1] = userName.firstName;
+                user[2] = userName.lastName;
+                user[6] = phoneField.getText();
+                user[8] = addressField.getText();
 
-                technicianList.set(i, TechnicianInfo);
-                found = true;
-                break;
+                updatedInfo = user; // Now safely INSIDE the if-statement
+                break; // Stop looping since we found the user
             }
         }
 
+        // If we successfully found and updated the user in the first step...
+        if (updatedInfo != null) {
+
+            // 2. Update the Main User List (Using a standard for-loop to use .set)
+            for (int i = 0; i < userList.size(); i++) {
+                String[] targetUser = userList.get(i);
+
+                if (targetUser[0].equals(updatedInfo[0])) {
+                    // Replace the old array with the newly updated array
+                    userList.set(i, updatedInfo);
+                    found = true;
+                    break; // Stop looping since we found the user
+                }
+            }
+        }
+
+        // 3. Save the results
         if (found) {
-            FileHandler.write("Technician.txt", technicianList, false);
+
+            FileHandler.write("Users.txt", userList, false);
+
+            // Don't forget to save the changes to the CurrentUser file too!
+            FileHandler.write("CurrentUser.txt", currentUser, false);
+
             System.out.println("Update successful.");
         } else {
             System.out.println("Technician ID not found.");
