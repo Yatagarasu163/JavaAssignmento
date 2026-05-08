@@ -113,7 +113,7 @@ public class LoginPage extends JFrame {
                                 this.dispose();
 
                             } else if (dbRole.equalsIgnoreCase("Technician")) {
-                                new panes.Technician.TechnicianMainPane(dbId).setVisible(true);
+                                new src.panes.Technician.TechnicianMainPane(dbId).setVisible(true);
                                 this.dispose();
 
                             } else {

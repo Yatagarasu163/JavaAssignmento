@@ -1,6 +1,8 @@
 package panes.Technician;
-
 import IO.FileHandler;
+import src.panes.Technician.TechnicianAppointmentDetailsPane;
+
+
 import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 public class TechnicianAppointmentPane extends JPanel {
 
-    private TechnicianAppointmentListPane listPanel;
+    private panes.Technician.TechnicianAppointmentListPane listPanel;
     private TechnicianAppointmentDetailsPane detailsPanel;
     private List<AppointmentData> appointments;
 
@@ -29,7 +31,7 @@ public class TechnicianAppointmentPane extends JPanel {
         initData(UserID, formattedDate);
 
         // 2. Create the panels
-        listPanel = new TechnicianAppointmentListPane(appointments, this);
+        listPanel = new panes.Technician.TechnicianAppointmentListPane(appointments, this);
         listPanel.setPreferredSize(new Dimension(320, 0));
 
         detailsPanel = new TechnicianAppointmentDetailsPane(this);

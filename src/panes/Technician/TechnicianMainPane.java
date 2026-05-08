@@ -1,4 +1,4 @@
-package panes.Technician;
+package src.panes.Technician;
 
 import javax.swing.*;
 
@@ -34,7 +34,9 @@ public class TechnicianMainPane extends JFrame {
 
         // Initialize the Technician Dashboard
         // TODO: Update with current session user ID and User Name
-        TechnicianDashboardPane TechnicianDashboard = new TechnicianDashboardPane("Chen Yi Hung", "TC123456");
+        String[] TechnicianInfo = getTechnicianInfo();
+        String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
+        panes.Technician.TechnicianDashboardPane TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(fullName, TechnicianInfo[0]);
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
@@ -46,25 +48,23 @@ public class TechnicianMainPane extends JFrame {
         cardLayout.show(cardContainer, "Dashboard");
 
 
-        // Technician Profile Page
-        String[] TechnicianInfo = getTechnicianInfo(UserID);
+        //TODO: Technician Profile Page (modify the data transfer)
 
-        System.out.println(TechnicianInfo[0]);
-
+        //String name, String id, String email, String date, String phone, String address
         TechnicianProfilePane profilePane = new TechnicianProfilePane(
-                TechnicianInfo[1],
+                fullName,
                 TechnicianInfo[0],
-                TechnicianInfo[2],
-                TechnicianInfo[3],
-                TechnicianInfo[4],
-                TechnicianInfo[5]
+                TechnicianInfo[5],
+                TechnicianInfo[9],
+                TechnicianInfo[6],
+                TechnicianInfo[8]
         );
 
         // Add into the main container card
         cardContainer.add(profilePane, "TechnicianProfile");
 
-        // Technician Appointment Page
-        TechnicianAppointmentPane appointmentPane = new TechnicianAppointmentPane("TC123456");
+        //TODO: Technician Appointment Page (modify the data transfer)
+        panes.Technician.TechnicianAppointmentPane appointmentPane = new panes.Technician.TechnicianAppointmentPane("TC123456");
 
         // Add appointment pane into the container card
         cardContainer.add(appointmentPane, "Appointment");
@@ -87,14 +87,13 @@ public class TechnicianMainPane extends JFrame {
         });
     }
 
-    public String[] getTechnicianInfo(String technicianID) {
+    public String[] getTechnicianInfo() {
 
-        List<String[]> technicianList = FileHandler.read("Technician.txt");
+        List<String[]> currentUser = FileHandler.read("CurrentUser.txt");
 
-        for (String[] technicianData : technicianList) {
-
-            if (technicianData[0].equals(technicianID)) {
-                return technicianData;
+        for (String[] Technician: currentUser){
+            if (Technician[4].equals("Technician")){
+                return Technician;
             }
         }
 

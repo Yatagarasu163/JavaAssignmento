@@ -12,11 +12,11 @@ public class TechnicianAppointmentListPane extends JPanel {
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgPurple = new Color(200, 200, 255);
 
-    private List<TechnicianAppointmentPane.AppointmentData> appointments;
-    private TechnicianAppointmentPane parentController;
-    private TechnicianAppointmentPane.AppointmentData selectedData;
+    private List<panes.Technician.TechnicianAppointmentPane.AppointmentData> appointments;
+    private panes.Technician.TechnicianAppointmentPane parentController;
+    private panes.Technician.TechnicianAppointmentPane.AppointmentData selectedData;
 
-    public TechnicianAppointmentListPane(List<TechnicianAppointmentPane.AppointmentData> appointments, TechnicianAppointmentPane parentController) {
+    public TechnicianAppointmentListPane(List<panes.Technician.TechnicianAppointmentPane.AppointmentData> appointments, panes.Technician.TechnicianAppointmentPane parentController) {
         this.appointments = appointments;
         this.parentController = parentController;
         if (!appointments.isEmpty()) {
@@ -45,7 +45,7 @@ public class TechnicianAppointmentListPane extends JPanel {
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setOpaque(false);
 
-        for (TechnicianAppointmentPane.AppointmentData data : appointments) {
+        for (panes.Technician.TechnicianAppointmentPane.AppointmentData data : appointments) {
             boolean isSelected = (data == selectedData);
             JPanel card = createCard(data, isSelected);
             listPanel.add(card);
@@ -63,7 +63,7 @@ public class TechnicianAppointmentListPane extends JPanel {
         repaint();
     }
 
-    private JPanel createCard(TechnicianAppointmentPane.AppointmentData data, boolean isSelected) {
+    private JPanel createCard(panes.Technician.TechnicianAppointmentPane.AppointmentData data, boolean isSelected) {
         JPanel card = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {

@@ -1,4 +1,4 @@
-package panes.Technician;
+package src.panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
@@ -16,8 +16,8 @@ import javax.swing.border.MatteBorder;
 public class TechnicianAppointmentDetailsPane extends JPanel {
 
     private final Color primaryPurple = new Color(128, 128, 255);
-    private TechnicianAppointmentPane parentController;
-    private TechnicianAppointmentPane.AppointmentData currentData;
+    private panes.Technician.TechnicianAppointmentPane parentController;
+    private panes.Technician.TechnicianAppointmentPane.AppointmentData currentData;
 
     // Dynamic UI Containers
     private JLabel section1Title;
@@ -27,7 +27,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
     private JPanel chatPanel;
     private FloatingButton completeBtn;
 
-    public TechnicianAppointmentDetailsPane(TechnicianAppointmentPane parentController) {
+    public TechnicianAppointmentDetailsPane(panes.Technician.TechnicianAppointmentPane parentController) {
         this.parentController = parentController;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
@@ -186,7 +186,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
     }
 
     // Called by the Controller when a new card is clicked
-    public void loadAppointment(TechnicianAppointmentPane.AppointmentData data) {
+    public void loadAppointment(panes.Technician.TechnicianAppointmentPane.AppointmentData data) {
         this.currentData = data;
 
         // Update Text Info
