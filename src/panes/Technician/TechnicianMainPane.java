@@ -36,7 +36,7 @@ public class TechnicianMainPane extends JFrame {
         // TODO: Update with current session user ID and User Name
         String[] TechnicianInfo = getTechnicianInfo();
         String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
-        panes.Technician.TechnicianDashboardPane TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(fullName, TechnicianInfo[0]);
+        panes.Technician.TechnicianDashboardPane TechnicianDashboard = new panes.Technician.TechnicianDashboardPane();
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
