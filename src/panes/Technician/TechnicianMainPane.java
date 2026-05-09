@@ -35,8 +35,7 @@ public class TechnicianMainPane extends JFrame {
         // Initialize the Technician Dashboard
         // TODO: Update with current session user ID and User Name
         String[] TechnicianInfo = getTechnicianInfo();
-        String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
-        panes.Technician.TechnicianDashboardPane TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(fullName, TechnicianInfo[0]);
+        src.panes.Technician.TechnicianDashboardPane TechnicianDashboard = new src.panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0]);
 
         // Add the Dashboard to card container
         cardContainer.add(TechnicianDashboard, "Dashboard");
@@ -49,8 +48,7 @@ public class TechnicianMainPane extends JFrame {
 
 
         //TODO: Technician Profile Page (modify the data transfer)
-
-        //String name, String id, String email, String date, String phone, String address
+        String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
         TechnicianProfilePane profilePane = new TechnicianProfilePane(
                 fullName,
                 TechnicianInfo[0],

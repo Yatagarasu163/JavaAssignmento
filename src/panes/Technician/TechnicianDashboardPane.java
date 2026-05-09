@@ -1,4 +1,4 @@
-package panes.Technician;
+package src.panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
@@ -24,13 +24,13 @@ public class TechnicianDashboardPane extends JPanel {
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgColor = new Color(248, 248, 250); // Slightly off-white background
 
-    public TechnicianDashboardPane(String userName, String UserID) {
+    public TechnicianDashboardPane(String username, String UserID) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
         // --- PART 1: GREETING ---
-        JLabel greetingLabel = new JLabel("Hi, " + userName);
+        JLabel greetingLabel = new JLabel("Hi, " + username);
         greetingLabel.setFont(new Font("SansSerif", Font.BOLD, 36));
         greetingLabel.setForeground(primaryPurple);
         greetingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -238,45 +238,44 @@ public class TechnicianDashboardPane extends JPanel {
     }
 
 
-    public static List<String[]> getTodayAppointments(String userId, String appointmentDate) {
-
+    public static List<String[]> getTodayAppointments(String userId, String appointmentDate){
         List<String[]> appointmentList = FileHandler.read("Appointment.txt");
-        List<String[]> VehicleList = FileHandler.read("Vehicle.txt");
-        List<String[]> CustomerList = FileHandler.read("Customer.txt");
+        List<String[]> userList = FileHandler.read("Users.tx");
+        List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
         List<String[]> todayAppointments = new ArrayList<>();
 
-        for (String[] appointments: appointmentList){
-            if (appointments[5].trim().equals(appointmentDate) && appointments[6].trim().equals(userId)) {
-                String[] appointment = new String[] {
-                        appointments[9].trim(),
-                        appointments[9].trim(),
-                        appointments[7].trim(),
-                        appointments[4].trim()
+      // get today appointments
+        for (String[] appointment: appointmentList){
+            if (appointment[6].equals(userId) & appointment[5].equals(appointmentDate)) {
+                String[] availableAppointments = new String[] {
+                        appointment[9],
+                        appointment[9],
+                        appointment[7],
+                        appointment[4]
                 };
-
-                todayAppointments.add(appointment);
+                todayAppointments.add(availableAppointments);
             }
         }
 
-        for (String[] vehicles: VehicleList){
-            for (String[] appointment: todayAppointments){
-                if (vehicles[0].equals(appointment[0])){
-                    appointment[0] = vehicles[1];
-                    appointment[1] = vehicles[2];
+        for (String[] vehicle: vehicleList){
+            for(String[] appointments: todayAppointments){
+                if (vehicle[0].equals(appointments[0])){
+                    appointments[0] = vehicle[1];
+                    appointments[1] = vehicle[2];
                 }
             }
         }
 
-        for (String[] customers : CustomerList){
-            for (String[] appointment: todayAppointments) {
-                if (customers[0].equals(appointment[2])){
-                    appointment[2] = customers[1];
+        for (String[] user: userList){
+            for (String[] appointments: todayAppointments){
+                if (user[0].equals(appointments[2])){
+                    String fullName = user[1] + user[2];
+                    appointments[2] = fullName;
                 }
             }
         }
 
         return todayAppointments;
-
     }
 
 
