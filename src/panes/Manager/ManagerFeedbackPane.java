@@ -5,13 +5,45 @@ import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.FeedbackTable;
 import components.FloatingComboBox;
 import components.TextLabel;
 import config.UIConfig;
+import IO.FileHandler;
 
 public class ManagerFeedbackPane extends JPanel{
+
+    private List<String[]> ratings = FileHandler.read(FileHandler.rating);
+    private List<String[]> comments = FileHandler.read(FileHandler.comments);
+    private List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+
+    private List<String[]> data_list = new ArrayList<>();
+
+
+    for(String[] rating : ratings){
+        String appointmentID = rating[6];
+        for(String[] appointment : appointments){
+            if(appointment[0].equalsIgnoreCase(appointmentID)){
+                data_list.add(new String[]{appointment[2], rating[1], appointment[5]});
+                break;
+            }
+        }
+    }
+
+    for(String[] comment : comments){
+        String commentAppointmentID = comment[4];
+        String datetime = comment[3];
+        String date = datetime.split(" ")[0];
+        for(String[] appointment : appointments){
+            if(appointment[0].equalsIgnoreCase(commentAppointmentID)){
+                data_list.add(new String[]{appointment[2], comment[1], date});
+                break;
+            }
+        }
+    }
 
     private String[] columns;
 
@@ -44,14 +76,10 @@ public class ManagerFeedbackPane extends JPanel{
         tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 350));
 
-        String[][] testData = {
-            {"Normal", "Very nice", "11/9/2001"},
-            {"Major", "I kena scam sia", "13/5/1963"},
-            {"Normal", "I came here to look at hot mechanics. I came", "31/8/1957"}
-        };
         columns = new String[]{"Service Type", "Feedback", "Date"};
+        String[][] data = data_list.toArray(new String[0][]);
 
-        FeedbackTable feedbackTable = new FeedbackTable(testData, columns);
+        FeedbackTable feedbackTable = new FeedbackTable(data, columns);
         feedbackTable.setGridColor(Color.WHITE);
         feedbackTable.setShowGrid(true);
 
@@ -109,5 +137,4 @@ public class ManagerFeedbackPane extends JPanel{
             }
         });
     }
-
 }

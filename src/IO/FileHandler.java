@@ -15,6 +15,8 @@ public class FileHandler {
     public static final String currentUser = "CurrentUser.txt";
     public static final String prices = "Price.txt";
     public static final String payment = "Payment.txt";
+    public static final String rating = "Rating_Review.txt";
+    public static final String comments = "Comments.txt";
     
 
     public static void write(String filename, List<String[]> data, boolean append) {
