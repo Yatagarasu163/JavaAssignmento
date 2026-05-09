@@ -26,6 +26,8 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
     private JPanel tasksPanel;
     private JPanel chatPanel;
     private FloatingButton completeBtn;
+    private JTextField inputField;
+    private JLabel sendIcon;
 
     public TechnicianAppointmentDetailsPane(panes.Technician.TechnicianAppointmentPane parentController) {
         this.parentController = parentController;
@@ -95,14 +97,14 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         inputContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         inputContainer.setMaximumSize(new Dimension(800, 40));
 
-        JTextField inputField = new JTextField();
+        inputField = new JTextField();
         inputField.setOpaque(false);
         inputField.setBorder(BorderFactory.createCompoundBorder(
                 new MatteBorder(0, 0, 1, 0, Color.GRAY),
                 new EmptyBorder(5, 5, 5, 5)
         ));
 
-        JLabel sendIcon = new JLabel("➤");
+        sendIcon = new JLabel("➤");
         sendIcon.setFont(new Font("SansSerif", Font.PLAIN, 18));
         sendIcon.setForeground(Color.GRAY);
         sendIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -118,9 +120,8 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
                 // Grab text first
                 String messageText = inputField.getText().trim();
 
-                if (!messageText.isEmpty() && currentData != null) {
+                if (!messageText.isEmpty() && currentData != null && !currentData.status.equals("Completed")) {
 
-                    // 1. GENERATE TIME INSIDE THE LISTENER (so it is perfectly accurate)
                     String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 
                     currentData.chatHistory.add(new String[]{"TECHNICIAN", messageText});
@@ -209,8 +210,17 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
             cb.setForeground(Color.GRAY);
             cb.setOpaque(false);
 
+            if (data.taskStates[i] || data.status.equals("Completed")) {
+                cb.setEnabled(false);
+            }
+
             cb.addItemListener(e -> {
                 data.taskStates[index] = cb.isSelected();
+
+                if (cb.isSelected()) {
+                    cb.setEnabled(false);
+                }
+
                 evaluateLogic();
             });
             tasksPanel.add(cb);
@@ -242,8 +252,20 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
             completeBtn.setText("Maintenance Logged");
             completeBtn.setBackground(new Color(100, 200, 100));
             completeBtn.setEnabled(false);
+
+            inputField.setEnabled(false);
+            inputField.setText("Chat disabled (Maintenance Completed)");
+            sendIcon.setEnabled(false);
+            sendIcon.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return;
         }
+
+        inputField.setEnabled(true);
+        if (inputField.getText().equals("Chat disabled (Maintenance Completed)")) {
+            inputField.setText("");
+        }
+        sendIcon.setEnabled(true);
+        sendIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         int total = currentData.taskStates.length;
         int checked = 0;
@@ -325,7 +347,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
 
             int randomInt = random.nextInt(1000000);
 
-            newID = "C" + String.valueOf(randomInt);
+            newID = "CT" + String.valueOf(randomInt);
 
             isUnique = true; // Assume it is unique until proven otherwise
 

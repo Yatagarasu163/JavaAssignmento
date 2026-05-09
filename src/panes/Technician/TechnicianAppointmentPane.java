@@ -4,11 +4,13 @@ import src.panes.Technician.TechnicianAppointmentDetailsPane;
 
 
 import java.awt.*;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -85,7 +87,7 @@ public class TechnicianAppointmentPane extends JPanel {
 
         int i = 1;
         for (String[] appointment:AppointmentList){
-
+            //String time, String model, String plate, String name, String contact, String email
             AppointmentData app = new AppointmentData("slot " + i, appointment[0], appointment[1], appointment[2],
                     appointment[3], appointment[4]);
             for (String[] details : AppointmentDetails){
@@ -99,10 +101,22 @@ public class TechnicianAppointmentPane extends JPanel {
                     // Add service task
                     switch (details[2]) {
                         case "Normal Service":
-                            app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires"};
+                            String[] baseTasks = new String[]{
+                                    "Fully Synthetic Engine Oil (4L)", "Oil Filter Replacement", "Drain Plug Washer",
+                                    "Tire Rotation & Balancing", "Battery Health Check & Cleaning", "Windshield Wiper Fluid Top-up"
+                            };
+                            String[] extraServiceNames = additionalServices(details[3]);
+                            List<String> combinedList = new ArrayList<>(Arrays.asList(baseTasks));
+                            combinedList.addAll(Arrays.asList(extraServiceNames));
+                            app.tasks = combinedList.toArray(new String[0]);
                             break;
                         case "Major Service":
-                            app.tasks = new String[]{"10,000 km schedule service", "Replace Oil Filter", "Rotate Tires", "Additional Features"};
+                            String[] baseTask = new String[]{"Spark Plugs Replacement (Set of 4)", "Transmission Fluid Flush", "Brake Pad Replacement",
+                                                    "Brake Fluid Flush & Bleed", "Cabin Air Filter (A/C) Replacement", "Engine Coolant System Flush"};
+                            String[] extraServiceName = additionalServices(details[3]);
+                            List<String> combinedLists = new ArrayList<>(Arrays.asList(baseTask));
+                            combinedLists.addAll(Arrays.asList(extraServiceName));
+                            app.tasks = combinedLists.toArray(new String[0]);
                             break;
                         default:
                             app.tasks = new String[]{"Unknown Service"};
@@ -111,6 +125,7 @@ public class TechnicianAppointmentPane extends JPanel {
 
                     }
                 }
+
             }
 
             // length of assigned task
@@ -142,13 +157,14 @@ public class TechnicianAppointmentPane extends JPanel {
     }
 
     public static List<String[]> AppointmentInfo(String TechnicianID, String date){
+
         List<String[]> appointmentList = FileHandler.read("Appointment.txt");
-        List<String[]> VehicleList = FileHandler.read("Vehicle.txt");
-        List<String[]> CustomerList = FileHandler.read("Customer.txt");
+        List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
+        List<String[]> userList = FileHandler.read("Users.txt");
         List<String[]> todayAppointments = new ArrayList<>();
 
         for (String[] appointments: appointmentList){
-            if (appointments[5].trim().equals(date) && appointments[6].trim().equals(TechnicianID)) {
+            if (appointments[5].equals(date) && appointments[6].equals(TechnicianID)) {
                 String[] appointment = new String[] {
                         appointments[9].trim(),
                         appointments[9].trim(),
@@ -162,26 +178,60 @@ public class TechnicianAppointmentPane extends JPanel {
             }
         }
 
-        for (String[] vehicles: VehicleList){
+        System.out.println("currentAppointment: " + todayAppointments);
+
+        for (String[] vehicles: vehicleList){
             for (String[] appointment: todayAppointments){
                 if (vehicles[0].trim().equals(appointment[0])){
-                    appointment[0] = vehicles[1].trim();
-                    appointment[1] = vehicles[2].trim();
+                    appointment[0] = vehicles[2];
+                    appointment[1] = vehicles[1];
                 }
             }
         }
 
-        for (String[] customers : CustomerList){
+        for (String[] customers : userList){
             for (String[] appointment: todayAppointments) {
                 if (customers[0].trim().equals(appointment[2])){
-                    appointment[2] = customers[1].trim();
-                    appointment[3] = customers[4].trim();
-                    appointment[4] = customers[5].trim();
+                    String fullName = customers[1] + customers[2];
+                    appointment[2] = fullName;
+                    appointment[3] = customers[6];
+                    appointment[4] = customers[5];
                 }
             }
         }
 
+        System.out.println("today appointment: " + todayAppointments);
+
         return todayAppointments;
+    }
+
+    public String[] additionalServices(String addServiceIDs) {
+        String[] addServices = addServiceIDs.split(",");
+
+        List<String[]> serviceList = FileHandler.read("Price.txt");
+
+        for (int i = 0; i < addServices.length; i++) {
+            for (String[] service : serviceList) {
+                if (addServices[i].equals(service[0])) {
+
+                    addServices[i] = service[1];
+
+                    break;
+                }
+            }
+        }
+
+        return addServices;
+    }
+
+    // navigate to specific appointment view
+    public void openSpecificAppointment(String plateNumber) {
+        for (AppointmentData data : appointments) {
+            if (data.plate.equals(plateNumber)) {
+                onAppointmentSelected(data);
+                break;
+            }
+        }
     }
 
     // --- DATA CLASS TO HOLD STATE ---
