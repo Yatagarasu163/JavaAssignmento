@@ -5,8 +5,6 @@ import components.FloatingButton;
 import userClass.User;
 
 import java.awt.*;
-import java.sql.SQLOutput;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -15,16 +13,15 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TechnicianDashboardPane extends JPanel {
 
     private final Color primaryPurple = new Color(128, 128, 255);
     private final Color bgColor = new Color(248, 248, 250); // Slightly off-white background
+    private TechnicianMainPane mainController;
 
-    public TechnicianDashboardPane(String username, String UserID) {
+    public TechnicianDashboardPane(String username, String UserID, TechnicianMainPane mainController) {
+        this.mainController = mainController;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
@@ -79,7 +76,8 @@ public class TechnicianDashboardPane extends JPanel {
                     Appointments[0],
                     Appointments[1],
                     Appointments[2],
-                    Appointments[3]
+                    Appointments[3],
+                    UserID
             ));
         }
 
@@ -166,7 +164,7 @@ public class TechnicianDashboardPane extends JPanel {
     }
 
     // --- HELPER: Creates a Table Row ---
-    private JPanel createTableRow(String plate, String model, String client, String status) {
+    private JPanel createTableRow(String plate, String model, String client, String status, String userID) {
         JPanel row = new JPanel(new GridLayout(1, 5, 10, 0));
         row.setBackground(Color.WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
@@ -222,7 +220,7 @@ public class TechnicianDashboardPane extends JPanel {
 
         viewBtn.addActionListener(e -> {
             System.out.println("Navigating to view details for: " + plate);
-            // TODO: Add CardLayout switching logic here
+            mainController.navigateToAppointment(plate);
         });
 
         btnContainer.add(viewBtn);
