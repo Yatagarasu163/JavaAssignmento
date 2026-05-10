@@ -23,31 +23,32 @@ public class ManagerFeedbackPane extends JPanel{
     private List<String[]> data_list = new ArrayList<>();
 
 
-    for(String[] rating : ratings){
-        String appointmentID = rating[6];
-        for(String[] appointment : appointments){
-            if(appointment[0].equalsIgnoreCase(appointmentID)){
-                data_list.add(new String[]{appointment[2], rating[1], appointment[5]});
-                break;
-            }
-        }
-    }
-
-    for(String[] comment : comments){
-        String commentAppointmentID = comment[4];
-        String datetime = comment[3];
-        String date = datetime.split(" ")[0];
-        for(String[] appointment : appointments){
-            if(appointment[0].equalsIgnoreCase(commentAppointmentID)){
-                data_list.add(new String[]{appointment[2], comment[1], date});
-                break;
-            }
-        }
-    }
-
     private String[] columns;
 
     public ManagerFeedbackPane() {
+
+        for(String[] rating : ratings){
+            String appointmentID = rating[6];
+            for(String[] appointment : appointments){
+                if(appointment[0].equalsIgnoreCase(appointmentID)){
+                    data_list.add(new String[]{appointment[2], rating[1], appointment[5]});
+                    break;
+                }
+            }
+        }
+
+        for(String[] comment : comments){
+            String commentAppointmentID = comment[4];
+            String datetime = comment[3];
+            String date = datetime.split(" ")[0];
+            for(String[] appointment : appointments){
+                if(appointment[0].equalsIgnoreCase(commentAppointmentID)){
+                    data_list.add(new String[]{appointment[2], comment[1], date});
+                    break;
+                }
+            }
+        }
+        
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
