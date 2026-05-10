@@ -1,4 +1,4 @@
-package src.panes;
+package panes;
 
 import javax.swing.*;
 import components.FloatingPasswordField;
@@ -101,7 +101,7 @@ public class LoginPage extends JFrame {
                             JOptionPane.showMessageDialog(this, "Login Successful! Welcome, " + dbUserName, "Success", JOptionPane.INFORMATION_MESSAGE);
 
                             if (dbRole.equalsIgnoreCase("Customer")) {
-                                new src.panes.Customer.CustomerMainPane().setVisible(true);
+                                new panes.Customer.CustomerMainPane().setVisible(true);
                                 this.dispose();
 
                             } else if (dbRole.equalsIgnoreCase("Manager")) {
@@ -113,7 +113,7 @@ public class LoginPage extends JFrame {
                                 this.dispose();
 
                             } else if (dbRole.equalsIgnoreCase("Technician")) {
-                                new src.panes.Technician.TechnicianMainPane(dbId).setVisible(true);
+                                new panes.Technician.TechnicianMainPane(dbId).setVisible(true);
                                 this.dispose();
 
                             } else {

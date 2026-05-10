@@ -1,4 +1,4 @@
-package src.panes.Customer;
+package panes.Customer;
 
 import IO.FileHandler;
 import java.awt.*;

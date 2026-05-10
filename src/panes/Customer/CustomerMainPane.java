@@ -1,10 +1,12 @@
-package src.panes.Customer;
+package panes.Customer;
 
 import javax.swing.*;
-import src.panes.SidebarPanel;
+import panes.SidebarPanel;
+import panes.Customer.*;
 import java.awt.*;
 import java.util.List;
 import IO.FileHandler;
+
 
 public class CustomerMainPane extends JFrame {
     private String loggedInUserID = "UNKNOWN";
@@ -37,17 +39,17 @@ public class CustomerMainPane extends JFrame {
         CardLayout cardLayout = new CardLayout();
         cardsContainer.setLayout(cardLayout);
 
-        src.panes.Customer.CustomerDashboardPane dashboardPane = new src.panes.Customer.CustomerDashboardPane(cardsContainer, cardLayout, loggedInUserID);
+        CustomerDashboardPane dashboardPane = new CustomerDashboardPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(dashboardPane, "DASHBOARD");
 
         contentPane.add(cardsContainer, BorderLayout.CENTER);
 
         cardLayout.show(cardsContainer, "DASHBOARD");
 
-        src.panes.Customer.CustomerProfilePane profilePane = new src.panes.Customer.CustomerProfilePane(loggedInUserID);
+        CustomerProfilePane profilePane = new CustomerProfilePane(loggedInUserID);
         cardsContainer.add(profilePane, "PROFILE");
 
-        src.panes.Customer.CustomerHistoryPane historyPane = new src.panes.Customer.CustomerHistoryPane(cardsContainer, cardLayout, loggedInUserID);
+        CustomerHistoryPane historyPane = new CustomerHistoryPane(cardsContainer, cardLayout, loggedInUserID);
         cardsContainer.add(historyPane, "HISTORY");
 
         sidebarPanel.getHomeBtn().addActionListener(e -> {
