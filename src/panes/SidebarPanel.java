@@ -1,4 +1,4 @@
-package src.panes;
+package panes;
 import javax.swing.*;
 import java.awt.*;
 import components.FloatingToggleButton;

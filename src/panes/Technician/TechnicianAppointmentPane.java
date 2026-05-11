@@ -1,6 +1,6 @@
 package panes.Technician;
 import IO.FileHandler;
-import src.panes.Technician.TechnicianAppointmentDetailsPane;
+import panes.Technician.TechnicianAppointmentDetailsPane;
 
 
 import java.awt.*;

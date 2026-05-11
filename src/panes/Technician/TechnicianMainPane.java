@@ -1,9 +1,9 @@
-package src.panes.Technician;
+package panes.Technician;
 
 import javax.swing.*;
 
 import IO.FileHandler;
-import src.panes.SidebarPanel;
+import panes.SidebarPanel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class TechnicianMainPane extends JFrame {
 
     // 1. Make these class-level so methods can access them
-    private src.panes.Technician.TechnicianDashboardPane TechnicianDashboard;
+    private panes.Technician.TechnicianDashboardPane TechnicianDashboard;
     private panes.Technician.TechnicianAppointmentPane appointmentPane;
     private JPanel cardContainer;
     private CardLayout cardLayout;
@@ -41,7 +41,7 @@ public class TechnicianMainPane extends JFrame {
         String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
 
         // 2. Initialize Panels (Notice we pass 'this' into the dashboard now!)
-        TechnicianDashboard = new src.panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
+        TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
         appointmentPane = new panes.Technician.TechnicianAppointmentPane(TechnicianInfo[0]);
         TechnicianProfilePane profilePane = new TechnicianProfilePane(fullName, TechnicianInfo[0], TechnicianInfo[5], TechnicianInfo[9], TechnicianInfo[6], TechnicianInfo[8]);
 
@@ -57,7 +57,7 @@ public class TechnicianMainPane extends JFrame {
             cardContainer.remove(TechnicianDashboard);
 
             // Create a brand new one that reads the latest database changes
-            TechnicianDashboard = new src.panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
+            TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
             cardContainer.add(TechnicianDashboard, "Dashboard");
 
             cardLayout.show(cardContainer, "Dashboard");

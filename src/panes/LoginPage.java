@@ -1,4 +1,4 @@
-package src.panes;
+package panes;
 
 import javax.swing.*;
 import components.FloatingPasswordField;
@@ -113,7 +113,7 @@ public class LoginPage extends JFrame {
                                 this.dispose();
 
                             } else if (dbRole.equalsIgnoreCase("Technician")) {
-                                new src.panes.Technician.TechnicianMainPane(dbId).setVisible(true);
+                                new panes.Technician.TechnicianMainPane(dbId).setVisible(true);
                                 this.dispose();
 
                             } else {

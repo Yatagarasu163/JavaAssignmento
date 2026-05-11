@@ -1,4 +1,4 @@
-package src.panes.Technician;
+package panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
