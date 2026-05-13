@@ -1,4 +1,4 @@
-package src.panes.Customer;
+package panes.Customer;
 
 import IO.FileHandler;
 import java.awt.*;
@@ -196,7 +196,7 @@ public class CustomerHistoryPane extends JPanel {
                 String selectedAppId = (String) tableModel.getValueAt(viewRow, 4);
                 String selectedVehId = (String) tableModel.getValueAt(viewRow, 5);
 
-                src.panes.Customer.CustomerPaymentDetailsPane customPaymentPane = new src.panes.Customer.CustomerPaymentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, selectedAppId, selectedVehId);
+                panes.Customer.CustomerPaymentDetailsPane customPaymentPane = new panes.Customer.CustomerPaymentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, selectedAppId, selectedVehId);
 
                 cardsContainer.add(customPaymentPane, "DYNAMIC_PAYMENT");
                 cardLayout.show(cardsContainer, "DYNAMIC_PAYMENT");

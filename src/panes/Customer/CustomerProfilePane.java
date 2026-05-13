@@ -1,4 +1,4 @@
-package src.panes.Customer;
+package panes.Customer;
 
 import components.FloatingButton;
 import java.awt.*;
@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import config.UIConfig;
+import IO.FileHandler;
 
 public class CustomerProfilePane extends JPanel {
 
@@ -32,7 +33,7 @@ public class CustomerProfilePane extends JPanel {
 
         String name = "Not found", email = "Not found", date = "Not found", phone = "Not found", address = "Not found";
 
-        List<String[]> currentUserData = IO.FileHandler.read("CurrentUser.txt");
+        List<String[]> currentUserData = FileHandler.read("CurrentUser.txt");
 
         if (!currentUserData.isEmpty() && currentUserData.get(0).length >= 10) {
             String[] row = currentUserData.get(0);
@@ -151,7 +152,7 @@ public class CustomerProfilePane extends JPanel {
 
     private void saveUpdatedProfileData() {
         try {
-            List<String[]> usersList = IO.FileHandler.read("Users.txt");
+            List<String[]> usersList = FileHandler.read("Users.txt");
             boolean dataUpdated = false;
             String[] updatedRow = null;
 
@@ -180,7 +181,7 @@ public class CustomerProfilePane extends JPanel {
             }
 
             if (dataUpdated) {
-                IO.FileHandler.write("Users.txt", usersList, false);
+                FileHandler.write("Users.txt", usersList, false);
 
                 try (java.io.FileWriter writer = new java.io.FileWriter("src/database/CurrentUser.txt", false)) {
                     writer.write(String.join("/></", updatedRow));

@@ -1,4 +1,4 @@
-package src.panes.Customer;
+package panes.Customer;
 
 import components.FloatingButton;
 import java.awt.*;
@@ -233,7 +233,7 @@ public class CustomerDashboardPane extends JPanel {
         }
 
         actionBtn.addActionListener(e -> {
-            src.panes.Customer.CustomerAppointmentDetailsPane detailsPane = new src.panes.Customer.CustomerAppointmentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, appId);
+            panes.Customer.CustomerAppointmentDetailsPane detailsPane = new panes.Customer.CustomerAppointmentDetailsPane(cardsContainer, cardLayout, loggedInCustomerID, appId);
             cardsContainer.add(detailsPane, "APPT_DETAILS");
             cardLayout.show(cardsContainer, "APPT_DETAILS");
         });

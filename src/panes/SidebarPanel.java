@@ -2,6 +2,7 @@ package panes;
 import javax.swing.*;
 import java.awt.*;
 import components.FloatingToggleButton;
+import panes.LoginPage;
 
 public class SidebarPanel extends JPanel {
 

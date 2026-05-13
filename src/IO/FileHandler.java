@@ -18,7 +18,7 @@ public class FileHandler {
     
 
     public static void write(String filename, List<String[]> data, boolean append) {
-        String path = "src/database/" + filename;
+        String path = "database/" + filename;
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, append))) {
 
@@ -38,7 +38,7 @@ public class FileHandler {
     public static List<String[]> read(String filename) {
         List<String[]> output = new ArrayList<>();
 
-        String path = "src/database/" + filename;
+        String path = "database/" + filename;
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
