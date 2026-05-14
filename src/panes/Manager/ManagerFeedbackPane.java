@@ -5,17 +5,54 @@ import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.ArrayList;
 
 import components.FeedbackTable;
 import components.FloatingComboBox;
 import components.TextLabel;
 import config.UIConfig;
+import IO.FileHandler;
 
 public class ManagerFeedbackPane extends JPanel{
+
+    private static final String ratingPath = "Rating_Review.txt";
+    private static final String commentPath = "Comments.txt";
+    private static final String appointmentPath = "Appointment.txt";
+    private List<String[]> rawRatings = FileHandler.read(ratingPath); // Rating[1]
+    private List<String[]> rawComments = FileHandler.read(commentPath); // Comment[1]
+    private List<String[]> rawAppointments = FileHandler.read(appointmentPath); //App[2] + App[5]
+    private List<String[]> feedbackDataList = new ArrayList<>();
+    private List<String[]> commentDataList = new ArrayList<>();
+    private List<String[]> fullTableDataList = new ArrayList<>();
 
     private String[] columns;
 
     public ManagerFeedbackPane() {
+
+        for(String[] rating : rawRatings){
+            for(String[] appointment : rawAppointments){
+                String[] temp = {appointment[2], rating[1], appointment[5]};
+                feedbackDataList.add(temp);
+                fullTableDataList.add(temp);
+                break;
+            }
+        }
+
+        for(String[] comment : rawComments){
+            for(String[] appointment : rawAppointments){
+                String[] dateTime = comment[3].split(" ");
+                String[] temp = {appointment[2], comment[1], dateTime[0]};
+                commentDataList.add(temp);
+                fullTableDataList.add(temp);
+                break;
+            }
+        }
+
+        String[][] feedbackTableData = feedbackDataList.toArray(new String[0][]);
+        String[][] commentTableData = commentDataList.toArray(new String[0][]);
+        String[][] fullTableData = fullTableDataList.toArray(new String[0][]);
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -44,15 +81,10 @@ public class ManagerFeedbackPane extends JPanel{
         tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 350));
 
-        String[][] testData = {
-            {"Normal", "Very nice", "11/9/2001"},
-            {"Major", "I kena scam sia", "13/5/1963"},
-            {"Normal", "I came here to look at hot mechanics. I came", "31/8/1957"}
-        };
+
         columns = new String[]{"Service Type", "Feedback", "Date"};
 
-        FeedbackTable feedbackTable = new FeedbackTable(testData, columns);
-        feedbackTable.setGridColor(Color.WHITE);
+        FeedbackTable feedbackTable = new FeedbackTable(feedbackTableData, columns);
         feedbackTable.setShowGrid(true);
 
         feedbackTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -60,8 +92,8 @@ public class ManagerFeedbackPane extends JPanel{
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            label.setBackground(UIConfig.mainBackground);
-            label.setForeground(UIConfig.mainForeground);
+            label.setBackground(UIConfig.mainForeground);
+            label.setForeground(UIConfig.mainBackground);
         
             return label;
         }
@@ -90,21 +122,25 @@ public class ManagerFeedbackPane extends JPanel{
                 case 0: 
                     //Set data to feedback values only
                     columns = new String[]{"Service Type", "Feedback", "Date"};
-                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    DefaultTableModel feedbackModel = new DefaultTableModel(feedbackTableData, columns);
+                    feedbackTable.setModel(feedbackModel);
                     break;
                 case 1: 
                     //Set data to comment values only
                     columns = new String[]{"Service Type", "Comments", "Date"};
-                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    DefaultTableModel commentModel = new DefaultTableModel(commentTableData, columns);
+                    feedbackTable.setModel(commentModel);
                     break;
                 case 2:
                     //Set data to feedback and comment values
                     columns = new String[]{"Service Type", "Feedback and Comments", "Date"};
-                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    DefaultTableModel tableModel = new DefaultTableModel(fullTableData, columns);
+                    feedbackTable.setModel(tableModel);
                     break;
                 default:
                     columns = new String[]{"Service Type", "Feedback", "Date"};
-                    feedbackTable.getTableModel().setColumnIdentifiers(columns);
+                    DefaultTableModel defaultModel = new DefaultTableModel(feedbackTableData, columns);
+                    feedbackTable.setModel(defaultModel);
                     break;
             }
         });

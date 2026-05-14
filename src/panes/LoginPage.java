@@ -6,6 +6,8 @@ import components.FloatingTextField;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import IO.FileHandler;
+import java.util.List;
+import java.util.ArrayList;
 
 import config.UIConfig;
 
@@ -94,8 +96,10 @@ public class LoginPage extends JFrame {
                     if (dbId.equalsIgnoreCase(inputId)) {
                         userFound = true;
                         if (dbPassword.equals(inputPassword)) {
-                            try (java.io.FileWriter writer = new java.io.FileWriter("src/database/CurrentUser.txt", false)) {
-                                writer.write(String.join("/></", row));
+                            try{
+                                List<String[]> inputRow = new ArrayList<>();
+                                inputRow.add(row);
+                                FileHandler.write("CurrentUser.txt", inputRow, false);
                             } catch (Exception ex) {
                                 System.out.println("Error saving session: " + ex.getMessage());
                             }

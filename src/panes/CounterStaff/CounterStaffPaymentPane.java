@@ -22,11 +22,14 @@ public class CounterStaffPaymentPane extends JPanel{
 	private PaymentListener listener;
     private Timer timer;
     private int lastCount = -1;
+    private String typeItem;
+    private String statusItem;
+    private boolean initialized = true;
 
 	public CounterStaffPaymentPane(PaymentListener listener){
 		this.listener = listener;
 
-       	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+       	setLayout(new BorderLayout());
       	setBackground(Color.WHITE);
        	setBorder(new EmptyBorder(20, 20, 20, 20));
 
@@ -61,9 +64,8 @@ public class CounterStaffPaymentPane extends JPanel{
 		TextLabel titleLbl = new TextLabel("Payment List");
         titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLbl.setFontSize(50);
-		topPanel.add(titleLbl, BorderLayout.CENTER);
-		add(topPanel);
-		add(Box.createVerticalStrut(10));
+		topPanel.add(titleLbl, BorderLayout.NORTH);
+		add(topPanel, BorderLayout.NORTH);
 
 		mainPanel middlePanel = new mainPanel();
 		middlePanel.setBackground(UIConfig.mainBackground);
@@ -81,10 +83,14 @@ public class CounterStaffPaymentPane extends JPanel{
         Dimension fixed = new Dimension(200, 40);
 
 
-        String[] options = {"Normal", "Major"};
+        String[] options = {"Normal", "Major", "Normal and Major"};
         FloatingComboBox<String> typeComboBox = new FloatingComboBox<>(options);
         typeComboBox.setPreferredSize(fixed);
         typeComboBox.setMaximumSize(fixed);
+        if(typeItem == null){
+            typeItem = "Normal and Major";
+        }
+        typeComboBox.setSelectedItem(typeItem);
         filtersPanel.add(typeComboBox);
 
         TextLabel statusTxt = new TextLabel("Status: ");
@@ -92,15 +98,19 @@ public class CounterStaffPaymentPane extends JPanel{
         statusTxt.setForeground(Color.WHITE);
         filtersPanel.add(statusTxt);
 
-        String[] options2 = {"Paid", "Not Paid"};
+        String[] options2 = {"Paid", "Not Paid", "Paid and Not Paid"};
         FloatingComboBox<String> statusBox = new FloatingComboBox<>(options2);
         statusBox.setPreferredSize(fixed);
         statusBox.setMaximumSize(fixed);
+        if(statusItem == null){
+            statusItem = "Paid and Not Paid";
+        }
+        statusBox.setSelectedItem(statusItem);
         filtersPanel.add(statusBox); 
 
         middlePanel.add(filtersPanel, BorderLayout.NORTH);
 
-        String[][] data = getPayments();
+        String[][] data = getPayments(typeItem, statusItem);
         String[] columns = {"Payment ID", "Date", "Car Plate", "Service Type", "Status", "Details"};
         DefaultTableModel model = new DefaultTableModel(data, columns){
             @Override
@@ -121,22 +131,24 @@ public class CounterStaffPaymentPane extends JPanel{
         scrollPane.getViewport().setBackground(Color.WHITE);
 
         middlePanel.add(scrollPane, BorderLayout.CENTER);
-        add(middlePanel);
+        add(middlePanel, BorderLayout.CENTER);
 
 
         typeComboBox.addActionListener(e -> {
-
+           this.typeItem = (String) typeComboBox.getSelectedItem(); 
+           loadPayments();
         });
 
         statusBox.addActionListener(e -> {
-
+            this.statusItem = (String) statusBox.getSelectedItem();
+            loadPayments();
         });
 
         revalidate();
         repaint();
     }
 
-    private String[][] getPayments(){
+    private String[][] getPayments(String typeItem, String statusItem){
         List<String[]> paymentList = FileHandler.read(FileHandler.payment);
         List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
         List<String[]> appointments = FileHandler.read(FileHandler.appointments);
@@ -146,9 +158,7 @@ public class CounterStaffPaymentPane extends JPanel{
             String date = payment[2];
             String vehicleID = payment[4];
             String status = payment[6];
-
             String carPlate = "";
-
             String appointmentID = payment[5];
             String serviceType = "";
 
@@ -165,8 +175,28 @@ public class CounterStaffPaymentPane extends JPanel{
                 }
             }
 
+            boolean matchesType = false;
+            boolean matchesStatus = false;
 
-            payments.add(new String[]{paymentID, date, carPlate, serviceType, status, "View"});
+            if(typeItem.equalsIgnoreCase("Normal and Major")){
+                matchesType = true;
+            } else if(typeItem.equalsIgnoreCase("Normal")
+                    && serviceType.equalsIgnoreCase("Normal Service")){
+                matchesType = true;
+            } else if(typeItem.equalsIgnoreCase("Major")
+                    && serviceType.equalsIgnoreCase("Major Service")){
+                matchesType = true;
+            }
+
+            if(statusItem.equalsIgnoreCase("Paid and Not Paid")){
+                matchesStatus = true;
+            } else if(statusItem.equalsIgnoreCase(status)){
+                matchesStatus = true;
+            }
+
+            if(matchesType && matchesStatus){
+                payments.add(new String[]{paymentID, date, carPlate, serviceType, status, "View"});
+            }
         }
 
         String[][] finalData = payments.toArray(new String[0][]);

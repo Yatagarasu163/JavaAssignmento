@@ -18,7 +18,8 @@ public class FileHandler {
     
 
     public static void write(String filename, List<String[]> data, boolean append) {
-        String path = "src/database/" + filename;
+
+        String path = Paths.get("..", "database", filename).toString();
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, append))) {
 
@@ -38,7 +39,8 @@ public class FileHandler {
     public static List<String[]> read(String filename) {
         List<String[]> output = new ArrayList<>();
 
-        String path = "src/database/" + filename;
+        
+        String path = Paths.get("..", "database", filename).toString();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
@@ -58,6 +60,7 @@ public class FileHandler {
 
         } catch (FileNotFoundException e) {
             System.out.println("File does not exist yet: " + path);
+            System.out.println(path);
         } catch (IOException e) {
             System.err.println("Error reading from file: " + path);
             e.printStackTrace();

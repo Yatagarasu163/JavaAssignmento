@@ -3,6 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import components.FloatingToggleButton;
 import panes.LoginPage;
+import IO.FileHandler;
+import java.util.List;
+import java.util.ArrayList;
 
 public class SidebarPanel extends JPanel {
 
@@ -134,8 +137,9 @@ public class SidebarPanel extends JPanel {
                     JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
-                try (java.io.FileWriter writer = new java.io.FileWriter("src/database/CurrentUser.txt", false)) {
-                    writer.write("");
+                try{
+                    List<String[]> empty = new ArrayList<>();
+                    FileHandler.write("CurrentUser.txt", empty, false);
                 } catch (Exception ex) {
                     System.out.println("Error clearing session: " + ex.getMessage());
                 }
