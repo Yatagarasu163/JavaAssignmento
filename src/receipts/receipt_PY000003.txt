@@ -1,0 +1,14 @@
+=========== RECEIPT ===========
+Payment ID: PY000003
+Customer: My Name A Bobby
+Car Plate: VKV6767
+Appointment Date: 17/05/2026
+Service Type: Normal Service
+
+--- Services ---
+P000004: Tire Rotation & Balancing - RM45.00
+P000005: Battery Health Check & Cleaning - RM20.00
+
+TOTAL: RM65.00
+PAYMENT: RM65.00
+==============================

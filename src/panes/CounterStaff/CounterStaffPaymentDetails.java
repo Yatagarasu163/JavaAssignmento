@@ -5,6 +5,9 @@ import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import panes.CounterStaff.components.PaymentListener;
 import components.FloatingButton;
@@ -30,6 +33,7 @@ public class CounterStaffPaymentDetails extends JPanel{
     private TextLabel payLbl;
     private JPanel servicesPanel;
     private String paymentID;
+    private FloatingButton payBtn;
 
     public CounterStaffPaymentDetails(PaymentListener listener) {
         
@@ -95,12 +99,12 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(servicesPanel);
 
 
-            // for (String[] service: services) {
-            //     middlePanel.add(createServiceRow(service[0], service[1]));
-            //     middlePanel.add(Box.createVerticalStrut(5));
-            // }
+            for (String[] service: services) {
+                middlePanel.add(createServiceRow(service[0], service[1]));
+                middlePanel.add(Box.createVerticalStrut(2));
+            }
 
-            middlePanel.add(Box.createVerticalStrut(20));
+            middlePanel.add(Box.createVerticalStrut(10));
 
             totalLbl = new TextLabel("Total Amount: " + totalAmount);
             totalLbl.setFontType(Font.BOLD);
@@ -123,25 +127,12 @@ public class CounterStaffPaymentDetails extends JPanel{
             JPanel bottomPanel = new JPanel();
             bottomPanel.setOpaque(false);
             bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            FloatingButton payBtn = new FloatingButton("Make Payment", 20);
+            payBtn = new FloatingButton("Make Payment", 20);
             payBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);
             bottomPanel.add(payBtn);
             add(bottomPanel);
 
-            payBtn.addActionListener(e -> {
-                List<String[]> payments = FileHandler.read(FileHandler.payment);
-                for (String[] payment : payments){
-                    if(payment[0].equalsIgnoreCase(paymentID)){
-                        payment[6] = "Paid";
-                        break;
-                    }
-                }
-
-                FileHandler.write(FileHandler.payment, payments, false);
-                JOptionPane.showMessageDialog(this, "Payment made successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                listener.onBackToList();
-            });
+            setPaymentButtonAction();
 
             backButton.addActionListener(e -> {
                 listener.onBackToList();
@@ -166,6 +157,8 @@ public class CounterStaffPaymentDetails extends JPanel{
 
     public void loadPayment(String paymentID){
         if(paymentID != null){
+            setPaymentButtonAction();
+
             this.paymentID = paymentID;
 
             List<String[]> payments = FileHandler.read(FileHandler.payment);
@@ -217,9 +210,9 @@ public class CounterStaffPaymentDetails extends JPanel{
             double total = 0.00;
             for(String service : selectedServices){
                 for (String[] price : prices){
-                    if (price[1].equalsIgnoreCase(service)){
+                    if (price[0].equalsIgnoreCase(service)){
                         double priceValue = Double.parseDouble(price[3]);
-                        compiledServices.add(new String[]{service, String.format("%.2f", priceValue)});
+                        compiledServices.add(new String[]{service, String.format("%.2f", priceValue), price[1]});
                         total += priceValue;
                         break;
                     }
@@ -247,9 +240,108 @@ public class CounterStaffPaymentDetails extends JPanel{
             servicesPanel.removeAll();
 
             for (String[] service : services) {
-                servicesPanel.add(createServiceRow(service[0], "RM" + service[1]));
+                servicesPanel.add(createServiceRow(service[2], "RM" + service[1]));
                 servicesPanel.add(Box.createVerticalStrut(5));
             }
+
+            // Refresh UI
+            servicesPanel.revalidate();
+            servicesPanel.repaint();
+           
+        } else{
+            listener.onBackToList();
+        }
+    }
+
+    public void loadReceipt(String paymentID){
+        if(paymentID != null){
+            setReceiptButtonAction();
+
+            this.paymentID = paymentID;
+
+            List<String[]> payments = FileHandler.read(FileHandler.payment);
+            String[] selectedPayment = null;
+            for (String[] payment : payments){
+                if (payment[0].equalsIgnoreCase(paymentID)){
+                    selectedPayment = payment;
+                    break;
+                }
+            } 
+            String customerID = "";
+            String vehicleID = selectedPayment[4];
+            String appointmentID = selectedPayment[5];
+            if(selectedPayment.length > 0){
+                customerID = selectedPayment[3];
+            } else{
+               listener.onBackToList(); 
+            }
+
+            List<String[]> users = FileHandler.read(FileHandler.users);
+            String[] selectedUser = null;
+            for (String[] user : users){
+                if (user[0].equalsIgnoreCase(customerID)){
+                    selectedUser = user;
+                    break;
+                }
+            }
+            
+            List<String[]> vehicles = FileHandler.read(FileHandler.vehicles);
+            String[] selectedVehicle = null;
+            for(String[] vehicle : vehicles) {
+                if(vehicle[0].equalsIgnoreCase(vehicleID)){
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+            
+            List<String[]> appointments = FileHandler.read(FileHandler.appointments);
+            String[] selectedAppointment = null;
+            for(String[] appointment : appointments){
+                if(appointment[0].equalsIgnoreCase(appointmentID)){
+                    selectedAppointment = appointment;
+                    break;
+                }
+            }
+            String[] selectedServices = selectedAppointment[3].split(",");
+            List<String[]> prices = FileHandler.read(FileHandler.prices);
+            List<String[]> compiledServices = new ArrayList<>();
+            double total = 0.00;
+            for(String service : selectedServices){
+                for (String[] price : prices){
+                    if (price[0].equalsIgnoreCase(service)){
+                        double priceValue = Double.parseDouble(price[3]);
+                        compiledServices.add(new String[]{service, String.format("%.2f", priceValue), price[1]});
+                        total += priceValue;
+                        break;
+                    }
+                }
+            }
+            
+            cusName = selectedUser[1] + " " + selectedUser[2];
+            carPlate = selectedVehicle[1];
+            appointmentDate = selectedAppointment[5];
+            serviceType = selectedAppointment[2];
+            services = compiledServices;
+            totalAmount = String.format("%.2f", total);
+            payAmount = totalAmount;
+
+            // Update labels
+            cusNameLbl.setText(cusName);
+            appointmentDateLbl.setText(appointmentDate);
+            plateLbl.setText(carPlate);
+            typeLbl.setText(serviceType);
+
+            totalLbl.setText("Total Amount: RM" + totalAmount);
+            payLbl.setText("Pay: RM" + payAmount);
+
+            // Update services list
+            servicesPanel.removeAll();
+
+            for (String[] service : services) {
+                servicesPanel.add(createServiceRow(service[2], "RM" + service[1]));
+                servicesPanel.add(Box.createVerticalStrut(5));
+            }
+
 
             // Refresh UI
             servicesPanel.revalidate();
@@ -257,6 +349,105 @@ public class CounterStaffPaymentDetails extends JPanel{
             
         } else{
             listener.onBackToList();
+        }
+    }
+
+    private void setPaymentButtonAction() {
+
+        // Remove old listeners
+        for (java.awt.event.ActionListener al : payBtn.getActionListeners()) {
+            payBtn.removeActionListener(al);
+        }
+
+        payBtn.setText("Make Payment");
+
+        payBtn.addActionListener(e -> {
+
+            List<String[]> payments = FileHandler.read(FileHandler.payment);
+
+            for (String[] payment : payments) {
+                if(payment[0].equalsIgnoreCase(paymentID)) {
+                    payment[6] = "Paid";
+                    break;
+                }
+            }
+
+            FileHandler.write(FileHandler.payment, payments, false);
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Payment made successfully!",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+            listener.onBackToList();
+        });
+    }
+
+    private void setReceiptButtonAction() {
+
+        // Remove old listeners
+        for (java.awt.event.ActionListener al : payBtn.getActionListeners()) {
+            payBtn.removeActionListener(al);
+        }
+
+        payBtn.setText("Print Receipt");
+
+        payBtn.addActionListener(e -> {
+
+            writeReceiptToFile();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Receipt printed!",
+                "Receipt",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+            
+
+        });
+    }
+
+    private void writeReceiptToFile() {
+        try {
+            String folderPath = "receipts";
+            File folder = new File(folderPath);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            String fileName = "receipt_" + paymentID + ".txt";
+            File file = new File(folder, fileName);
+
+            FileWriter writer = new FileWriter(file);
+
+            writer.write("=========== RECEIPT ===========\n");
+            writer.write("Payment ID: " + paymentID + "\n");
+            writer.write("Customer: " + cusName + "\n");
+            writer.write("Car Plate: " + carPlate + "\n");
+            writer.write("Appointment Date: " + appointmentDate + "\n");
+            writer.write("Service Type: " + serviceType + "\n");
+            writer.write("\n--- Services ---\n");
+
+            for (String[] service : services) {
+                writer.write(service[0] + ": " + service[2] + " - RM" + service[1] + "\n");
+            }
+
+            writer.write("\nTOTAL: RM" + totalAmount + "\n");
+            writer.write("PAYMENT: RM" + payAmount + "\n");
+            writer.write("==============================\n");
+
+            writer.close();
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error writing receipt: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }

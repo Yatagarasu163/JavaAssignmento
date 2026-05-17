@@ -1,0 +1,15 @@
+=========== RECEIPT ===========
+Payment ID: PY000001
+Customer: My Name A Bobby
+Car Plate: PLK 3215
+Appointment Date: 09/05/2026
+Service Type: Normal Service
+
+--- Services ---
+P000002 - RM35.00
+P000003 - RM25.00
+P000005 - RM20.00
+
+TOTAL: RM80.00
+PAYMENT: RM80.00
+==============================

@@ -61,6 +61,9 @@ public class CounterStaffAppointmentListPane extends JPanel{
         topPanel.add(addAppointmentBtn, BorderLayout.EAST);
     
         middlePanel = new JPanel();
+        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+        middlePanel.setOpaque(false);
+
         loadAppointments();
 
         Timer timer = new Timer(3000, e -> loadAppointments());
@@ -77,8 +80,8 @@ public class CounterStaffAppointmentListPane extends JPanel{
 
 
         JScrollPane scrollPane = new JScrollPane(middlePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setOpaque(true);
+        scrollPane.getViewport().setOpaque(true);
         scrollPane.setBorder(null);
         
 
@@ -103,6 +106,7 @@ public class CounterStaffAppointmentListPane extends JPanel{
 
         for (String technicianID : selectedTechnicians){
             AppointmentBox box = new AppointmentBox(technicianID);
+            System.out.println(technicianID);
             middlePanel.add(box);
             middlePanel.add(Box.createVerticalStrut(30));
         }

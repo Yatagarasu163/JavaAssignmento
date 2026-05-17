@@ -26,7 +26,7 @@ public class AppointmentBox extends JPanel{
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setPreferredSize(new Dimension(0, 250));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
-        setOpaque(false);
+        setOpaque(true);
     
         loadAppointments(this.technicianID);
 
@@ -65,6 +65,11 @@ public class AppointmentBox extends JPanel{
             } 
         }
 
+        if(technician.isEmpty()){
+            System.out.println("No technician found for ID: " + technicianID);
+            return;
+        }
+        
         String[] technicianArr = technician.get(0);
 
         List<String[]> selectedAppointments = new ArrayList<>();

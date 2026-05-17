@@ -35,11 +35,8 @@ public class CounterStaffMainPaymentPane extends JPanel implements PaymentListen
 		cardLayout.show(this, "LIST");
 	}
 
-	public void onPrintReceipt(String paymentId){
-
-	}
-
 	public void onViewReceipt(String paymentId){
-
+		cardLayout.show(this, "DETAILS");
+		paymentDetailsPane.loadReceipt(paymentId);
 	}
 }

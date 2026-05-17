@@ -1,8 +1,8 @@
 package panes;
 import javax.swing.*;
+
 import java.awt.*;
 import components.FloatingToggleButton;
-import panes.LoginPage;
 import IO.FileHandler;
 import java.util.List;
 import java.util.ArrayList;

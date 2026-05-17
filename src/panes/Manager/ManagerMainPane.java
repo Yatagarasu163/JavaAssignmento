@@ -8,7 +8,7 @@ import java.awt.*;
 public class ManagerMainPane extends JFrame{
 
 	public ManagerMainPane() {
-		setTitle("Testing Window");
+		setTitle("Manager");
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -41,6 +41,8 @@ public class ManagerMainPane extends JFrame{
 		dashboardPane.add(feedbackPane, "FEEDBACK");
 		dashboardPane.add(mainDashboardPane, "DASHBOARD");
 		dashboardPane.add(profilePane, "PROFILE");
+
+		cardLayout.show(dashboardPane, "DASHBOARD");
 
 
 

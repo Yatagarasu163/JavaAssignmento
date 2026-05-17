@@ -114,12 +114,19 @@ public class ManagerAccountsList extends JPanel{
 
     public String[][] getAccounts(){
         List<String[]> accounts = FileHandler.read(filename);
+        List<String[]> currentUserList = FileHandler.read("CurrentUser.txt");
+        String currentID = "";
+        if (currentUserList.size() > 0){
+            currentID = currentUserList.get(0)[0];
+        }
 
         List<String[]> cleanedAccounts = new ArrayList<>();
         if (accounts.size() > 0) {
             for (String[] account : accounts){
-                String[] arr = {account[0], account[3], account[9], "View"};
-                cleanedAccounts.add(arr);
+                if(!account[0].equalsIgnoreCase(currentID)){
+                    String[] arr = {account[0], account[3], account[9], "View"};
+                    cleanedAccounts.add(arr);
+                }
             }
         }
         String[][] array = cleanedAccounts.toArray(new String[0][]);
