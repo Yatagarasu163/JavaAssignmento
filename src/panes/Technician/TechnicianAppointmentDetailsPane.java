@@ -149,7 +149,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
 
         // --- PART 5: Complete Button ---
         completeBtn = new FloatingButton("Maintenance Complete", 20);
-        completeBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        completeBtn.setMaximumSize(new Dimension(800, 40));
         completeBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         completeBtn.addActionListener(e -> {
