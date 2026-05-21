@@ -26,6 +26,7 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
 
 
     private FloatingButton updateBtn = new FloatingButton("Update", 20);
+    private FloatingButton deleteBtn = new FloatingButton("Delete", 20);
     private FloatingButton backBtn = new FloatingButton("Back", 20);
     private FloatingButton saveBtn = new FloatingButton("Save Changes", 20);
     private FloatingButton cancelBtn = new FloatingButton("Cancel", 20);
@@ -33,9 +34,15 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
     public CounterStaffCustomerDetailsPane(CustomerPanelListener listener) {
         this.listener = listener;
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
 
         // --- PART 1: USER PROFILE ICON ---
         // Using a large Unicode character as a placeholder for the avatar
@@ -51,13 +58,13 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(UIConfig.mainForeground);
+                g2.setColor(Color.GRAY);
                 g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20); // Draw outer circle
             }
         };
         avatarContainer.setPreferredSize(new Dimension(150, 150));
         avatarContainer.setMaximumSize(new Dimension(150, 150));
-        avatarContainer.setBackground(UIConfig.mainBackground);
+        avatarContainer.setBackground(Color.WHITE);
         avatarContainer.setLayout(new BorderLayout());
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
         avatarContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -112,6 +119,13 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         gbc.weightx = 0;
         gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.NORTH;
+        deleteBtn.setBackground(Color.RED);
+        updatePanel.add(deleteBtn, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
         updatePanel.add(backBtn, gbc);
         buttonPanel.add(updatePanel, "UPDATE");
 
@@ -139,14 +153,18 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
 
         FloatingButton vehicleBtn = new FloatingButton("Add vehicle", 20);
 
-        add(Box.createVerticalStrut(componentSpace));
-        add(avatarContainer);
-        add(Box.createVerticalStrut(componentSpace));
-        add(detailsCard);
-        add(Box.createVerticalStrut(componentSpace));
-        add(buttonPanel);
-        add(Box.createVerticalStrut(componentSpace));
-        add(vehicleBtn);
+        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        contentPanel.add(avatarContainer);
+        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        contentPanel.add(detailsCard);
+        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        contentPanel.add(buttonPanel);
+        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        contentPanel.add(vehicleBtn);
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
 
 
         updateBtn.addActionListener(e -> {
@@ -156,6 +174,11 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         backBtn.addActionListener(e -> {
             isEditing = true;
             toggleEditMode(false);
+            listener.onBackToList();
+        });
+
+        deleteBtn.addActionListener(e -> {
+            deleteUser();
             listener.onBackToList();
         });
 
@@ -200,6 +223,27 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         panel.add(emojiLabel, BorderLayout.WEST);
         panel.add(detail);
         return panel;
+    }
+
+    private void deleteUser(){
+        String id = idField.getText();
+
+        List<String[]> users = FileHandler.read(FileHandler.users);
+
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this user?", "Delete User", JOptionPane.YES_NO_OPTION);
+        if(option == JOptionPane.YES_OPTION){
+            for(String[] user : users){
+                if(user[0].equalsIgnoreCase(id)){
+                    users.remove(user);
+                    break;
+                }
+            }
+
+            FileHandler.write(FileHandler.users, users, false);
+        } else{
+            return;
+        }
+
     }
 
     private void toggleEditMode(boolean isSaving){

@@ -96,13 +96,22 @@ public class AppointmentBox extends JPanel{
         List<String[]> queueData = new ArrayList<>();
         for (String[] appointment : selectedAppointments){
             for (String[] vehicle : selectedVehicles){
-                if(appointment[9].equalsIgnoreCase(vehicle[0])){
-                    queueData.add(new String[]{
-                        appointment[5], // date
-                        vehicle[2],     // model
-                        vehicle[1],     // plate
-                        appointment[4]  // status
-                    });
+                if(appointment[9].equalsIgnoreCase(vehicle[0]) && !appointment[4].equalsIgnoreCase("Completed")){
+                    if (appointment[2].equalsIgnoreCase("Normal Service")){
+                        queueData.add(new String[]{
+                            "1 Hour", // date
+                            vehicle[2],     // model
+                            vehicle[1],     // plate
+                            appointment[4]  // status
+                        });
+                    } else{
+                        queueData.add(new String[]{
+                            "3 Hours",
+                            vehicle[2],
+                            vehicle[1],
+                            appointment[4]
+                        });
+                    }
                 }
             }
         }
