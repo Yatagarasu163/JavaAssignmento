@@ -1,0 +1,14 @@
+=========== RECEIPT ===========
+Payment ID: PY000003
+Customer: My Name A Bobby
+Car Plate: VKV6767
+Appointment Date: 18/05/2026
+Service Type: Normal Service
+
+--- Services ---
+P000002: Oil Filter Replacement - RM40.00
+P000003: Drain Plug Washer - RM25.00
+
+TOTAL: RM65.00
+PAYMENT: RM65.00
+==============================
