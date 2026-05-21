@@ -110,6 +110,14 @@ public class ManagerAccountsList extends JPanel{
         addUserBtn.addActionListener(e -> {
             listener.toCreateUser();
         });
+
+        userIDField.addActionListener(e -> {
+            filterAccounts(userIDField.getText(), dateSpinner);
+        });
+
+        dateSpinner.addChangeListener(e -> {
+            filterAccounts(userIDField.getText(), dateSpinner);
+        });
     }
 
     public String[][] getAccounts(){
@@ -132,6 +140,41 @@ public class ManagerAccountsList extends JPanel{
         String[][] array = cleanedAccounts.toArray(new String[0][]);
 
         return array;
+    }
+
+    private void filterAccounts(String userID, JSpinner dateSpinner){
+
+        DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+
+        model.setRowCount(0);
+
+        java.util.Date selectedDate = (java.util.Date) dateSpinner.getValue();
+
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+
+        String dateString = sdf.format(selectedDate);
+
+        String[][] accounts = getAccounts();
+
+        List<String[]> filteredAccounts = new ArrayList<>();
+
+        for (String[] account : accounts){
+
+            boolean matchesUserID = userID.length() <= 0 ||
+                account[0].toLowerCase().contains(userID.toLowerCase());
+
+            boolean matchesDate = account[2].equals(dateString);
+
+            if(matchesUserID && matchesDate){
+                filteredAccounts.add(account);
+            }
+        }
+
+        String[][] finalData = filteredAccounts.toArray(new String[0][]);
+
+        for (String[] row : finalData){
+            model.addRow(row);
+        }
     }
 
     public void updateAccounts() {
