@@ -92,7 +92,7 @@ public class ManagerCreateAccountPane extends JPanel {
 
 
         //Declares input fields for the right columns
-        String[] options = {"Manager", "Counter Staff", "Technician"};
+        String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
         titleComboBox = new FloatingComboBox<>(options, 2);
         titleComboBox.setSelectedIndex(0);
         emailTxtField = new FloatingTextField("Email");
@@ -149,7 +149,7 @@ public class ManagerCreateAccountPane extends JPanel {
         createBtn.addActionListener(e -> {
             User user = new User();
             int roleIndex = titleComboBox.getSelectedIndex();
-            String[] rolesPrefix = {"M", "CS", "T"}; 
+            String[] rolesPrefix = {"M", "CS", "T", "CT"}; 
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String formattedDate = today.format(formatter);
@@ -160,25 +160,10 @@ public class ManagerCreateAccountPane extends JPanel {
             user.username = usernameTxtField.getText();
             user.role = (String) titleComboBox.getSelectedItem();
             user.email = emailTxtField.getText();
-            String[] temp = user.email.split("@");
-            if(temp.length < 2){
-                JOptionPane.showMessageDialog(this, "The email entered is not valid! Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             user.contact = contactNumberTxtField.getText();
             user.password = new String(passwordTxtField.getPassword());
-            if(user.password.length() < 5){
-                JOptionPane.showMessageDialog(this, "The password length is not long enough! Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             user.address = addressTxtField.getText();
             user.dateJoined = formattedDate;
-
-            if (user.id.length() <= 0 || user.firstName.length() <= 0 || user.lastName.length() <= 0 || user.username.length() <= 0 || user.role.length() <= 0 
-            || user.email.length() <= 0 || user.contact.length() <= 9 || user.password.length() <= 0 || user.address.length() <= 10) {
-                JOptionPane.showMessageDialog(this, "Ensure that all fields are filled before submitting!.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
 
             String newID = generateNewID(filename, rolesPrefix[roleIndex]);
 
@@ -199,7 +184,7 @@ public class ManagerCreateAccountPane extends JPanel {
 
         titleComboBox.addActionListener(e -> {
             int roleIndex = titleComboBox.getSelectedIndex();
-            String[] rolesPrefix = {"M", "CS", "T"};
+            String[] rolesPrefix = {"M", "CS", "T", "CT"};
 
             userIDTxtField.setText(generateNewID(filename, rolesPrefix[roleIndex]));
         });

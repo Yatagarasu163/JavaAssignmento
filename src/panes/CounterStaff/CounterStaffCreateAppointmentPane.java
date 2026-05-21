@@ -78,30 +78,14 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         }
 
         setBackground(Color.WHITE);
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(20, 20, 20, 20));
-
-        JPanel contentPanel = new JPanel();
-        contentPanel.setBackground(Color.WHITE);
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
-        JScrollPane scrollPane = new JScrollPane(
-            contentPanel,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-        );
-
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-
-        add(scrollPane, BorderLayout.CENTER);
 
         TextLabel appointmentDateTxt = new TextLabel("Appointment Date");
         appointmentDateTxt.setFontSize(30);
         appointmentDateTxt.setForeground(UIConfig.mainBackground);
-        contentPanel.add(appointmentDateTxt);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(appointmentDateTxt);
+        add(Box.createVerticalStrut(componentSpace));
 
 
         SpinnerDateModel dateModel = new SpinnerDateModel();
@@ -109,14 +93,14 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         JSpinner.DateEditor editor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy");
         dateSpinner.setEditor(editor);
         dateSpinner.setMaximumSize(new Dimension(200, 100));
-        contentPanel.add(dateSpinner);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(dateSpinner);
+        add(Box.createVerticalStrut(componentSpace));
 
         TextLabel customerInfoTxt = new TextLabel("Customer Information");
         customerInfoTxt.setFontSize(30);
         customerInfoTxt.setForeground(UIConfig.mainBackground);
-        contentPanel.add(customerInfoTxt);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(customerInfoTxt);
+        add(Box.createVerticalStrut(componentSpace));
 
         JPanel customerDetailsPanel = new JPanel();
         customerDetailsPanel.setOpaque(false);
@@ -177,13 +161,13 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         platePanel.add(plateComboBox, BorderLayout.CENTER);
         customerDetailsPanel.add(platePanel);
 
-        contentPanel.add(customerDetailsPanel);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(customerDetailsPanel);
+        add(Box.createVerticalStrut(componentSpace));
         
         TextLabel serviceTypeTxt = new TextLabel("Service Type");
         serviceTypeTxt.setFontSize(30);
-        contentPanel.add(serviceTypeTxt);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(serviceTypeTxt);
+        add(Box.createVerticalStrut(componentSpace));
 
         JPanel typePanel = new JPanel();
         typePanel.setOpaque(false);
@@ -193,13 +177,13 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         typeComboBox.setPreferredSize(new Dimension(250, 40));
         typeComboBox.setMaximumSize(new Dimension(300, 40));
         typePanel.add(typeComboBox, BorderLayout.CENTER);
-        contentPanel.add(typePanel);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(typePanel);
+        add(Box.createVerticalStrut(componentSpace));
 
         TextLabel serviceRequestTxt = new TextLabel("Service Request");
         serviceRequestTxt.setFontSize(30);
-        contentPanel.add(serviceRequestTxt);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(serviceRequestTxt);
+        add(Box.createVerticalStrut(componentSpace));
 
         JPanel requestsPanel = new JPanel();
         requestsPanel.setOpaque(false);
@@ -229,7 +213,7 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
 
         requestsPanel.add(normalServPanel, "NORMAL");
         requestsPanel.add(majorServPanel, "MAJOR");
-        contentPanel.add(requestsPanel);
+        add(requestsPanel);
 
 
 
@@ -249,7 +233,7 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         TextLabel techTxt = new TextLabel("Assigned Technician");
         techTxt.setFontSize(30);
         techniciansTxt.add(techTxt);
-        contentPanel.add(techniciansTxt);
+        add(techniciansTxt);
 
         JPanel techSelectPanel = new JPanel();
         techSelectPanel.setOpaque(false);
@@ -258,8 +242,8 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         techComboBox.setPreferredSize(new Dimension(250, 40));
         techComboBox.setMaximumSize(new Dimension(300, 40));
         techSelectPanel.add(techComboBox, BorderLayout.CENTER);
-        contentPanel.add(techSelectPanel);
-        contentPanel.add(Box.createVerticalStrut(componentSpace));
+        add(techSelectPanel);
+        add(Box.createVerticalStrut(componentSpace));
 
         JPanel createAppointmentPanel = new JPanel();
         createAppointmentPanel.setOpaque(false);
@@ -268,7 +252,7 @@ public class CounterStaffCreateAppointmentPane extends JPanel{
         FloatingButton createAppointment = new FloatingButton("Create Appointment");
         createAppointment.setPreferredSize(new Dimension(300, 50));
         createAppointmentPanel.add(createAppointment, BorderLayout.EAST);
-        contentPanel.add(createAppointmentPanel);
+        add(createAppointmentPanel);
     
 
         createAppointment.addActionListener(e -> {

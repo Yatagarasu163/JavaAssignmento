@@ -33,7 +33,9 @@ public class TechnicianDashboardPane extends JPanel {
         greetingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- PART 2: SUMMARY CARDS ---
-        JPanel cardsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
+        JPanel cardsContainer = new JPanel();
+        cardsContainer.setLayout(new BoxLayout(cardsContainer, BoxLayout.X_AXIS));
+//        JPanel cardsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         cardsContainer.setBackground(bgColor);
         cardsContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -56,7 +58,7 @@ public class TechnicianDashboardPane extends JPanel {
         // 3A. Header Row
         JPanel headerRow = new JPanel(new GridLayout(1, 5, 10, 0));
         headerRow.setBackground(Color.WHITE);
-        headerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        headerRow.setMaximumSize(new Dimension(890, 40));
         headerRow.setBorder(new EmptyBorder(10, 20, 10, 20));
 
         headerRow.add(createHeaderLabel("Car Plate"));
@@ -89,8 +91,8 @@ public class TechnicianDashboardPane extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         // limit the table height to only store 5 rows
-        scrollPane.setPreferredSize(new Dimension(1000, 310));
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 310));
+        scrollPane.setPreferredSize(new Dimension(890, 310));
+        scrollPane.setMaximumSize(new Dimension(890, 310));
 
         // 3D. Outer Table Container (Holds Header + ScrollPane + Rounded Border)
         JPanel tableContainer = new JPanel();
@@ -102,13 +104,16 @@ public class TechnicianDashboardPane extends JPanel {
                 new EmptyBorder(10, 10, 10, 10)
         ));
 
+        tableContainer.setMaximumSize(new Dimension(920, 400));
+        tableContainer.setPreferredSize(new Dimension(920   , 400));
+
         tableContainer.add(headerRow);
         tableContainer.add(Box.createVerticalStrut(5));
         tableContainer.add(scrollPane);
 
         // --- ASSEMBLE THE PAGE ---
         add(greetingLabel);
-        add(Box.createVerticalStrut(40));
+        add(Box.createVerticalStrut(30));
         add(cardsContainer);
         add(Box.createVerticalStrut(20));
         add(tableContainer);
@@ -120,7 +125,8 @@ public class TechnicianDashboardPane extends JPanel {
     private JPanel createSummaryCard(String iconPlaceholder, String title, String count) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setPreferredSize(new Dimension(280, 220));
+        card.setPreferredSize(new Dimension(300, 220));
+        card.setMaximumSize(new Dimension(300, 220));
         card.setBackground(Color.WHITE);
 //        card.setBorder(new LineBorder(primaryPurple, 1, true));
         card.setBorder(BorderFactory.createCompoundBorder(
@@ -167,8 +173,8 @@ public class TechnicianDashboardPane extends JPanel {
     private JPanel createTableRow(String plate, String model, String client, String status, String userID) {
         JPanel row = new JPanel(new GridLayout(1, 5, 10, 0));
         row.setBackground(Color.WHITE);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-        row.setPreferredSize(new Dimension(1000, 60));
+        row.setMaximumSize(new Dimension(890, 60));
+        row.setPreferredSize(new Dimension(890, 60));
         row.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 245))); // Light divider line
 
         // 1. Plate Label
