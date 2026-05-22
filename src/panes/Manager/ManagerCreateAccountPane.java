@@ -92,7 +92,7 @@ public class ManagerCreateAccountPane extends JPanel {
 
 
         //Declares input fields for the right columns
-        String[] options = {"Manager", "Counter Staff", "Technician", "Customer"};
+        String[] options = {"Manager", "Counter Staff", "Technician"};
         titleComboBox = new FloatingComboBox<>(options, 2);
         titleComboBox.setSelectedIndex(0);
         emailTxtField = new FloatingTextField("Email");
@@ -184,7 +184,7 @@ public class ManagerCreateAccountPane extends JPanel {
 
         titleComboBox.addActionListener(e -> {
             int roleIndex = titleComboBox.getSelectedIndex();
-            String[] rolesPrefix = {"M", "CS", "T", "CT"};
+            String[] rolesPrefix = {"M", "CS", "T"};
 
             userIDTxtField.setText(generateNewID(filename, rolesPrefix[roleIndex]));
         });

@@ -19,7 +19,7 @@ public class FileHandler {
 
     public static void write(String filename, List<String[]> data, boolean append) {
 
-        String path = Paths.get("src/database", filename).toString();
+        String path = Paths.get("database", filename).toString();
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, append))) {
 
@@ -40,7 +40,7 @@ public class FileHandler {
         List<String[]> output = new ArrayList<>();
 
         
-        String path = Paths.get("src/database", filename).toString();
+        String path = Paths.get("database", filename).toString();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
