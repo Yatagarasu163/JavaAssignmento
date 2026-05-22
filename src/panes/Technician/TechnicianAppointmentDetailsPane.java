@@ -71,10 +71,10 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         tasksPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- PART 4: Chat & History ---
-        JLabel section3Title = new JLabel("Comment & History");
-        section3Title.setFont(new Font("SansSerif", Font.BOLD, 16));
-        section3Title.setForeground(primaryPurple);
-        section3Title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel chatConversation = new JLabel("Comment & History");
+        chatConversation.setFont(new Font("SansSerif", Font.BOLD, 16));
+        chatConversation.setForeground(primaryPurple);
+        chatConversation.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
@@ -86,7 +86,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         chatScroll.setOpaque(false);
         chatScroll.getViewport().setOpaque(false);
         chatScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        // Fix height so it scrolls if more than ~2 comments are added
+        // Fix height so chat can be scrollable after containing more than 2 chat history
         chatScroll.setPreferredSize(new Dimension(800, 160));
         chatScroll.setMaximumSize(new Dimension(800, 160));
         chatScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -110,14 +110,10 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         sendIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         sendIcon.setBorder(new EmptyBorder(0,10,0,10));
 
-        // Chat Submit Logic
-        LocalDateTime today = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String formatted =  today.format(formatter);
+        // Chat Conversation Submit
         sendIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
 
-                // Grab text first
                 String messageText = inputField.getText().trim();
 
                 if (!messageText.isEmpty() && currentData != null && !currentData.status.equals("Completed")) {
@@ -173,9 +169,9 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         add(tasksPanel);
 
         add(Box.createVerticalStrut(30));
-        add(section3Title);
+        add(chatConversation);
         add(Box.createVerticalStrut(10));
-        add(chatScroll); // Added the ScrollPane here instead of raw chatPanel
+        add(chatScroll);
         add(Box.createVerticalStrut(10));
         add(inputContainer);
 

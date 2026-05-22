@@ -43,7 +43,8 @@ public class TechnicianMainPane extends JFrame {
         // 2. Initialize Panels (Notice we pass 'this' into the dashboard now!)
         TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
         appointmentPane = new panes.Technician.TechnicianAppointmentPane(TechnicianInfo[0]);
-        TechnicianProfilePane profilePane = new TechnicianProfilePane(fullName, TechnicianInfo[0], TechnicianInfo[5], TechnicianInfo[9], TechnicianInfo[6], TechnicianInfo[8]);
+        TechnicianProfilePane profilePane = new TechnicianProfilePane(fullName, TechnicianInfo[0], TechnicianInfo[5],
+                TechnicianInfo[9], TechnicianInfo[6], TechnicianInfo[8]);
 
         cardContainer.add(TechnicianDashboard, "Dashboard");
         cardContainer.add(profilePane, "TechnicianProfile");
