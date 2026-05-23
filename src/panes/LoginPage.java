@@ -40,9 +40,10 @@ public class LoginPage extends JFrame {
         txtUsername = new FloatingTextField("User ID");
         txtPassword = new FloatingPasswordField("Password");
 
-        JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        checkboxPanel.setOpaque(false);
-        checkboxPanel.setMaximumSize(new Dimension(300, 30));
+        // --- UPDATED OPTIONS PANEL (Holds both Checkbox and Forgot Password) ---
+        JPanel optionsPanel = new JPanel(new BorderLayout());
+        optionsPanel.setOpaque(false);
+        optionsPanel.setMaximumSize(new Dimension(300, 30));
 
         JCheckBox chkShowPassword = new JCheckBox("Show Password");
         chkShowPassword.setOpaque(false);
@@ -58,7 +59,25 @@ public class LoginPage extends JFrame {
             }
         });
 
-        checkboxPanel.add(chkShowPassword);
+        // The New Forgot Password Button
+        JButton forgotPassBtn = new JButton("Forgot Password?");
+        forgotPassBtn.setFont(new Font("SansSerif", Font.BOLD, 11));
+        forgotPassBtn.setForeground(UIConfig.mainBackground);
+        forgotPassBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        forgotPassBtn.setContentAreaFilled(false);
+        forgotPassBtn.setBorderPainted(false);
+        forgotPassBtn.setFocusPainted(false);
+        // Removes the default padding so it aligns perfectly to the edge
+        forgotPassBtn.setMargin(new Insets(0, 0, 0, 0));
+
+        forgotPassBtn.addActionListener(e -> {
+            this.dispose(); // Close the login window
+            new ForgotPasswordPage().setVisible(true); // Open the recovery window
+        });
+
+        optionsPanel.add(chkShowPassword, BorderLayout.WEST);
+        optionsPanel.add(forgotPassBtn, BorderLayout.EAST);
+        // -----------------------------------------------------------------------
 
         btnSignIn = new JButton("Sign In") {
             @Override
@@ -159,11 +178,10 @@ public class LoginPage extends JFrame {
         formPanel.add(Box.createVerticalStrut(20));
         formPanel.add(txtPassword);
         formPanel.add(Box.createVerticalStrut(5));
-        formPanel.add(checkboxPanel);
+        formPanel.add(optionsPanel); // Injected the new panel here!
         formPanel.add(Box.createVerticalStrut(30));
         formPanel.add(btnSignIn);
 
         mainPanel.add(formPanel);
     }
-
 }
