@@ -15,6 +15,7 @@ import components.FloatingTextField;
 import components.FloatingPasswordField;
 import components.FloatingButton;
 import components.FloatingComboBox;
+import components.DefaultPasswordGenerator;
 import userClass.User;
 import IO.FileHandler;
 
@@ -98,6 +99,7 @@ public class ManagerCreateAccountPane extends JPanel {
         emailTxtField = new FloatingTextField("Email");
         contactNumberTxtField = new FloatingTextField("Contact Number");
         passwordTxtField = new FloatingPasswordField("Password");
+        passwordTxtField.setEditable(false);
 
         //Adds the text fields with their label text to the right column.
         rightColumn.add(createField("Title", titleComboBox));
@@ -146,6 +148,16 @@ public class ManagerCreateAccountPane extends JPanel {
         add(cancelBtn);
 
 
+        // Listens for every keystroke in the First Name field
+        firstNameTxtField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
+        });
+
+        // Call it once immediately to set the default state (e.g., "User0001")
+        updateDefaultPassword();
+
         createBtn.addActionListener(e -> {
             User user = new User();
             int roleIndex = titleComboBox.getSelectedIndex();
@@ -186,6 +198,8 @@ public class ManagerCreateAccountPane extends JPanel {
             int roleIndex = titleComboBox.getSelectedIndex();
             String[] rolesPrefix = {"M", "CS", "T"};
 
+            updateDefaultPassword();
+
             userIDTxtField.setText(generateNewID(filename, rolesPrefix[roleIndex]));
         });
 
@@ -221,8 +235,6 @@ public class ManagerCreateAccountPane extends JPanel {
         return prefix + String.format("%06d", next);
     }
 
-
-
     private JPanel createField(String labelText, JComponent field){
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -235,5 +247,14 @@ public class ManagerCreateAccountPane extends JPanel {
         panel.add(field);
 
         return panel;
+    }
+
+    private void updateDefaultPassword() {
+        String fName = firstNameTxtField.getText();
+        String id = userIDTxtField.getText();
+
+        // Use our new utility class!
+        String generatedPassword = DefaultPasswordGenerator.generate(fName, id);
+        passwordTxtField.setText(generatedPassword);
     }
 }
