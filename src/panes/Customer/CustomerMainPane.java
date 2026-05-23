@@ -12,7 +12,7 @@ public class CustomerMainPane extends JFrame {
     public CustomerMainPane() {
         setTitle("APU-ASC: Customer Portal");
         setSize(1000, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);
 
         List<String[]> currentUserData = FileHandler.read("CurrentUser.txt");

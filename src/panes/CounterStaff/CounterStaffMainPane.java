@@ -12,7 +12,7 @@ public class CounterStaffMainPane extends JFrame{
     public CounterStaffMainPane() {
         setTitle("Counter Staff");
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);
 
         JPanel contentPane = new JPanel();

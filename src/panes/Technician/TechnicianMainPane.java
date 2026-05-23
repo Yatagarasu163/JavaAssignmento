@@ -20,7 +20,7 @@ public class TechnicianMainPane extends JFrame {
 
         setTitle("APU-ASC: Technician Portal");
         setSize(1000, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);
 
         JPanel contentPane = new JPanel();

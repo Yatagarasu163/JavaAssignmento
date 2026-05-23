@@ -10,7 +10,7 @@ public class ManagerMainPane extends JFrame{
 	public ManagerMainPane() {
 		setTitle("Manager");
 		setSize(800, 600);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		components.ProgramTerminator.enableSafeExit(this);
 		setLocationRelativeTo(null);
 
 		JPanel contentPane = new JPanel();
