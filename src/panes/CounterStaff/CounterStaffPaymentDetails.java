@@ -15,6 +15,14 @@ import config.UIConfig;
 import components.TextLabel;
 import IO.FileHandler;
 
+// PDF Java Jar Import
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+
+
 public class CounterStaffPaymentDetails extends JPanel{
 
     private PaymentListener listener;
@@ -396,7 +404,7 @@ public class CounterStaffPaymentDetails extends JPanel{
 
         payBtn.addActionListener(e -> {
 
-            writeReceiptToFile();
+            writeReceiptToPDF(paymentID, cusName, totalAmount);
 
             JOptionPane.showMessageDialog(
                 this,
@@ -410,44 +418,81 @@ public class CounterStaffPaymentDetails extends JPanel{
         });
     }
 
-    private void writeReceiptToFile() {
+    public void writeReceiptToPDF(String paymentID, String customerName, String amount) {
+        // 1. Define the file path
+        String filePath = "src/receipts/" + paymentID + "_Receipt.pdf";
+
+        // 2. Create the Document Object (The blank PDF page)
+        Document document = new Document();
+
         try {
-            String folderPath = "receipts";
-            File folder = new File(folderPath);
-            if (!folder.exists()) {
-                folder.mkdirs();
+            // 3. Create a Writer Object to link the Document to the physical file
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+            // 4. Open the document to start writing
+            document.open();
+
+            // 5. Add your text using Paragraph Objects!
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("         APU - ASC RECEIPT           "));
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("Payment ID: " + paymentID));
+            document.add(new Paragraph("Customer: " + customerName));
+            document.add(new Paragraph("Total Paid: RM " + amount));
+            document.add(new Paragraph("Status: PAID"));
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("Thank you for choosing APU-ASC!"));
+
+            System.out.println("PDF Receipt generated successfully at: " + filePath);
+
+        } catch (DocumentException | IOException e) {
+            System.err.println("Error generating PDF: " + e.getMessage());
+        } finally {
+            // 6. ALWAYS close the document to save it!
+            if (document.isOpen()) {
+                document.close();
             }
-
-            String fileName = "receipt_" + paymentID + ".txt";
-            File file = new File(folder, fileName);
-
-            FileWriter writer = new FileWriter(file);
-
-            writer.write("=========== RECEIPT ===========\n");
-            writer.write("Payment ID: " + paymentID + "\n");
-            writer.write("Customer: " + cusName + "\n");
-            writer.write("Car Plate: " + carPlate + "\n");
-            writer.write("Appointment Date: " + appointmentDate + "\n");
-            writer.write("Service Type: " + serviceType + "\n");
-            writer.write("\n--- Services ---\n");
-
-            for (String[] service : services) {
-                writer.write(service[0] + ": " + service[2] + " - RM" + service[1] + "\n");
-            }
-
-            writer.write("\nTOTAL: RM" + totalAmount + "\n");
-            writer.write("PAYMENT: RM" + payAmount + "\n");
-            writer.write("==============================\n");
-
-            writer.close();
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Error writing receipt: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
         }
     }
+
+//    private void writeReceiptToFile() {
+//        try {
+//            String folderPath = "receipts";
+//            File folder = new File(folderPath);
+//            if (!folder.exists()) {
+//                folder.mkdirs();
+//            }
+//
+//            String fileName = "receipt_" + paymentID + ".txt";
+//            File file = new File(folder, fileName);
+//
+//            FileWriter writer = new FileWriter(file);
+//
+//            writer.write("=========== RECEIPT ===========\n");
+//            writer.write("Payment ID: " + paymentID + "\n");
+//            writer.write("Customer: " + cusName + "\n");
+//            writer.write("Car Plate: " + carPlate + "\n");
+//            writer.write("Appointment Date: " + appointmentDate + "\n");
+//            writer.write("Service Type: " + serviceType + "\n");
+//            writer.write("\n--- Services ---\n");
+//
+//            for (String[] service : services) {
+//                writer.write(service[0] + ": " + service[2] + " - RM" + service[1] + "\n");
+//            }
+//
+//            writer.write("\nTOTAL: RM" + totalAmount + "\n");
+//            writer.write("PAYMENT: RM" + payAmount + "\n");
+//            writer.write("==============================\n");
+//
+//            writer.close();
+//
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(
+//                this,
+//                "Error writing receipt: " + e.getMessage(),
+//                "Error",
+//                JOptionPane.ERROR_MESSAGE
+//            );
+//        }
+//    }
 }

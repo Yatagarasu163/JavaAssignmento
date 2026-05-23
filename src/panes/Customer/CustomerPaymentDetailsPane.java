@@ -8,6 +8,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import config.UIConfig;
 
+// Java File Chooser and Java PDF Jav Imports
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+
 public class CustomerPaymentDetailsPane extends JPanel {
 
     private final Color primaryPurple = UIConfig.mainBackground;
@@ -53,7 +62,7 @@ public class CustomerPaymentDetailsPane extends JPanel {
 
         for (String[] row : customerList) {
             if (row[0].equals(loggedInCustomerID)) {
-                custName = row[1];
+                custName = row[1] + " " + row[2];
                 break;
             }
         }
@@ -78,21 +87,29 @@ public class CustomerPaymentDetailsPane extends JPanel {
             }
         }
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        // --- MODIFIED TOP PANEL ---
+        JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(bgColor);
         topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        backBtn = new JButton("←");
-        backBtn.setFont(new Font("SansSerif", Font.PLAIN, 24));
+        backBtn = new JButton("← Back");
+        backBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
         backBtn.setForeground(Color.DARK_GRAY);
         backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backBtn.setContentAreaFilled(false);
         backBtn.setBorderPainted(false);
         backBtn.setFocusPainted(false);
-        backBtn.setBorder(new LineBorder(Color.DARK_GRAY, 1, true));
-        backBtn.setPreferredSize(new Dimension(40, 40));
 
-        topPanel.add(backBtn);
+        JButton downloadBtn = new JButton("Download PDF");
+        downloadBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        downloadBtn.setBackground(primaryPurple);
+        downloadBtn.setForeground(Color.WHITE);
+        downloadBtn.setFocusPainted(false);
+        downloadBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        topPanel.add(backBtn, BorderLayout.WEST);
+        topPanel.add(downloadBtn, BorderLayout.EAST);
+        // --------------------------
 
         JPanel receiptCard = new JPanel();
         receiptCard.setLayout(new BoxLayout(receiptCard, BoxLayout.Y_AXIS));
@@ -192,6 +209,45 @@ public class CustomerPaymentDetailsPane extends JPanel {
         backBtn.addActionListener(e -> {
             cardLayout.show(cardsContainer, "HISTORY");
         });
+
+        // --- DOWNLOAD BUTTON LOGIC ---
+        // (We need to declare these as 'final' or effectively final to use them in the lambda below)
+        final String finalInvoiceNo = invoiceNo;
+        final String finalInvoiceDate = invoiceDate;
+        final String finalCustName = custName;
+        final String finalApptDate = apptDate;
+        final String finalPlateNo = plateNo;
+        final String finalServiceType = serviceType;
+        final String finalTotal = totalAmountStr;
+        final String finalServiceIDs = serviceIDs;
+
+        downloadBtn.addActionListener(e -> {
+            // 1. Open the Save Dialog
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Save Receipt As...");
+
+            // 2. Suggest a default file name
+            fileChooser.setSelectedFile(new File("Receipt_" + finalInvoiceNo + ".pdf"));
+
+            // 3. Force it to only show PDF files
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF Documents", "pdf");
+            fileChooser.setFileFilter(filter);
+
+            // 4. Check if the user clicked "Save"
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String savePath = fileToSave.getAbsolutePath();
+
+                // Add .pdf extension if the user forgot to type it
+                if (!savePath.toLowerCase().endsWith(".pdf")) {
+                    savePath += ".pdf";
+                }
+
+                // 5. Call the PDF Generation method!
+                generatePDF(savePath, finalInvoiceNo, finalInvoiceDate, finalCustName, finalApptDate, finalPlateNo, finalServiceType, finalTotal, finalServiceIDs, priceList);
+            }
+        });
     }
 
     private void addHeaderData(JPanel panel, String fixedLabel, String dynamicValue) {
@@ -220,5 +276,59 @@ public class CustomerPaymentDetailsPane extends JPanel {
         row.add(priceLabel, BorderLayout.EAST);
 
         return row;
+    }
+
+    private void generatePDF(String filePath, String invoiceNo, String invoiceDate, String custName, String apptDate, String plateNo, String serviceType, String totalAmount, String serviceIDs, List<String[]> priceList) {
+        Document document = new Document();
+
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            document.open();
+
+            // Header Info
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("         APU - ASC OFFICIAL RECEIPT  "));
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("Invoice No: " + invoiceNo));
+            document.add(new Paragraph("Invoice Date: " + invoiceDate));
+            document.add(new Paragraph("Customer Name: " + custName));
+            document.add(new Paragraph("Appointment Date: " + apptDate));
+            document.add(new Paragraph("Car Plate: " + plateNo));
+            document.add(new Paragraph("Service Type: " + serviceType));
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("Services Performed:"));
+            document.add(new Paragraph(" "));
+
+            // Services Loop
+            if (serviceIDs != null && !serviceIDs.isEmpty()) {
+                String[] individualIds = serviceIDs.split(",");
+                for (String id : individualIds) {
+                    for (String[] priceRow : priceList) {
+                        if (priceRow.length >= 4 && priceRow[0].equals(id.trim())) {
+                            document.add(new Paragraph(priceRow[1] + "  ---  RM " + priceRow[3]));
+                            break;
+                        }
+                    }
+                }
+            } else {
+                document.add(new Paragraph("No Services Listed"));
+            }
+
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("TOTAL AMOUNT: " + totalAmount));
+            document.add(new Paragraph("====================================="));
+            document.add(new Paragraph("Thank you for choosing APU-ASC!"));
+
+            // Show a success popup!
+            JOptionPane.showMessageDialog(this, "Receipt successfully downloaded to:\n" + filePath, "Download Complete", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (DocumentException | java.io.IOException e) {
+            JOptionPane.showMessageDialog(this, "Error saving PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
+        }
     }
 }
