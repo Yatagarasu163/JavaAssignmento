@@ -194,9 +194,8 @@ public class ForgotPasswordPage extends JFrame {
 
             JOptionPane.showMessageDialog(this, "Password successfully updated! You can now log in.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            // Send them back to the login page
             this.dispose();
-            // new LoginPage().setVisible(true);
+            new LoginPage().setVisible(true);
         });
     }
 }
