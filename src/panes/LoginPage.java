@@ -115,6 +115,21 @@ public class LoginPage extends JFrame {
                     if (dbId.equalsIgnoreCase(inputId)) {
                         userFound = true;
                         if (dbPassword.equals(inputPassword)) {
+                            // Check Whether is First Time User
+                            String defaultPass = components.DefaultPasswordGenerator.generate(dbFirstName, dbId);
+
+                            if (dbPassword.equals(defaultPass)) {
+                                JOptionPane.showMessageDialog(this,
+                                        "For security reasons, you must change your default password before continuing.",
+                                        "First Time Login",
+                                        JOptionPane.WARNING_MESSAGE);
+
+                                this.dispose();
+                                // Pass the user's data array so the next page knows who to update!
+                                new ForcePasswordChangePage(row).setVisible(true);
+                                return; // Stop the login process here!
+                            }
+
                             try{
                                 List<String[]> inputRow = new ArrayList<>();
                                 inputRow.add(row);
