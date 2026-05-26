@@ -88,7 +88,7 @@ public class TechnicianAppointmentPane extends JPanel {
         int i = 1;
         for (String[] appointment:AppointmentList){
             //String time, String model, String plate, String name, String contact, String email
-            AppointmentData app = new AppointmentData("slot " + i, appointment[0], appointment[1], appointment[2],
+            AppointmentData app = new AppointmentData("Slot " + i, appointment[0], appointment[1], appointment[2],
                     appointment[3], appointment[4]);
             for (String[] details : AppointmentDetails){
                 if (details[0].equals(appointment[5])){
@@ -178,7 +178,6 @@ public class TechnicianAppointmentPane extends JPanel {
             }
         }
 
-        System.out.println("currentAppointment: " + todayAppointments);
 
         for (String[] vehicles: vehicleList){
             for (String[] appointment: todayAppointments){
@@ -200,7 +199,6 @@ public class TechnicianAppointmentPane extends JPanel {
             }
         }
 
-        System.out.println("today appointment: " + todayAppointments);
 
         return todayAppointments;
     }
