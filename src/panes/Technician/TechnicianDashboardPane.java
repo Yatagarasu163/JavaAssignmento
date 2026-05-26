@@ -244,7 +244,7 @@ public class TechnicianDashboardPane extends JPanel {
 
     public static List<String[]> getTodayAppointments(String userId, String appointmentDate){
         List<String[]> appointmentList = FileHandler.read("Appointment.txt");
-        List<String[]> userList = FileHandler.read("Users.tx");
+        List<String[]> userList = FileHandler.read("Users.txt");
         List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
         List<String[]> todayAppointments = new ArrayList<>();
 
