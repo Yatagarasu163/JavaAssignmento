@@ -14,6 +14,7 @@ import components.FloatingTextField;
 import config.UIConfig;
 import components.TextLabel;
 import IO.FileHandler;
+import components.FloatingComboBox;
 
 public class ManagerAccountsList extends JPanel{
     private AccountsPanelListener listener;
@@ -62,6 +63,11 @@ public class ManagerAccountsList extends JPanel{
         userIDField.setForeground(Color.WHITE);
         userIDField.setCaretColor(Color.WHITE);
 
+        String[] roles = {"All Staff", "Manager", "Counter Staff", "Technician"};
+        FloatingComboBox<String> roleComboBox = new FloatingComboBox<>(roles);
+        roleComboBox.setPreferredSize(new Dimension(150, 40));
+        roleComboBox.setMaximumSize(new Dimension(150, 40));
+
         userIDField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
             public void removeUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
@@ -69,23 +75,26 @@ public class ManagerAccountsList extends JPanel{
 
             private void triggerSearch() {
                 String text = userIDField.getText();
-                if (text.equals("User ID")) {
-                    text = "";
-                }
-                updateAccounts(text);
+                if (text.equals("User ID")) text = "";
+                String role = (String) roleComboBox.getSelectedItem();
+                updateAccounts(text, role);
             }
         });
+
+        roleComboBox.addActionListener(e -> {
+            String text = userIDField.getText();
+            if (text.equals("User ID")) text = "";
+            String role = (String) roleComboBox.getSelectedItem();
+            updateAccounts(text, role);
+        });
+
         middleTopPanel.add(userIDField);
         middleTopPanel.add(Box.createHorizontalStrut(50));
-        TextLabel dateTxt = new TextLabel("Date: ");
-        dateTxt.setForeground(Color.WHITE);
-        middleTopPanel.add(dateTxt);
-        
-        SpinnerDateModel dateModel = new SpinnerDateModel();
-        JSpinner dateSpinner = new JSpinner(dateModel);
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy");
-        dateSpinner.setEditor(editor);
-        middleTopPanel.add(dateSpinner);
+
+        TextLabel roleTxt = new TextLabel("Role: ");
+        roleTxt.setForeground(Color.WHITE);
+        middleTopPanel.add(roleTxt);
+        middleTopPanel.add(roleComboBox);
         middlePanel.add(middleTopPanel, BorderLayout.NORTH);
 
         JPanel tablePanel = new JPanel();
@@ -123,10 +132,10 @@ public class ManagerAccountsList extends JPanel{
     }
 
     public String[][] getAccounts(){
-        return getAccounts("");
+        return getAccounts("", "All Staff");
     }
 
-    public String[][] getAccounts(String searchKeyword){
+    public String[][] getAccounts(String searchKeyword, String roleFilter){
         List<String[]> accounts = FileHandler.read(filename);
         List<String[]> currentUserList = FileHandler.read("CurrentUser.txt");
         String currentID = "";
@@ -137,7 +146,26 @@ public class ManagerAccountsList extends JPanel{
         List<String[]> cleanedAccounts = new ArrayList<>();
         if (accounts.size() > 0) {
             for (String[] account : accounts){
-                if(!account[0].equalsIgnoreCase(currentID)){
+                String userID = account[0].toUpperCase();
+
+                boolean isManager = userID.startsWith("M");
+                boolean isCounterStaff = userID.startsWith("CS");
+                boolean isTechnician = userID.startsWith("T");
+
+                // Determine if this user matches the selected dropdown role
+                boolean matchRole = false;
+                if (roleFilter.equals("All Staff") && (isManager || isCounterStaff || isTechnician)) {
+                    matchRole = true;
+                } else if (roleFilter.equals("Manager") && isManager) {
+                    matchRole = true;
+                } else if (roleFilter.equals("Counter Staff") && isCounterStaff) {
+                    matchRole = true;
+                } else if (roleFilter.equals("Technician") && isTechnician) {
+                    matchRole = true;
+                }
+
+                // If the role matches AND they aren't the current user, check the search text
+                if(matchRole && !account[0].equalsIgnoreCase(currentID)){
 
                     if (searchKeyword == null || searchKeyword.trim().isEmpty() ||
                             account[0].toLowerCase().contains(searchKeyword.toLowerCase().trim())) {
@@ -151,18 +179,18 @@ public class ManagerAccountsList extends JPanel{
         return cleanedAccounts.toArray(new String[0][]);
     }
 
-    public void updateAccounts(String searchKeyword) {
+    public void updateAccounts(String searchKeyword, String roleFilter) {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         model.setRowCount(0);
 
-        String[][] accounts = getAccounts(searchKeyword);
+        String[][] accounts = getAccounts(searchKeyword, roleFilter);
         for (String[] row : accounts) {
             model.addRow(row);
         }
     }
 
     public void updateAccounts() {
-        updateAccounts("");
+        updateAccounts("", "All Staff");
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer{
