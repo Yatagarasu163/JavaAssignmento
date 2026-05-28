@@ -102,6 +102,25 @@ public class CounterStaffAddVehiclePane extends JPanel{
                 return;
             }
 
+            List<String[]> existingVehicles = FileHandler.read(filename);
+            int vehicleCount = 0;
+
+            for (String[] v : existingVehicles) {
+                if (v.length > 4 && v[4].equalsIgnoreCase(id)) {
+                    vehicleCount++;
+                }
+            }
+
+            if (vehicleCount >= 3) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "This customer has reached the maximum limit of 3 vehicles.\nPlease remove an existing vehicle before adding a new one.",
+                        "Limit Reached",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
             String vehicleID = generateNewVehicleID(filename);
             String[] vehicle = {vehicleID, plate, model, color, id};
             List<String[]> vehicleList = new ArrayList<>();

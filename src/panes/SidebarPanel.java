@@ -29,6 +29,7 @@ public class SidebarPanel extends JPanel {
     private FloatingToggleButton customerListBtn;
     private FloatingToggleButton appointmentBtn;
     private FloatingToggleButton paymentBtn;
+    private FloatingToggleButton vehicleListBtn;
 
     // --- TECHNICIAN BUTTONS ---
     private FloatingToggleButton myProfileBtn;
@@ -96,11 +97,13 @@ public class SidebarPanel extends JPanel {
             customerListBtn = new FloatingToggleButton("Customer List", 20);
             appointmentBtn = new FloatingToggleButton("Appointment", 20);
             paymentBtn = new FloatingToggleButton("Payment", 20);
+            vehicleListBtn = new FloatingToggleButton("Vehicle List", 20);
 
             navGroup.add(profileBtn);
             navGroup.add(customerListBtn);
             navGroup.add(appointmentBtn);
             navGroup.add(paymentBtn);
+            navGroup.add(vehicleListBtn);
 
             add(profileBtn);
             add(Box.createVerticalStrut(componentSpace));
@@ -109,6 +112,8 @@ public class SidebarPanel extends JPanel {
             add(appointmentBtn);
             add(Box.createVerticalStrut(componentSpace));
             add(paymentBtn);
+            add(Box.createVerticalStrut(componentSpace));
+            add(vehicleListBtn);
             add(Box.createVerticalStrut(componentSpace));
 
         } else if (role.equalsIgnoreCase("Technician")) {
@@ -199,6 +204,7 @@ public class SidebarPanel extends JPanel {
     public JToggleButton getCustomerListBtn() { return this.customerListBtn; }
     public JToggleButton getAppointmentBtn() { return this.appointmentBtn; }
     public JToggleButton getPaymentBtn() { return this.paymentBtn; }
+    public JToggleButton getVehicleListBtn() { return this.vehicleListBtn; }
 
     // --- GETTERS FOR TECHNICIAN ---
     public JToggleButton getTechProfileBtn() {return this.myProfileBtn;}

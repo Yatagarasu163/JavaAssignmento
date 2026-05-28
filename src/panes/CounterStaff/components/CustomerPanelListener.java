@@ -5,4 +5,5 @@ public interface CustomerPanelListener {
     void onBackToList();
     void onCreateCustomer();
     void onAddVehicle(String customerID);
+    void onViewVehicleDetails(String vehicleID);
 }
