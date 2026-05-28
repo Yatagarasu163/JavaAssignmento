@@ -78,7 +78,7 @@ public class CounterStaffVehicleDetailsPane extends JPanel {
         buttonPanel.setOpaque(false);
 
         FloatingButton deleteBtn = new FloatingButton("Delete Vehicle", 20);
-        deleteBtn.setBackground(new Color(220, 53, 69)); // Red for delete
+        deleteBtn.setBackground(new Color(220, 53, 69));
         deleteBtn.setForeground(Color.WHITE);
 
         FloatingButton updateBtn = new FloatingButton("Update Details", 20);
@@ -87,7 +87,6 @@ public class CounterStaffVehicleDetailsPane extends JPanel {
         buttonPanel.add(updateBtn);
         add(buttonPanel);
 
-        // --- ACTION LISTENERS ---
         backBtn.addActionListener(e -> listener.onBackToList());
 
         updateBtn.addActionListener(e -> {

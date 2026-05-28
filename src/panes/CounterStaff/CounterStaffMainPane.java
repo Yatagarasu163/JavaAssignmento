@@ -70,35 +70,29 @@ public class CounterStaffMainPane extends JFrame implements CustomerPanelListene
 
     @Override
     public void onViewVehicleDetails(String vehicleID) {
-        // Step 1: Tell the details page to load the data for this specific car
         vehicleDetailsPane.loadVehicle(vehicleID);
-
-        // Step 2: Flip the card layout to show the details page
         cardLayout.show(mainPane, "VEHICLE_DETAILS");
     }
 
-    // (If you have other interface methods like onBackToList(), they go here too!)
+
     @Override
     public void onBackToList() {
-        cardLayout.show(mainPane, "VEHICLE_LIST"); // Or whatever page you want them to return to
+        cardLayout.show(mainPane, "VEHICLE_LIST");
     }
 
     @Override
     public void onCreateCustomer() {
-        // Example: cardLayout.show(mainPane, "CREATE_CUSTOMER");
+
     }
 
     @Override
     public void onViewCustomerDetails(String customerID) {
-        // Example: customerDetailsPane.loadCustomer(customerID);
-        // cardLayout.show(mainPane, "CUSTOMER_DETAILS");
+
     }
 
     @Override
     public void onAddVehicle(String customerID) {
-        // If you have an add vehicle pane, load the customer ID and flip to it
-        // addVehiclePane.loadCustomer(customerID);
-        // cardLayout.show(mainPane, "ADD_VEHICLE");
+
     }
 
 }

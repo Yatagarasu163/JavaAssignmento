@@ -54,8 +54,7 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
 
     @Override
     public void onViewVehicleDetails(String vehicleID) {
-        // You can leave this empty if this specific pane doesn't need to handle vehicle navigation,
-        // or add logic here if it does!
+
     }
 
 }

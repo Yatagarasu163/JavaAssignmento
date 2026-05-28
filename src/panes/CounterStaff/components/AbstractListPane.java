@@ -19,7 +19,6 @@ public abstract class AbstractListPane extends JPanel {
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // 1. TOP ADD BUTTON PANEL (Only shows if text is provided)
         JPanel addPanel = new JPanel(new BorderLayout());
         addPanel.setOpaque(false);
         addPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 50));
@@ -39,7 +38,6 @@ public abstract class AbstractListPane extends JPanel {
             addPanel.add(addBtn, BorderLayout.EAST);
         }
 
-        // 2. THE MAIN DETAILS PANEL (Just the Table)
         JPanel detailsPanel = new JPanel();
         detailsPanel.setBackground(UIConfig.mainBackground);
         detailsPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -48,7 +46,6 @@ public abstract class AbstractListPane extends JPanel {
         ));
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
 
-        // Fetch dynamic columns and data from the child class (No search parameter)
         String[] columns = getColumnNames();
         String[][] data = getTableData();
 
@@ -71,10 +68,8 @@ public abstract class AbstractListPane extends JPanel {
 
         detailsPanel.add(scrollPane);
 
-        // Assemble the pane
         add(Box.createVerticalStrut(20));
 
-        // Only add the top panel if we actually have a button, otherwise save space
         if (addButtonText != null && !addButtonText.isEmpty()) {
             add(addPanel);
             add(Box.createVerticalStrut(20));
@@ -83,7 +78,6 @@ public abstract class AbstractListPane extends JPanel {
         add(detailsPanel);
     }
 
-    // --- HELPER METHOD TO REFRESH TABLE DATA ---
     public void refreshTable() {
         String[][] newData = getTableData();
         tableModel.setDataVector(newData, getColumnNames());
@@ -95,17 +89,11 @@ public abstract class AbstractListPane extends JPanel {
         dataTable.getColumn("Details").setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
-    // =========================================================================
-    // ABSTRACT METHODS
-    // =========================================================================
     protected abstract String[] getColumnNames();
-    protected abstract String[][] getTableData(); // Removed search parameter
+    protected abstract String[][] getTableData();
     protected abstract void onAddButtonClicked();
     protected abstract void onRowButtonClicked(String id);
 
-    // =========================================================================
-    // REUSABLE INNER CLASSES
-    // =========================================================================
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
