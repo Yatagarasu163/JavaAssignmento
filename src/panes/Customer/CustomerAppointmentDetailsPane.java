@@ -149,10 +149,15 @@ public class CustomerAppointmentDetailsPane extends JPanel {
                 String cleanId = taskId.trim();
                 for (String[] priceRow : priceList) {
                     if (priceRow.length >= 2 && priceRow[0].equals(cleanId)) {
-                        JLabel taskLbl = new JLabel("\u2022 " + priceRow[1]);
+                        ImageIcon dotImg = new ImageIcon("src/images/Dot.png");
+                        Image scaledDot = dotImg.getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH);
+                        ImageIcon finalDot = new ImageIcon(scaledDot);
+
+                        JLabel taskLbl = new JLabel(priceRow[1], finalDot, SwingConstants.LEFT);
                         taskLbl.setFont(new Font("SansSerif", Font.BOLD, 14));
                         taskLbl.setForeground(Color.GRAY);
                         taskLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+                        taskLbl.setIconTextGap(8);
                         tasksPanel.add(taskLbl);
                         tasksPanel.add(Box.createVerticalStrut(5));
                         break;
@@ -216,11 +221,13 @@ public class CustomerAppointmentDetailsPane extends JPanel {
                 }
             });
 
-            JLabel sendIcon = new JLabel("➤");
-            sendIcon.setFont(new Font("SansSerif", Font.PLAIN, 18));
-            sendIcon.setForeground(Color.GRAY);
+            ImageIcon originalSend = new ImageIcon("src/images/Send.png");
+            Image scaledSend = originalSend.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+            ImageIcon finalSendIcon = new ImageIcon(scaledSend);
+
+            JLabel sendIcon = new JLabel(finalSendIcon);
             sendIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            sendIcon.setBorder(new EmptyBorder(0,10,0,10));
+            sendIcon.setBorder(new EmptyBorder(0, 10, 0, 10));
 
             sendIcon.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {

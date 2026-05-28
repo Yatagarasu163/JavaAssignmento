@@ -10,7 +10,7 @@ public class CustomerMainPane extends JFrame {
     private String loggedInUserID = "UNKNOWN";
 
     public CustomerMainPane() {
-        setTitle("APU-ASC: Customer Portal");
+        setTitle("APU-ASC");
         setSize(1000, 700);
         components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);

@@ -44,9 +44,12 @@ public class CustomerProfilePane extends JPanel {
             date = row[9].trim();
         }
 
-        JLabel avatarLabel = new JLabel("👤", SwingConstants.CENTER);
-        avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
-        avatarLabel.setForeground(Color.LIGHT_GRAY);
+        ImageIcon originalIcon = new ImageIcon("src/images/UserProfile.png");
+
+        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon avatarIcon = new ImageIcon(scaledImage);
+
+        JLabel avatarLabel = new JLabel(avatarIcon, SwingConstants.CENTER);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel avatarContainer = new JPanel() {
@@ -80,12 +83,12 @@ public class CustomerProfilePane extends JPanel {
         phoneField = createReadOnlyField(phone);
         addressField = createReadOnlyField(address);
 
-        addFormField(detailsCard, "👤", nameField, 0, 0, 1);
-        addFormField(detailsCard, "🪪", idField, 2, 0, 1);
-        addFormField(detailsCard, "✉️", emailField, 0, 1, 1);
-        addFormField(detailsCard, "📅", dateField, 2, 1, 1);
-        addFormField(detailsCard, "📞", phoneField, 0, 2, 3);
-        addFormField(detailsCard, "📍", addressField, 0, 3, 3);
+        addFormField(detailsCard, "src/images/User.png", nameField, 0, 0, 1);
+        addFormField(detailsCard, "src/images/ID.png", idField, 2, 0, 1);
+        addFormField(detailsCard, "src/images/Email.png", emailField, 0, 1, 1);
+        addFormField(detailsCard, "src/images/Calendar.png", dateField, 2, 1, 1);
+        addFormField(detailsCard, "src/images/Contact.png", phoneField, 0, 2, 3);
+        addFormField(detailsCard, "src/images/Address.png", addressField, 0, 3, 3);
 
         updateBtn = new FloatingButton("Update", 20);
         updateBtn.setPreferredSize(new Dimension(150, 40));
@@ -110,14 +113,20 @@ public class CustomerProfilePane extends JPanel {
         return field;
     }
 
-    private void addFormField(JPanel panel, String icon, JTextField field, int x, int y, int width) {
+    private void addFormField(JPanel panel, String imagePath, JTextField field, int x, int y, int width) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x; gbc.gridy = y;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(15, 15, 15, 5);
 
-        JLabel iconLabel = new JLabel(icon);
-        iconLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon finalIcon = new ImageIcon(scaledImage);
+
+        JLabel iconLabel = new JLabel(finalIcon, SwingConstants.LEFT);
+        iconLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        iconLabel.setIconTextGap(10);
+
         panel.add(iconLabel, gbc);
 
         gbc.gridx = x + 1;

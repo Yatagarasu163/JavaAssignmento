@@ -218,11 +218,18 @@ public class CustomerDashboardPane extends JPanel {
         JLabel serviceLabel = new JLabel(serviceType, SwingConstants.CENTER);
         serviceLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        String buttonText = statusText.equalsIgnoreCase("Completed") ? "Review \u270E" : "Comments \u270E";
+        String buttonText = statusText.equalsIgnoreCase("Completed") ? "Review" : "Comments";
         FloatingButton actionBtn = new FloatingButton(buttonText, 15);
 
+        ImageIcon originalIcon = new ImageIcon("src/images/Edit.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
+        actionBtn.setIcon(new ImageIcon(scaledImage));
+
+        actionBtn.setHorizontalTextPosition(SwingConstants.LEFT);
+        actionBtn.setIconTextGap(8);
+
         actionBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        actionBtn.setPreferredSize(new Dimension(110, 30));
+        actionBtn.setPreferredSize(new Dimension(125, 30));
 
         if (statusText.equalsIgnoreCase("Completed")) {
             actionBtn.setBackground(UIConfig.reviewBtn);
