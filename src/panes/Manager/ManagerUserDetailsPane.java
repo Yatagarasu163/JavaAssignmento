@@ -34,10 +34,13 @@ public class ManagerUserDetailsPane extends JPanel{
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
-        avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
-        avatarLabel.setForeground(Color.LIGHT_GRAY);
-        avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+       ImageIcon originalIcon = new ImageIcon("src/images/UserProfile.png");
+
+       Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+       ImageIcon avatarIcon = new ImageIcon(scaledImage);
+
+       JLabel avatarLabel = new JLabel(avatarIcon, SwingConstants.CENTER);
+       avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel avatarContainer = new JPanel() {
             @Override
@@ -45,13 +48,13 @@ public class ManagerUserDetailsPane extends JPanel{
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(UIConfig.mainForeground);
+                g2.setColor(UIConfig.mainBackground);
                 g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20);
             }
         };
         avatarContainer.setPreferredSize(new Dimension(150, 150));
         avatarContainer.setMaximumSize(new Dimension(150, 150));
-        avatarContainer.setBackground(UIConfig.mainBackground);
+        avatarContainer.setBackground(Color.WHITE);
         avatarContainer.setLayout(new BorderLayout());
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
         avatarContainer.setAlignmentX(Component.CENTER_ALIGNMENT);

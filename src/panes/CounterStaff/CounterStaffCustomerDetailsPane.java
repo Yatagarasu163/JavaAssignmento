@@ -42,9 +42,12 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
-        avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
-        avatarLabel.setForeground(Color.LIGHT_GRAY);
+        ImageIcon originalIcon = new ImageIcon("src/images/UserProfile.png");
+
+        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon avatarIcon = new ImageIcon(scaledImage);
+
+        JLabel avatarLabel = new JLabel(avatarIcon, SwingConstants.CENTER);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel avatarContainer = new JPanel() {
