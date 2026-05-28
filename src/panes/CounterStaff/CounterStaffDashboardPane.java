@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 import java.util.List;
-
 import components.FloatingButton;
 import config.UIConfig;
 import IO.FileHandler;
@@ -17,11 +16,10 @@ public class CounterStaffDashboardPane extends JPanel{
     private static final String filename = "Users.txt";
 
     private JPanel buttonPanel = new JPanel();
-    private JTextField nameField, phoneField, addressField; // Editable
-    private JTextField idField, emailField, dateField;                 // Non-editable
+    private JTextField nameField, phoneField, addressField;
+    private JTextField idField, emailField, dateField;
     private boolean isEditing = false;
     private CardLayout cardLayout = new CardLayout();
-
 
     private FloatingButton updateBtn = new FloatingButton("Update", 20);
     private FloatingButton saveBtn = new FloatingButton("Save Changes", 20);
@@ -32,14 +30,11 @@ public class CounterStaffDashboardPane extends JPanel{
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- PART 1: USER PROFILE ICON ---
-        // Using a large Unicode character as a placeholder for the avatar
         JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
         avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
         avatarLabel.setForeground(Color.LIGHT_GRAY);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Wrap it in a panel to draw the circle around it
         JPanel avatarContainer = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -57,7 +52,6 @@ public class CounterStaffDashboardPane extends JPanel{
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
         avatarContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JPanel detailsCard = new JPanel();
         detailsCard.setBackground(Color.WHITE);
         detailsCard.setBorder(BorderFactory.createCompoundBorder(
@@ -65,7 +59,6 @@ public class CounterStaffDashboardPane extends JPanel{
             new EmptyBorder(30, 40, 30, 40)
         ));
         detailsCard.setLayout(new BoxLayout(detailsCard, BoxLayout.Y_AXIS));
-
 
         idField = createReadOnlyField(userData[0]);
         nameField = createReadOnlyField(userData[3]);
@@ -88,7 +81,6 @@ public class CounterStaffDashboardPane extends JPanel{
         detailsCard.add(Box.createVerticalStrut(10));
         detailsCard.add(createDetailsPanel("Address", addressField));
         detailsCard.add(Box.createVerticalStrut(componentSpace));
-
 
         buttonPanel.setLayout(cardLayout);
         JPanel updatePanel = new JPanel();
@@ -122,7 +114,6 @@ public class CounterStaffDashboardPane extends JPanel{
         add(Box.createVerticalStrut(componentSpace));
         add(buttonPanel);
         add(Box.createVerticalStrut(componentSpace));
-
 
         updateBtn.addActionListener(e -> {
             toggleEditMode(false);

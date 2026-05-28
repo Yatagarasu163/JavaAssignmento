@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.*;
 import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import config.UIConfig;
 import components.TextLabel;
 import IO.FileHandler;
 
 public class AppointmentBox extends JPanel{
-
     private int radius = 30; 
     private Timer timer;
     private String technicianID;
@@ -51,7 +49,7 @@ public class AppointmentBox extends JPanel{
     }
 
     public void loadAppointments(String technicianID) {
-        removeAll(); // clear UI
+        removeAll();
 
         List<String[]> users = FileHandler.read(FileHandler.users);
         List<String[]> appointments = FileHandler.read(FileHandler.appointments);
@@ -99,10 +97,10 @@ public class AppointmentBox extends JPanel{
                 if(appointment[9].equalsIgnoreCase(vehicle[0]) && !appointment[4].equalsIgnoreCase("Completed")){
                     if (appointment[2].equalsIgnoreCase("Normal Service")){
                         queueData.add(new String[]{
-                            "1 Hour", // date
-                            vehicle[2],     // model
-                            vehicle[1],     // plate
-                            appointment[4]  // status
+                            "1 Hour",
+                            vehicle[2],
+                            vehicle[1],
+                            appointment[4]
                         });
                     } else{
                         queueData.add(new String[]{
@@ -116,7 +114,6 @@ public class AppointmentBox extends JPanel{
             }
         }
 
-        // --- rebuild UI ---
         setLayout(new BorderLayout(20, 10));
 
         JPanel topPanel = new JPanel();
@@ -169,7 +166,6 @@ public class AppointmentBox extends JPanel{
 
         add(scrollPanel, BorderLayout.CENTER);
 
-        // refresh UI
         revalidate();
         repaint();
     }

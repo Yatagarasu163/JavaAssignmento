@@ -87,7 +87,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
             }
         }
 
-        // --- MODIFIED TOP PANEL ---
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(bgColor);
         topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -109,7 +108,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
 
         topPanel.add(backBtn, BorderLayout.WEST);
         topPanel.add(downloadBtn, BorderLayout.EAST);
-        // --------------------------
 
         JPanel receiptCard = new JPanel();
         receiptCard.setLayout(new BoxLayout(receiptCard, BoxLayout.Y_AXIS));
@@ -210,8 +208,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
             cardLayout.show(cardsContainer, "HISTORY");
         });
 
-        // --- DOWNLOAD BUTTON LOGIC ---
-        // (We need to declare these as 'final' or effectively final to use them in the lambda below)
         final String finalInvoiceNo = invoiceNo;
         final String finalInvoiceDate = invoiceDate;
         final String finalCustName = custName;
@@ -222,29 +218,23 @@ public class CustomerPaymentDetailsPane extends JPanel {
         final String finalServiceIDs = serviceIDs;
 
         downloadBtn.addActionListener(e -> {
-            // 1. Open the Save Dialog
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Save Receipt As...");
 
-            // 2. Suggest a default file name
             fileChooser.setSelectedFile(new File("Receipt_" + finalInvoiceNo + ".pdf"));
 
-            // 3. Force it to only show PDF files
             FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF Documents", "pdf");
             fileChooser.setFileFilter(filter);
 
-            // 4. Check if the user clicked "Save"
             int userSelection = fileChooser.showSaveDialog(this);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File fileToSave = fileChooser.getSelectedFile();
                 String savePath = fileToSave.getAbsolutePath();
 
-                // Add .pdf extension if the user forgot to type it
                 if (!savePath.toLowerCase().endsWith(".pdf")) {
                     savePath += ".pdf";
                 }
 
-                // 5. Call the PDF Generation method!
                 generatePDF(savePath, finalInvoiceNo, finalInvoiceDate, finalCustName, finalApptDate, finalPlateNo, finalServiceType, finalTotal, finalServiceIDs, priceList);
             }
         });
@@ -283,9 +273,8 @@ public class CustomerPaymentDetailsPane extends JPanel {
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
-            document.open();
 
-            // Header Info
+            document.open();
             document.add(new Paragraph("====================================="));
             document.add(new Paragraph("         APU - ASC OFFICIAL RECEIPT  "));
             document.add(new Paragraph("====================================="));
@@ -299,7 +288,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
             document.add(new Paragraph("Services Performed:"));
             document.add(new Paragraph(" "));
 
-            // Services Loop
             if (serviceIDs != null && !serviceIDs.isEmpty()) {
                 String[] individualIds = serviceIDs.split(",");
                 for (String id : individualIds) {
@@ -319,7 +307,6 @@ public class CustomerPaymentDetailsPane extends JPanel {
             document.add(new Paragraph("====================================="));
             document.add(new Paragraph("Thank you for choosing APU-ASC!"));
 
-            // Show a success popup!
             JOptionPane.showMessageDialog(this, "Receipt successfully downloaded to:\n" + filePath, "Download Complete", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (DocumentException | java.io.IOException e) {

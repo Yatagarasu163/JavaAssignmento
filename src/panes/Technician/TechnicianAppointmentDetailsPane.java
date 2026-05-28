@@ -3,7 +3,6 @@ package panes.Technician;
 import IO.FileHandler;
 import components.FloatingButton;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
     private panes.Technician.TechnicianAppointmentPane parentController;
     private panes.Technician.TechnicianAppointmentPane.AppointmentData currentData;
 
-    // Dynamic UI Containers
     private JLabel section1Title;
     private JPanel infoGrid;
     private JTextArea descArea;
@@ -38,7 +36,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
     }
 
     private void initUIComponents() {
-        // --- PART 2: Maintenance Feedback ---
         section1Title = new JLabel("Maintenance Feedback");
         section1Title.setFont(new Font("SansSerif", Font.BOLD, 16));
         section1Title.setForeground(primaryPurple);
@@ -59,7 +56,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         descArea.setAlignmentX(Component.LEFT_ALIGNMENT);
         descArea.setMaximumSize(new Dimension(800, 100));
 
-        // --- PART 3: Tasks ---
         JLabel section2Title = new JLabel("Assigned Tasks");
         section2Title.setFont(new Font("SansSerif", Font.BOLD, 16));
         section2Title.setForeground(primaryPurple);
@@ -70,7 +66,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         tasksPanel.setOpaque(false);
         tasksPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- PART 4: Chat & History ---
         JLabel chatConversation = new JLabel("Comment & History");
         chatConversation.setFont(new Font("SansSerif", Font.BOLD, 16));
         chatConversation.setForeground(primaryPurple);
@@ -80,18 +75,15 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
         chatPanel.setOpaque(false);
 
-        // SCROLLABLE CHAT IMPLEMENTATION
         JScrollPane chatScroll = new JScrollPane(chatPanel);
         chatScroll.setBorder(BorderFactory.createLineBorder(new Color(230,230,240), 1, true));
         chatScroll.setOpaque(false);
         chatScroll.getViewport().setOpaque(false);
         chatScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        // Fix height so chat can be scrollable after containing more than 2 chat history
         chatScroll.setPreferredSize(new Dimension(800, 160));
         chatScroll.setMaximumSize(new Dimension(800, 160));
         chatScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Chat Input
         JPanel inputContainer = new JPanel(new BorderLayout());
         inputContainer.setOpaque(false);
         inputContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -110,7 +102,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         sendIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         sendIcon.setBorder(new EmptyBorder(0,10,0,10));
 
-        // Chat Conversation Submit
         sendIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
 
@@ -143,7 +134,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         inputContainer.add(inputField, BorderLayout.CENTER);
         inputContainer.add(sendIcon, BorderLayout.EAST);
 
-        // --- PART 5: Complete Button ---
         completeBtn = new FloatingButton("Maintenance Complete", 20);
         completeBtn.setMaximumSize(new Dimension(800, 40));
         completeBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -156,7 +146,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
             }
         });
 
-        // Add to main panel
         add(section1Title);
         add(Box.createVerticalStrut(15));
         add(infoGrid);
@@ -182,11 +171,9 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         add(Box.createVerticalGlue());
     }
 
-    // Called by the Controller when a new card is clicked
     public void loadAppointment(panes.Technician.TechnicianAppointmentPane.AppointmentData data) {
         this.currentData = data;
 
-        // Update Text Info
         section1Title.setText("Maintenance Feedback: " + data.model);
         descArea.setText(data.description);
 
@@ -196,12 +183,11 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         infoGrid.add(createHeaderLabel("Plat Number")); infoGrid.add(createValueLabel(data.plate));
         infoGrid.add(createHeaderLabel("Email")); infoGrid.add(createValueLabel(data.email));
 
-        // Build Checkboxes based on data state
         tasksPanel.removeAll();
         for (int i = 0; i < data.tasks.length; i++) {
             final int index = i;
             JCheckBox cb = new JCheckBox(data.tasks[i]);
-            cb.setSelected(data.taskStates[i]); // Remember if it was checked before!
+            cb.setSelected(data.taskStates[i]);
             cb.setFont(new Font("SansSerif", Font.BOLD, 12));
             cb.setForeground(Color.GRAY);
             cb.setOpaque(false);
@@ -224,7 +210,7 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
         }
 
         refreshChat();
-        evaluateLogic(); // Set button state immediately
+        evaluateLogic();
 
         revalidate();
         repaint();
@@ -345,11 +331,9 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
 
             newID = "CT" + String.valueOf(randomInt);
 
-            isUnique = true; // Assume it is unique until proven otherwise
+            isUnique = true;
 
             for (String[] row : dataList) {
-
-
                 if (row[0].equals(newID)) {
                     System.out.println("Repeated ID detected (" + newID + "). Regenerating...");
                     isUnique = false;
@@ -357,7 +341,6 @@ public class TechnicianAppointmentDetailsPane extends JPanel {
                 }
             }
         }
-
         return newID;
     }
 }

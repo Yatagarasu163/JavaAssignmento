@@ -5,10 +5,7 @@ import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.*;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
 import panes.CounterStaff.components.PaymentListener;
 import components.FloatingButton;
 import config.UIConfig;
@@ -22,7 +19,6 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 
-
 public class CounterStaffPaymentDetails extends JPanel{
 
     private PaymentListener listener;
@@ -30,7 +26,7 @@ public class CounterStaffPaymentDetails extends JPanel{
     private String carPlate;
     private String appointmentDate;
     private String serviceType;
-    private List<String[]> services = new ArrayList<>(); //{service + price}
+    private List<String[]> services = new ArrayList<>();
     private String totalAmount;
     private String payAmount; 
     private TextLabel cusNameLbl;
@@ -100,12 +96,10 @@ public class CounterStaffPaymentDetails extends JPanel{
             middlePanel.add(servicesTitle);
             middlePanel.add(Box.createVerticalStrut(10));
 
-
             servicesPanel = new JPanel();
             servicesPanel.setOpaque(false);
             servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
             middlePanel.add(servicesPanel);
-
 
             for (String[] service: services) {
                 middlePanel.add(createServiceRow(service[0], service[1]));
@@ -145,8 +139,6 @@ public class CounterStaffPaymentDetails extends JPanel{
             backButton.addActionListener(e -> {
                 listener.onBackToList();
             });
-
-
     }
 
     private JPanel createServiceRow(String service, String price){
@@ -160,7 +152,6 @@ public class CounterStaffPaymentDetails extends JPanel{
         p.add(servPrice, BorderLayout.EAST);
 
         return p;
-
     }
 
     public void loadPayment(String paymentID){
@@ -235,7 +226,6 @@ public class CounterStaffPaymentDetails extends JPanel{
             totalAmount = String.format("%.2f", total);
             payAmount = totalAmount;
 
-            // Update labels
             cusNameLbl.setText(cusName);
             appointmentDateLbl.setText(appointmentDate);
             plateLbl.setText(carPlate);
@@ -244,7 +234,6 @@ public class CounterStaffPaymentDetails extends JPanel{
             totalLbl.setText("Total Amount: RM" + totalAmount);
             payLbl.setText("Pay: RM" + payAmount);
 
-            // Update services list
             servicesPanel.removeAll();
 
             for (String[] service : services) {
@@ -252,10 +241,8 @@ public class CounterStaffPaymentDetails extends JPanel{
                 servicesPanel.add(Box.createVerticalStrut(5));
             }
 
-            // Refresh UI
             servicesPanel.revalidate();
             servicesPanel.repaint();
-           
         } else{
             listener.onBackToList();
         }
@@ -333,7 +320,6 @@ public class CounterStaffPaymentDetails extends JPanel{
             totalAmount = String.format("%.2f", total);
             payAmount = totalAmount;
 
-            // Update labels
             cusNameLbl.setText(cusName);
             appointmentDateLbl.setText(appointmentDate);
             plateLbl.setText(carPlate);
@@ -342,16 +328,12 @@ public class CounterStaffPaymentDetails extends JPanel{
             totalLbl.setText("Total Amount: RM" + totalAmount);
             payLbl.setText("Pay: RM" + payAmount);
 
-            // Update services list
             servicesPanel.removeAll();
 
             for (String[] service : services) {
                 servicesPanel.add(createServiceRow(service[2], "RM" + service[1]));
                 servicesPanel.add(Box.createVerticalStrut(5));
             }
-
-
-            // Refresh UI
             servicesPanel.revalidate();
             servicesPanel.repaint();
             
@@ -361,8 +343,6 @@ public class CounterStaffPaymentDetails extends JPanel{
     }
 
     private void setPaymentButtonAction() {
-
-        // Remove old listeners
         for (java.awt.event.ActionListener al : payBtn.getActionListeners()) {
             payBtn.removeActionListener(al);
         }
@@ -395,7 +375,6 @@ public class CounterStaffPaymentDetails extends JPanel{
 
     private void setReceiptButtonAction() {
 
-        // Remove old listeners
         for (java.awt.event.ActionListener al : payBtn.getActionListeners()) {
             payBtn.removeActionListener(al);
         }
@@ -412,27 +391,17 @@ public class CounterStaffPaymentDetails extends JPanel{
                 "Receipt",
                 JOptionPane.INFORMATION_MESSAGE
             );
-
-            
-
         });
     }
 
     public void writeReceiptToPDF(String paymentID, String customerName, String amount) {
-        // 1. Define the file path
         String filePath = "src/receipts/" + paymentID + "_Receipt.pdf";
-
-        // 2. Create the Document Object (The blank PDF page)
         Document document = new Document();
 
         try {
-            // 3. Create a Writer Object to link the Document to the physical file
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
 
-            // 4. Open the document to start writing
             document.open();
-
-            // 5. Add your text using Paragraph Objects!
             document.add(new Paragraph("====================================="));
             document.add(new Paragraph("         APU - ASC RECEIPT           "));
             document.add(new Paragraph("====================================="));
@@ -448,51 +417,9 @@ public class CounterStaffPaymentDetails extends JPanel{
         } catch (DocumentException | IOException e) {
             System.err.println("Error generating PDF: " + e.getMessage());
         } finally {
-            // 6. ALWAYS close the document to save it!
             if (document.isOpen()) {
                 document.close();
             }
         }
     }
-
-//    private void writeReceiptToFile() {
-//        try {
-//            String folderPath = "receipts";
-//            File folder = new File(folderPath);
-//            if (!folder.exists()) {
-//                folder.mkdirs();
-//            }
-//
-//            String fileName = "receipt_" + paymentID + ".txt";
-//            File file = new File(folder, fileName);
-//
-//            FileWriter writer = new FileWriter(file);
-//
-//            writer.write("=========== RECEIPT ===========\n");
-//            writer.write("Payment ID: " + paymentID + "\n");
-//            writer.write("Customer: " + cusName + "\n");
-//            writer.write("Car Plate: " + carPlate + "\n");
-//            writer.write("Appointment Date: " + appointmentDate + "\n");
-//            writer.write("Service Type: " + serviceType + "\n");
-//            writer.write("\n--- Services ---\n");
-//
-//            for (String[] service : services) {
-//                writer.write(service[0] + ": " + service[2] + " - RM" + service[1] + "\n");
-//            }
-//
-//            writer.write("\nTOTAL: RM" + totalAmount + "\n");
-//            writer.write("PAYMENT: RM" + payAmount + "\n");
-//            writer.write("==============================\n");
-//
-//            writer.close();
-//
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(
-//                this,
-//                "Error writing receipt: " + e.getMessage(),
-//                "Error",
-//                JOptionPane.ERROR_MESSAGE
-//            );
-//        }
-//    }
 }

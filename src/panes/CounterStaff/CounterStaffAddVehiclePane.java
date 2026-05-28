@@ -5,7 +5,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.EmptyBorder;
-
 import IO.FileHandler;
 import components.FloatingButton;
 import components.FloatingTextField;
@@ -13,7 +12,6 @@ import components.TextLabel;
 import panes.CounterStaff.components.CustomerPanelListener;
 
 public class CounterStaffAddVehiclePane extends JPanel{
-    
     private CustomerPanelListener listener;
     private String customerID;
     private static final String filename = "Vehicle.txt";
@@ -102,7 +100,7 @@ public class CounterStaffAddVehiclePane extends JPanel{
         for (String[] row : data) {
             if (row.length > 0 && row[0].startsWith("V")) {
                 try {
-                    String numberPart = row[0].substring(1); // remove "V"
+                    String numberPart = row[0].substring(1);
                     int num = Integer.parseInt(numberPart);
 
                     if (num > max) {

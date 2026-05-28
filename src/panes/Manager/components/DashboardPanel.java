@@ -3,10 +3,8 @@ package panes.Manager.components;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
-
 import components.TextLabel;
 import config.UIConfig;
-
 
 public class DashboardPanel extends JPanel{
 
@@ -22,7 +20,6 @@ public class DashboardPanel extends JPanel{
         panelTitle.setForeground(Color.WHITE);
         panelTitle.setHorizontalAlignment(SwingConstants.CENTER);
         panelTitle.setBorder(new EmptyBorder(20, 20, 20, 20));
-
 
         TextLabel panelValue = new TextLabel(value);
         panelValue.setForeground(Color.WHITE);

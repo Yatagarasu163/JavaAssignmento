@@ -2,12 +2,9 @@ package panes.Technician;
 
 import IO.FileHandler;
 import components.FloatingButton;
-import userClass.User;
-
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,7 +14,7 @@ import java.util.ArrayList;
 public class TechnicianDashboardPane extends JPanel {
 
     private final Color primaryPurple = new Color(128, 128, 255);
-    private final Color bgColor = new Color(248, 248, 250); // Slightly off-white background
+    private final Color bgColor = new Color(248, 248, 250);
     private TechnicianMainPane mainController;
 
     public TechnicianDashboardPane(String username, String UserID, TechnicianMainPane mainController) {
@@ -26,20 +23,16 @@ public class TechnicianDashboardPane extends JPanel {
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
-        // --- PART 1: GREETING ---
         JLabel greetingLabel = new JLabel("Hi, " + username);
         greetingLabel.setFont(new Font("SansSerif", Font.BOLD, 36));
         greetingLabel.setForeground(primaryPurple);
         greetingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- PART 2: SUMMARY CARDS ---
         JPanel cardsContainer = new JPanel();
         cardsContainer.setLayout(new BoxLayout(cardsContainer, BoxLayout.X_AXIS));
-//        JPanel cardsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         cardsContainer.setBackground(bgColor);
         cardsContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Getting today appointment list
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate =  today.format(formatter);
@@ -49,13 +42,10 @@ public class TechnicianDashboardPane extends JPanel {
         long CompletedTask = TodayAppointment.stream().filter(row -> row[3].equals("Completed")).count();
         long PendingTask = AppointmentQuan - CompletedTask;
 
-        // Box container for summarize daily appointment status
         cardsContainer.add(createSummaryCard("🚘", "Appointments", String.valueOf(AppointmentQuan)));
         cardsContainer.add(createSummaryCard("✅", "Completed", String.valueOf(CompletedTask)));
         cardsContainer.add(createSummaryCard("🕒", "Pending", String.valueOf(PendingTask)));
 
-        // --- PART 3: SCROLLING TABLE ---
-        // 3A. Header Row
         JPanel headerRow = new JPanel(new GridLayout(1, 5, 10, 0));
         headerRow.setBackground(Color.WHITE);
         headerRow.setMaximumSize(new Dimension(890, 40));
@@ -65,14 +55,12 @@ public class TechnicianDashboardPane extends JPanel {
         headerRow.add(createHeaderLabel("Car Model"));
         headerRow.add(createHeaderLabel("Client Name"));
         headerRow.add(createHeaderLabel("Status"));
-        headerRow.add(new JLabel("")); // Empty header for the button column
+        headerRow.add(new JLabel(""));
 
-        // 3B. Data Rows Container
         JPanel tableContent = new JPanel();
         tableContent.setLayout(new BoxLayout(tableContent, BoxLayout.Y_AXIS));
         tableContent.setBackground(Color.WHITE);
 
-        //Display the appointment recordT
         for (String[] Appointments: TodayAppointment){
             tableContent.add(createTableRow(
                     Appointments[0],
@@ -83,18 +71,15 @@ public class TechnicianDashboardPane extends JPanel {
             ));
         }
 
-        // 3C. Wrap in ScrollPane
         JScrollPane scrollPane = new JScrollPane(tableContent);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        // limit the table height to only store 5 rows
         scrollPane.setPreferredSize(new Dimension(890, 310));
         scrollPane.setMaximumSize(new Dimension(890, 310));
 
-        // 3D. Outer Table Container (Holds Header + ScrollPane + Rounded Border)
         JPanel tableContainer = new JPanel();
         tableContainer.setLayout(new BoxLayout(tableContainer, BoxLayout.Y_AXIS));
         tableContainer.setBackground(Color.WHITE);
@@ -111,24 +96,20 @@ public class TechnicianDashboardPane extends JPanel {
         tableContainer.add(Box.createVerticalStrut(5));
         tableContainer.add(scrollPane);
 
-        // --- ASSEMBLE THE PAGE ---
         add(greetingLabel);
         add(Box.createVerticalStrut(30));
         add(cardsContainer);
         add(Box.createVerticalStrut(20));
         add(tableContainer);
         add(Box.createVerticalGlue());
-
     }
 
-    // --- HELPER: Creates the top Summary Cards ---
     private JPanel createSummaryCard(String iconPlaceholder, String title, String count) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setPreferredSize(new Dimension(300, 220));
         card.setMaximumSize(new Dimension(300, 220));
         card.setBackground(Color.WHITE);
-//        card.setBorder(new LineBorder(primaryPurple, 1, true));
         card.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(primaryPurple, 1, true),
                 new EmptyBorder(25, 20, 25, 20)
@@ -161,7 +142,6 @@ public class TechnicianDashboardPane extends JPanel {
         return card;
     }
 
-    // --- HELPER: Creates a Header Label ---
     private JLabel createHeaderLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.LEFT);
         label.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -169,7 +149,6 @@ public class TechnicianDashboardPane extends JPanel {
         return label;
     }
 
-    // --- HELPER: Creates a Table Row ---
     private JPanel createTableRow(String plate, String model, String client, String status, String userID) {
         JPanel row = new JPanel(new GridLayout(1, 5, 10, 0));
         row.setBackground(Color.WHITE);
@@ -177,20 +156,16 @@ public class TechnicianDashboardPane extends JPanel {
         row.setPreferredSize(new Dimension(890, 60));
         row.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 245))); // Light divider line
 
-        // 1. Plate Label
         JLabel plateLabel = new JLabel(plate);
         plateLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         plateLabel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Pad left
 
-        // 2. Model Label
         JLabel modelLabel = new JLabel(model);
         modelLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // 3. Client Label
         JLabel clientLabel = new JLabel(client);
         clientLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // 4. Status Pill
         JPanel statusContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 15)); // Centers vertically
         statusContainer.setBackground(Color.WHITE);
 
@@ -199,7 +174,6 @@ public class TechnicianDashboardPane extends JPanel {
         statusLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
         statusLabel.setPreferredSize(new Dimension(100, 30));
 
-        // Apply colors based on status matching the mockup
         switch (status) {
             case "In Queue":
                 statusLabel.setBackground(new Color(255, 180, 180)); // Pastel Red
@@ -216,7 +190,6 @@ public class TechnicianDashboardPane extends JPanel {
         }
         statusContainer.add(statusLabel);
 
-        // 5. Action Button Column
         JPanel btnContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 12));
         btnContainer.setBackground(Color.WHITE);
 
@@ -231,7 +204,6 @@ public class TechnicianDashboardPane extends JPanel {
 
         btnContainer.add(viewBtn);
 
-        // Add everything to the row
         row.add(plateLabel);
         row.add(modelLabel);
         row.add(clientLabel);
@@ -241,14 +213,12 @@ public class TechnicianDashboardPane extends JPanel {
         return row;
     }
 
-
     public static List<String[]> getTodayAppointments(String userId, String appointmentDate){
         List<String[]> appointmentList = FileHandler.read("Appointment.txt");
         List<String[]> userList = FileHandler.read("Users.txt");
         List<String[]> vehicleList = FileHandler.read("Vehicle.txt");
         List<String[]> todayAppointments = new ArrayList<>();
 
-      // get today appointments
         for (String[] appointment: appointmentList){
             if (appointment[6].equals(userId) & appointment[5].equals(appointmentDate)) {
                 String[] availableAppointments = new String[] {
@@ -278,7 +248,6 @@ public class TechnicianDashboardPane extends JPanel {
                 }
             }
         }
-
         return todayAppointments;
     }
 

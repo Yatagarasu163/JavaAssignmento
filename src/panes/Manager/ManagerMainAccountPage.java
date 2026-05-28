@@ -2,11 +2,9 @@ package panes.Manager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.*;
 import userClass.User;
 import panes.Manager.components.AccountsPanelListener;
-
 
 public class ManagerMainAccountPage extends JPanel implements AccountsPanelListener{
     
@@ -47,7 +45,6 @@ public class ManagerMainAccountPage extends JPanel implements AccountsPanelListe
     }
 
     public void onCreateUser(User user){
-        // Go to create account pane.
         cardLayout.show(this, "LIST");
     }
 

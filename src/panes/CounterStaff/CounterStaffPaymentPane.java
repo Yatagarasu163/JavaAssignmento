@@ -6,10 +6,8 @@ import javax.swing.border.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.util.List;
 import java.util.ArrayList;
-
 import components.TextLabel;
 import config.UIConfig;
 import components.FloatingComboBox;
@@ -81,7 +79,6 @@ public class CounterStaffPaymentPane extends JPanel{
         filtersPanel.add(serviceType);
 
         Dimension fixed = new Dimension(200, 40);
-
 
         String[] options = {"Normal", "Major", "Normal and Major"};
         FloatingComboBox<String> typeComboBox = new FloatingComboBox<>(options);

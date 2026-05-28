@@ -9,12 +9,10 @@ import components.FloatingButton;
 import config.UIConfig;
 import panes.CounterStaff.components.AppointmentBox;
 import panes.CounterStaff.components.AppointmentPanelListener;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import IO.FileHandler;
 
 public class CounterStaffAppointmentListPane extends JPanel{

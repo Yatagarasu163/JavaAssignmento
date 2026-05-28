@@ -3,9 +3,7 @@ package panes.CounterStaff;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import panes.CounterStaff.components.CustomerPanelListener;
-
 
 public class CounterStaffMainCustomerPane extends JPanel implements CustomerPanelListener{
 
@@ -34,7 +32,6 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
     }
 
     public void onViewCustomerDetails(String customerID){
-        //Handle the customer logic here.
         System.out.println(customerID);
         detailsPane.loadCustomer(customerID);
 
@@ -42,7 +39,6 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
     }
 
     public void onCreateCustomer(){
-        System.out.println("wtfgng");
         cardLayout.show(this, "CREATE");
     }
 
@@ -53,8 +49,6 @@ public class CounterStaffMainCustomerPane extends JPanel implements CustomerPane
 
     @Override
     public void onBackToList(){
-        System.out.println("Going back to the customer list pane!");
-
         cardLayout.show(this, "LIST");
     }
 

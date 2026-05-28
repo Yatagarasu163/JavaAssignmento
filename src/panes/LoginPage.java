@@ -40,7 +40,6 @@ public class LoginPage extends JFrame {
         txtUsername = new FloatingTextField("User ID");
         txtPassword = new FloatingPasswordField("Password");
 
-        // --- UPDATED OPTIONS PANEL (Holds both Checkbox and Forgot Password) ---
         JPanel optionsPanel = new JPanel(new BorderLayout());
         optionsPanel.setOpaque(false);
         optionsPanel.setMaximumSize(new Dimension(300, 30));
@@ -59,7 +58,6 @@ public class LoginPage extends JFrame {
             }
         });
 
-        // The New Forgot Password Button
         JButton forgotPassBtn = new JButton("Forgot Password?");
         forgotPassBtn.setFont(new Font("SansSerif", Font.BOLD, 11));
         forgotPassBtn.setForeground(UIConfig.mainBackground);
@@ -67,17 +65,15 @@ public class LoginPage extends JFrame {
         forgotPassBtn.setContentAreaFilled(false);
         forgotPassBtn.setBorderPainted(false);
         forgotPassBtn.setFocusPainted(false);
-        // Removes the default padding so it aligns perfectly to the edge
         forgotPassBtn.setMargin(new Insets(0, 0, 0, 0));
 
         forgotPassBtn.addActionListener(e -> {
-            this.dispose(); // Close the login window
-            new ForgotPasswordPage().setVisible(true); // Open the recovery window
+            this.dispose();
+            new ForgotPasswordPage().setVisible(true);
         });
 
         optionsPanel.add(chkShowPassword, BorderLayout.WEST);
         optionsPanel.add(forgotPassBtn, BorderLayout.EAST);
-        // -----------------------------------------------------------------------
 
         btnSignIn = new JButton("Sign In") {
             @Override
@@ -115,7 +111,6 @@ public class LoginPage extends JFrame {
                     if (dbId.equalsIgnoreCase(inputId)) {
                         userFound = true;
                         if (dbPassword.equals(inputPassword)) {
-                            // Check Whether is First Time User
                             String defaultPass = components.DefaultPasswordGenerator.generate(dbFirstName, dbId);
 
                             if (dbPassword.equals(defaultPass)) {
@@ -125,9 +120,8 @@ public class LoginPage extends JFrame {
                                         JOptionPane.WARNING_MESSAGE);
 
                                 this.dispose();
-                                // Pass the user's data array so the next page knows who to update!
                                 new ForcePasswordChangePage(row).setVisible(true);
-                                return; // Stop the login process here!
+                                return;
                             }
 
                             try{
@@ -193,7 +187,7 @@ public class LoginPage extends JFrame {
         formPanel.add(Box.createVerticalStrut(20));
         formPanel.add(txtPassword);
         formPanel.add(Box.createVerticalStrut(5));
-        formPanel.add(optionsPanel); // Injected the new panel here!
+        formPanel.add(optionsPanel);
         formPanel.add(Box.createVerticalStrut(30));
         formPanel.add(btnSignIn);
 

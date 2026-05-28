@@ -1,10 +1,9 @@
 package panes.Manager;
 
 import javax.swing.*;
-
 import panes.SidebarPanel;
-
 import java.awt.*;
+
 public class ManagerMainPane extends JFrame{
 
 	public ManagerMainPane() {
@@ -28,7 +27,6 @@ public class ManagerMainPane extends JFrame{
 		ManagerFeedbackPane feedbackPane = new ManagerFeedbackPane();
 		ManagerMainDashboardPane mainDashboardPane = new ManagerMainDashboardPane();
 		ManagerProfile profilePane = new ManagerProfile();
-		
 
 		JScrollPane sidePane = new JScrollPane(sidebarPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		sidePane.setPreferredSize(new Dimension(350, Integer.MAX_VALUE));
@@ -44,14 +42,8 @@ public class ManagerMainPane extends JFrame{
 
 		cardLayout.show(dashboardPane, "DASHBOARD");
 
-
-
-		// To return to main dashboard
 		sidebarPanel.getHomeBtn().addActionListener(e -> {
-			// Change the "ACCOUNT" to "Dashboard" after you created a dashboard interface
 			cardLayout.show(dashboardPane, "DASHBOARD");
-
-			// Clear the other buttons "White Background"
 			sidebarPanel.clearSelection();
 		});
 

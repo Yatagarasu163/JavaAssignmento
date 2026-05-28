@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-
 import components.FloatingComboBox;
 import components.TextLabel;
 import config.UIConfig;
@@ -24,12 +23,12 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
     private List<String[]> accounts = FileHandler.read("Users.txt");
     private List<String[]> customers = new ArrayList<>();
 
-    private String customerName = "Unknown"; // CHANGE THIS VALUE LATER
-    private String[] customerIDList = {"CT123456", "CT123457", "CT000001"};  //CHANGE THIS TO ACTUAL DATA
-    private String contactNumber = "Unknown"; // CHANGE THIS VALUE LATER
-    private String email = "Unknown"; //CHANGE THIS VALUE LATER
-    private String vehicleModel = "Unknown"; //CHANGE THIS VALUE LATER
-    private String[] vehiclePlateOptions = {"Unknown"}; //CHANGE THIS VALUE LATER
+    private String customerName = "Unknown";
+    private String[] customerIDList = {"CT123456", "CT123457", "CT000001"};
+    private String contactNumber = "Unknown";
+    private String email = "Unknown";
+    private String vehicleModel = "Unknown";
+    private String[] vehiclePlateOptions = {"Unknown"};
     private String[] technicianList = {"Ali", "Muthu", "Ah Hock"};
     private List<String[]> prices = FileHandler.read("Price.txt");
     private List<String[]> normalPriceList;
@@ -75,15 +74,9 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
             customerIDList = new String[]{"Null"};
         }
 
-        // ==========================================
-        // 1. SET UP THE MAIN PANE LAYOUT
-        // ==========================================
         setBackground(Color.WHITE);
-        setLayout(new BorderLayout()); // Changed to BorderLayout to hold the scroll pane
+        setLayout(new BorderLayout());
 
-        // ==========================================
-        // 2. CREATE THE INNER CONTENT PANEL
-        // ==========================================
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
@@ -114,7 +107,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         customerDetailsPanel.setLayout(new GridLayout(3,2, 40, 15));
         customerDetailsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
 
-        //Customer ID Panel
         JPanel customerIDPanel = createCustomerDetailsPanel();
         TextLabel customerIDTxt = createTxtLabel("Customer ID: ");
         customerIDPanel.add(customerIDTxt, BorderLayout.WEST);
@@ -124,7 +116,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         customerIDPanel.add(customerIDComboBox, BorderLayout.CENTER);
         customerDetailsPanel.add(customerIDPanel);
 
-        //Customer Email Panel
         JPanel emailPanel = createCustomerDetailsPanel();
         TextLabel emailTxt = createTxtLabel("Email: ");
         emailPanel.add(emailTxt, BorderLayout.WEST);
@@ -132,7 +123,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         emailPanel.add(emailValue, BorderLayout.CENTER);
         customerDetailsPanel.add(emailPanel);
 
-        //Customer Name Panel
         JPanel customerNamePanel = createCustomerDetailsPanel();
         TextLabel customerNameTxt = createTxtLabel("Customer Name: ");
         customerNamePanel.add(customerNameTxt, BorderLayout.WEST);
@@ -140,7 +130,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         customerNamePanel.add(customerNameValue, BorderLayout.CENTER);
         customerDetailsPanel.add(customerNamePanel);
 
-        //Vehicle Model Panel
         JPanel modelPanel = createCustomerDetailsPanel();
         TextLabel modelTxt = createTxtLabel("Vehicle Model: ");
         modelPanel.add(modelTxt, BorderLayout.WEST);
@@ -148,7 +137,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         modelPanel.add(modelValue, BorderLayout.CENTER);
         customerDetailsPanel.add(modelPanel);
 
-        // Contact Number Panel
         JPanel customerNumberPanel = createCustomerDetailsPanel();
         TextLabel contactNumTxt = createTxtLabel("Contact Number: ");
         customerNumberPanel.add(contactNumTxt, BorderLayout.WEST);
@@ -156,7 +144,6 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         customerNumberPanel.add(contactNumValue, BorderLayout.CENTER);
         customerDetailsPanel.add(customerNumberPanel);
 
-        // Vehicle Plate Panel
         JPanel platePanel = createCustomerDetailsPanel();
         TextLabel plateTxt = createTxtLabel("Vehicle Plate: ");
         platePanel.add(plateTxt, BorderLayout.WEST);
@@ -254,19 +241,13 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
         createAppointmentPanel.add(createAppointment);
         contentPanel.add(createAppointmentPanel);
 
-        // ==========================================
-        // 3. WRAP CONTENT IN SCROLL PANE & ADD TO MAIN
-        // ==========================================
         JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(null); // Removes the default border for a cleaner look
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Prevents side-to-side scrolling
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Makes mouse-wheel scrolling smooth and fast
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        add(scrollPane, BorderLayout.CENTER); // Add the scrollable window to the main pane!
+        add(scrollPane, BorderLayout.CENTER);
 
-        // ==========================================
-        // ACTION LISTENERS
-        // ==========================================
         createAppointment.addActionListener(e -> {
             String appointmentID = generateNewAppointmentID("Appointment.txt");
             Date selectedDate = (Date) dateSpinner.getValue();
@@ -336,19 +317,12 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
             listener.onBackToList();
         });
 
-// ==========================================
-        // DYNAMIC UPDATES & ACTION LISTENERS
-        // ==========================================
-
-        // 1. Vehicle Plate Listener (Updates the Vehicle Model when a new plate is chosen)
         plateComboBox.addActionListener(e -> {
             String selectedPlate = (String) plateComboBox.getSelectedItem();
             if (selectedPlate != null && !selectedPlate.equals("No Vehicles Found")) {
                 List<String[]> vehicles = FileHandler.read("Vehicle.txt");
                 for (String[] vehicle : vehicles) {
                     if (vehicle.length > 2 && vehicle[1].equalsIgnoreCase(selectedPlate)) {
-                        // Assuming index 2 is Brand and 3 is Model.
-                        // If your text file is different, just change these numbers!
                         modelValue.setText(vehicle[2] + " " + vehicle[3]);
                         return;
                     }
@@ -357,12 +331,10 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
             modelValue.setText("N/A");
         });
 
-        // 2. Customer ID Listener (Updates Customer Info AND populates the Plate Dropdown)
         customerIDComboBox.addActionListener(e -> {
             String customerID = (String) customerIDComboBox.getSelectedItem();
             if (customerID == null) return;
 
-            // A. Update Customer Text Labels
             for (String[] account : customers){
                 if(account[0].equals(customerID)){
                     customerNameValue.setText(account[1] + " " + account[2]);
@@ -372,30 +344,24 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
                 }
             }
 
-            // B. Find all vehicles belonging to this customer
             List<String[]> vehicles = FileHandler.read("Vehicle.txt");
-            plateComboBox.removeAllItems(); // Clear the old plates out
+            plateComboBox.removeAllItems();
 
             boolean hasVehicle = false;
             for (String[] vehicle : vehicles){
-                // vehicle[4] is the Customer ID based on your file structure
                 if (vehicle.length > 4 && vehicle[4].equals(customerID)){
                     plateComboBox.addItem(vehicle[1]);
                     hasVehicle = true;
                 }
             }
-
-            // C. Fallback if they have no registered cars
             if (!hasVehicle) {
                 plateComboBox.addItem("No Vehicles Found");
             }
         });
 
-        // 3. THE MAGIC TRICK: Trigger the listener once immediately so it loads
-        // the first customer's data on startup instead of showing "Unknown"!
         if (customerIDComboBox.getItemCount() > 0) {
-            customerIDComboBox.setSelectedIndex(-1); // Resets it
-            customerIDComboBox.setSelectedIndex(0);  // Forces the listeners to run!
+            customerIDComboBox.setSelectedIndex(-1);
+            customerIDComboBox.setSelectedIndex(0);
         }
     }
 

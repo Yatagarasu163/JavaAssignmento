@@ -1,4 +1,5 @@
 package components;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,15 +20,13 @@ public class FloatingPasswordField extends JPasswordField {
         setFont(new Font("SansSerif", Font.PLAIN, 16));
         setForeground(UIConfig.passwordFieldFont);
         setCaretColor(UIConfig.caretColor);
-        setEchoChar(defaultEchoChar); // Mask by default
+        setEchoChar(defaultEchoChar);
 
-        // Changed right padding from 40 to 0 since the button is gone
         setBorder(BorderFactory.createCompoundBorder(
                 new MatteBorder(0, 0, 2, 0, Color.LIGHT_GRAY),
                 new EmptyBorder(20, 0, 5, 0)
         ));
 
-        // Handle the bottom border color on focus
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

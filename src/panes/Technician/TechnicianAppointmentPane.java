@@ -1,12 +1,7 @@
 package panes.Technician;
+
 import IO.FileHandler;
-import panes.Technician.TechnicianAppointmentDetailsPane;
-
-
 import java.awt.*;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,7 +11,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class TechnicianAppointmentPane extends JPanel {
-
     private panes.Technician.TechnicianAppointmentListPane listPanel;
     private TechnicianAppointmentDetailsPane detailsPanel;
     private List<AppointmentData> appointments;
@@ -26,19 +20,16 @@ public class TechnicianAppointmentPane extends JPanel {
         setBackground(new Color(248, 248, 250));
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
-        // Initializing appointment information
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate =  today.format(formatter);;
         initData(UserID, formattedDate);
 
-        // 2. Create the panels
         listPanel = new panes.Technician.TechnicianAppointmentListPane(appointments, this);
         listPanel.setPreferredSize(new Dimension(320, 0));
 
         detailsPanel = new TechnicianAppointmentDetailsPane(this);
 
-        // 3. Wrap right panel in a scroll pane for smaller screens
         JScrollPane rightScroll = new JScrollPane(detailsPanel);
         rightScroll.setBorder(null);
         rightScroll.getVerticalScrollBar().setUnitIncrement(16);
@@ -46,20 +37,17 @@ public class TechnicianAppointmentPane extends JPanel {
         rightScroll.setOpaque(false);
         rightScroll.getViewport().setOpaque(false);
 
-        // 4. Add them to the screen
         add(listPanel, BorderLayout.WEST);
         add(rightScroll, BorderLayout.CENTER);
 
-        // 5. Load the first appointment by default
         if (!appointments.isEmpty()) {
             detailsPanel.loadAppointment(appointments.get(0));
         }
     }
 
-    // Called by the Details Panel when tasks are checked/completed
     public void updateAppointmentStatus(AppointmentData data, String newStatus) {
         data.status = newStatus;
-        listPanel.refreshList(); // Redraw the left panel to update the status pill
+        listPanel.refreshList();
 
         List<String[]> AppointmentList = FileHandler.read("Appointment.txt");
 
@@ -72,7 +60,6 @@ public class TechnicianAppointmentPane extends JPanel {
         FileHandler.write("Appointment.txt", AppointmentList, false);
     }
 
-    // Called by the List Panel when a card is clicked
     public void onAppointmentSelected(AppointmentData data) {
         detailsPanel.loadAppointment(data);
     }
@@ -87,18 +74,13 @@ public class TechnicianAppointmentPane extends JPanel {
 
         int i = 1;
         for (String[] appointment:AppointmentList){
-            //String time, String model, String plate, String name, String contact, String email
             AppointmentData app = new AppointmentData("Slot " + i, appointment[0], appointment[1], appointment[2],
                     appointment[3], appointment[4]);
             for (String[] details : AppointmentDetails){
                 if (details[0].equals(appointment[5])){
-                    // add description
                     app.description = details[1];
-                    // add appointmentID for each appointment
                     app.appointmentID = details[0];
-                    // add status
                     app.status = details[4];
-                    // Add service task
                     switch (details[2]) {
                         case "Normal Service":
                             String[] baseTasks = new String[]{
@@ -121,23 +103,18 @@ public class TechnicianAppointmentPane extends JPanel {
                         default:
                             app.tasks = new String[]{"Unknown Service"};
                             break;
-
-
                     }
                 }
 
             }
 
-            // length of assigned task
             app.taskStates = new boolean [app.tasks.length];
 
-            // fetching comment history for each appointment
             for (String[] comments : commentHistory) {
                 if (app.appointmentID.equals(comments[4])) {
                     app.chatHistory.add(new String[]{comments[2], comments[1]});
                 }
             }
-            // add relevant components into interface
             appointments.add(app);
             i++;
         }
@@ -198,8 +175,6 @@ public class TechnicianAppointmentPane extends JPanel {
                 }
             }
         }
-
-
         return todayAppointments;
     }
 
@@ -222,7 +197,6 @@ public class TechnicianAppointmentPane extends JPanel {
         return addServices;
     }
 
-    // navigate to specific appointment view
     public void openSpecificAppointment(String plateNumber) {
         for (AppointmentData data : appointments) {
             if (data.plate.equals(plateNumber)) {
@@ -232,13 +206,12 @@ public class TechnicianAppointmentPane extends JPanel {
         }
     }
 
-    // --- DATA CLASS TO HOLD STATE ---
     public static class AppointmentData {
         public String time, model, plate, name, contact, email, description, appointmentID;
         public String status;
         public String[] tasks;
-        public boolean[] taskStates; // Remembers checked boxes
-        public List<String[]> chatHistory = new ArrayList<>(); // [Sender, Message]
+        public boolean[] taskStates;
+        public List<String[]> chatHistory = new ArrayList<>();
 
         public AppointmentData(String time, String model, String plate, String name, String contact, String email) {
             this.time = time; this.model = model; this.plate = plate;

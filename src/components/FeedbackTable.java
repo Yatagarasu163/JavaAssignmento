@@ -3,7 +3,6 @@ package components;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-
 import java.awt.*;
 import config.UIConfig;
 
@@ -37,9 +36,6 @@ public class FeedbackTable extends JTable{
                 return false;
             }
         };
-
-
-
         setModel(this.model);
     }
 

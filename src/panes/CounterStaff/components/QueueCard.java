@@ -2,7 +2,6 @@ package panes.CounterStaff.components;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.*;
 
 public class QueueCard extends JPanel{
 	private int radius = 30;

@@ -23,7 +23,6 @@ public class CounterStaffMainPaymentPane extends JPanel implements PaymentListen
 		add(paymentPane, "LIST");
 		add(paymentDetailsPane, "DETAILS");
 		cardLayout.show(this, "LIST");
-
     }
 
 	public void onMakePayment(String paymentId){

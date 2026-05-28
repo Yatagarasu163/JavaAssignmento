@@ -5,13 +5,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import javax.swing.border.LineBorder;
 import java.util.List;
-import java.util.ArrayList;
-
 import components.FloatingButton;
 import panes.Manager.components.AccountsPanelListener;
 import config.UIConfig;
 import IO.FileHandler;
-
 
 public class ManagerUserDetailsPane extends JPanel{
     private int componentSpace = 10;
@@ -30,7 +27,6 @@ public class ManagerUserDetailsPane extends JPanel{
     private FloatingButton saveBtn = new FloatingButton("Save", 2);
     private FloatingButton cancelBtn = new FloatingButton("Cancel", 2);
 
-
    public ManagerUserDetailsPane(AccountsPanelListener listener) {
         this.listener = listener;
 
@@ -38,15 +34,11 @@ public class ManagerUserDetailsPane extends JPanel{
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        
-        // --- PART 1: USER PROFILE ICON ---
-        // Using a large Unicode character as a placeholder for the avatar
         JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
         avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
         avatarLabel.setForeground(Color.LIGHT_GRAY);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Wrap it in a panel to draw the circle around it
         JPanel avatarContainer = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -54,7 +46,7 @@ public class ManagerUserDetailsPane extends JPanel{
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(UIConfig.mainForeground);
-                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20); // Draw outer circle
+                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20);
             }
         };
         avatarContainer.setPreferredSize(new Dimension(150, 150));
@@ -94,21 +86,18 @@ public class ManagerUserDetailsPane extends JPanel{
         detailsCard.add(createDetailsPanel("Address", addressField));
         detailsCard.add(Box.createVerticalStrut(componentSpace));
 
-        //Update and back button panel
         buttonPanel.setLayout(cardLayout);
         JPanel updatePanel = new JPanel();
         updatePanel.setLayout(new GridBagLayout());
         updatePanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        //Add Update Button
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTH;
         updatePanel.add(updateBtn, gbc);
-        
-        //Add Delete Button
+
         deleteBtn.setBackground(Color.RED);
         deleteBtn.setForeground(Color.WHITE);
         gbc.gridx = 0;
@@ -117,8 +106,7 @@ public class ManagerUserDetailsPane extends JPanel{
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTH;
         updatePanel.add(deleteBtn, gbc);
-        
-        //Add Back Button
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.weightx = 0;
@@ -127,9 +115,6 @@ public class ManagerUserDetailsPane extends JPanel{
         updatePanel.add(backBtn, gbc);
         buttonPanel.add(updatePanel, "UPDATE");
 
-
-
-        // Save and cancel button panel
         JPanel savePanel = new JPanel();
         savePanel.setLayout(new GridBagLayout());
         savePanel.setBackground(Color.WHITE);
@@ -147,7 +132,6 @@ public class ManagerUserDetailsPane extends JPanel{
         gbc.anchor = GridBagConstraints.NORTH;
         savePanel.add(saveBtn, gbc);
         buttonPanel.add(savePanel, "SAVE");
-
 
         add(Box.createVerticalStrut(componentSpace));
         add(avatarContainer);
@@ -170,8 +154,6 @@ public class ManagerUserDetailsPane extends JPanel{
 
 
             if (result == JOptionPane.YES_OPTION){
-                // Add delete logic here
-
                 String id = idField.getText();
 
                 List<String[]> accounts = FileHandler.read(filename);
@@ -181,7 +163,6 @@ public class ManagerUserDetailsPane extends JPanel{
                         break;
                     }
                 }
-
                 FileHandler.write(filename, accounts, false);
 
                 JOptionPane.showMessageDialog(this, "Account has been successfully deleted!", "Success!", JOptionPane.INFORMATION_MESSAGE);

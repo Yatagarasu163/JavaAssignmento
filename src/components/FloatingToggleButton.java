@@ -68,15 +68,12 @@ public class FloatingToggleButton extends JToggleButton{
             g2.setColor(getBackground());
         }
 
-
         if(this.radius > 0){
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), this.radius, this.radius);
         } else {
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 0, 0);
         }
-
         g2.dispose();
-
         super.paintComponent(g);
     }
 }

@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class FloatingButton extends JButton{
-
     private int radius = 0;
 
     public FloatingButton(String label){
@@ -52,7 +51,6 @@ public class FloatingButton extends JButton{
         }
 
         g2.dispose();
-
         super.paintComponent(g);
     }
 }

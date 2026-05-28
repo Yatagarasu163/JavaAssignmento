@@ -5,12 +5,9 @@ import javax.swing.*;
 import IO.FileHandler;
 import panes.SidebarPanel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TechnicianMainPane extends JFrame {
-
-    // 1. Make these class-level so methods can access them
     private panes.Technician.TechnicianDashboardPane TechnicianDashboard;
     private panes.Technician.TechnicianAppointmentPane appointmentPane;
     private JPanel cardContainer;
@@ -40,7 +37,6 @@ public class TechnicianMainPane extends JFrame {
         String[] TechnicianInfo = getTechnicianInfo();
         String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
 
-        // 2. Initialize Panels (Notice we pass 'this' into the dashboard now!)
         TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
         appointmentPane = new panes.Technician.TechnicianAppointmentPane(TechnicianInfo[0]);
         TechnicianProfilePane profilePane = new TechnicianProfilePane(fullName, TechnicianInfo[0], TechnicianInfo[5],
@@ -52,12 +48,8 @@ public class TechnicianMainPane extends JFrame {
 
         cardLayout.show(cardContainer, "Dashboard");
 
-        // 3. BUG 2 FIX: LIVE DASHBOARD REFRESH
         sidebarPanel.getHomeBtn().addActionListener(e -> {
-            // Remove the old, stale dashboard
             cardContainer.remove(TechnicianDashboard);
-
-            // Create a brand new one that reads the latest database changes
             TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
             cardContainer.add(TechnicianDashboard, "Dashboard");
 
@@ -74,7 +66,6 @@ public class TechnicianMainPane extends JFrame {
         });
     }
 
-    // 4. BUG 3 FIX: ROUTING METHOD
     public void navigateToAppointment(String plateNumber) {
         cardLayout.show(cardContainer, "Appointment");
         appointmentPane.openSpecificAppointment(plateNumber);

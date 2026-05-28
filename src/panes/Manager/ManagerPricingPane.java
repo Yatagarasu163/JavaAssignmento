@@ -56,25 +56,20 @@ public class ManagerPricingPane extends JPanel{
 
         TextLabel title = new TextLabel("Pricing");
 
-        //Add title text to the pane
         add(Box.createVerticalStrut(50));
         add(title);
         add(Box.createVerticalStrut(50));
 
-        //Create form panel
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(4, 2, 30, 10));
         formPanel.setOpaque(false);
 
-        //Sets the input fields
         String[] priceOptions = {"Normal service type", "Major service type"};
         FloatingComboBox<String> serviceTypeComboBox = new FloatingComboBox<>(priceOptions);
         FloatingComboBox<String> priceTypeComboBox = new FloatingComboBox<>(options);
         newPriceField = new FloatingTextField("New Price");
         currentPriceLabel = new TextLabel(String.format("RM%.2f", currentPrice));
-        
 
-        //Adds content to the new formPanel
         formPanel.add(new TextLabel("Service type: "));
         formPanel.add(serviceTypeComboBox);
         formPanel.add(new TextLabel("Service: "));
@@ -84,12 +79,9 @@ public class ManagerPricingPane extends JPanel{
         formPanel.add(new TextLabel("New Price: "));
         formPanel.add(newPriceField);
 
-
-        //Creates button for the window
         FloatingButton updateButton = new FloatingButton("Update", 20);
         FloatingButton cancelButton = new FloatingButton("Cancel", 20);
 
-        //Adds the form panel to the pricing pane
         add(formPanel);
         add(Box.createVerticalStrut(30));
         add(updateButton);
@@ -160,13 +152,12 @@ public class ManagerPricingPane extends JPanel{
     private static double parsePrice(String input) {
     if (input == null || input.isEmpty()) return 0.0;
 
-    // Remove everything except digits and decimal point
     String cleaned = input.replaceAll("[^0-9.]", "");
 
     try {
         return Double.parseDouble(cleaned);
     } catch (NumberFormatException e) {
-        return 0.0; // or throw error / show message
+        return 0.0;
     }
 }
 }

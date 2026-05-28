@@ -81,16 +81,19 @@ public class CustomerAppointmentDetailsPane extends JPanel {
         mainContent.add(section1Title);
         mainContent.add(Box.createVerticalStrut(15));
 
-
         JPanel infoGrid = new JPanel(new GridLayout(2, 4, 10, 10));
         infoGrid.setBackground(bgColor);
         infoGrid.setMaximumSize(new Dimension(650, 60));
         infoGrid.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        infoGrid.add(createHeaderLabel("Name"));       infoGrid.add(createValueLabel(custName));
-        infoGrid.add(createHeaderLabel("Contact No."));infoGrid.add(createValueLabel(contactNo));
-        infoGrid.add(createHeaderLabel("Plat Number"));infoGrid.add(createValueLabel(plateNo));
-        infoGrid.add(createHeaderLabel("Email"));      infoGrid.add(createValueLabel(email));
+        infoGrid.add(createHeaderLabel("Name"));
+        infoGrid.add(createValueLabel(custName));
+        infoGrid.add(createHeaderLabel("Contact No."));
+        infoGrid.add(createValueLabel(contactNo));
+        infoGrid.add(createHeaderLabel("Plat Number"));
+        infoGrid.add(createValueLabel(plateNo));
+        infoGrid.add(createHeaderLabel("Email"));
+        infoGrid.add(createValueLabel(email));
 
         mainContent.add(infoGrid);
         mainContent.add(Box.createVerticalStrut(15));

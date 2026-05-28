@@ -7,7 +7,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.ArrayList;
-
 import components.FeedbackTable;
 import components.FloatingComboBox;
 import components.TextLabel;
@@ -61,26 +60,22 @@ public class ManagerFeedbackPane extends JPanel{
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         TextLabel title = new TextLabel("Feedback and Comments");
 
-        //Adds title text to the pane
         topPanel.add(Box.createVerticalStrut(50));
         topPanel.add(title);
         topPanel.add(Box.createVerticalStrut(50));
 
-        //Create view combo box
         String[] options = {"Feedback", "Comments", "Both"};
         FloatingComboBox<String> viewTypeComboBox = new FloatingComboBox<String>(options, UIConfig.cornerRadius);
         viewTypeComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        //Adds the combo box to the page
+
         topPanel.add(viewTypeComboBox);
         topPanel.add(Box.createVerticalStrut(50));
 
-        
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBackground(UIConfig.mainBackground);
         tablePanel.setForeground(UIConfig.mainForeground);
         tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 350));
-
 
         columns = new String[]{"Service Type", "Feedback", "Date"};
 
@@ -111,28 +106,20 @@ public class ManagerFeedbackPane extends JPanel{
         add(topPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
 
-
-
-
-
-        //Adds behavior to FloatingComboBox
         viewTypeComboBox.addActionListener(e -> {
             int index = viewTypeComboBox.getSelectedIndex();
             switch (index) {
-                case 0: 
-                    //Set data to feedback values only
+                case 0:
                     columns = new String[]{"Service Type", "Feedback", "Date"};
                     DefaultTableModel feedbackModel = new DefaultTableModel(feedbackTableData, columns);
                     feedbackTable.setModel(feedbackModel);
                     break;
-                case 1: 
-                    //Set data to comment values only
+                case 1:
                     columns = new String[]{"Service Type", "Comments", "Date"};
                     DefaultTableModel commentModel = new DefaultTableModel(commentTableData, columns);
                     feedbackTable.setModel(commentModel);
                     break;
                 case 2:
-                    //Set data to feedback and comment values
                     columns = new String[]{"Service Type", "Feedback and Comments", "Date"};
                     DefaultTableModel tableModel = new DefaultTableModel(fullTableData, columns);
                     feedbackTable.setModel(tableModel);

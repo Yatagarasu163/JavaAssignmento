@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-
 import components.TextLabel;
 import panes.Manager.components.AccountsPanelListener;
 import components.FloatingTextField;
@@ -41,13 +39,11 @@ public class ManagerCreateAccountPane extends JPanel {
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
         TextLabel title = new TextLabel("Account Creation");
-        
-        //Adding the title text to the pane
+
         add(Box.createVerticalStrut(30));
         add(title);
         add(Box.createVerticalStrut(30));
 
-        //Create the form panel
         JPanel formPanel = new JPanel(new BorderLayout(50, 50));
         formPanel.setOpaque(false);
 
@@ -55,9 +51,7 @@ public class ManagerCreateAccountPane extends JPanel {
         JPanel topPanel = new JPanel();
         topPanel.setOpaque(false);
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-        
 
-        //Handle layout for left and right columns;
         JPanel leftColumn = new JPanel();
         leftColumn.setLayout(new BoxLayout(leftColumn, BoxLayout.Y_AXIS));
         leftColumn.setOpaque(false);
@@ -66,20 +60,14 @@ public class ManagerCreateAccountPane extends JPanel {
         rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
         rightColumn.setOpaque(false);
 
-
-        //Declares the vertical gap between the components
         int vgap = 15;
 
-        //Declares floating text fields for left columns
         userIDTxtField = new FloatingTextField("Auto Generated User ID");
         userIDTxtField.setEditable(false);
         firstNameTxtField = new FloatingTextField("First Name");
         lastNameTxtField = new FloatingTextField("Last Name");
         usernameTxtField = new FloatingTextField("Username");
-        
 
-
-        //Adds the text fields with their label text to the left column.
         leftColumn.add(createField("User ID", userIDTxtField));
         leftColumn.add(Box.createVerticalStrut(vgap));
 
@@ -91,8 +79,6 @@ public class ManagerCreateAccountPane extends JPanel {
 
         leftColumn.add(createField("User Name", usernameTxtField));
 
-
-        //Declares input fields for the right columns
         String[] options = {"Manager", "Counter Staff", "Technician"};
         titleComboBox = new FloatingComboBox<>(options, 2);
         titleComboBox.setSelectedIndex(0);
@@ -101,7 +87,6 @@ public class ManagerCreateAccountPane extends JPanel {
         passwordTxtField = new FloatingPasswordField("Password");
         passwordTxtField.setEditable(false);
 
-        //Adds the text fields with their label text to the right column.
         rightColumn.add(createField("Title", titleComboBox));
         rightColumn.add(Box.createVerticalStrut(vgap));
 
@@ -113,7 +98,6 @@ public class ManagerCreateAccountPane extends JPanel {
 
         rightColumn.add(createField("Password", passwordTxtField));
 
-        //Adds both the left and the right column to the form panel
         topPanel.add(leftColumn);
         topPanel.add(rightColumn);
 
@@ -130,10 +114,8 @@ public class ManagerCreateAccountPane extends JPanel {
 
         formPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        //Adds the formPanel to the main account pane.
         add(formPanel);
 
-        //Creates the buttons to create or cancel
         add(Box.createVerticalStrut(40));
 
         FloatingButton createBtn = new FloatingButton("Create", 20);
@@ -142,20 +124,16 @@ public class ManagerCreateAccountPane extends JPanel {
         FloatingButton  cancelBtn = new FloatingButton("Cancel", 20);
         cancelBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //Adds the buttons to the account pane
         add(createBtn);
         add(Box.createVerticalStrut(20));
         add(cancelBtn);
 
-
-        // Listens for every keystroke in the First Name field
         firstNameTxtField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void changedUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
             public void removeUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
             public void insertUpdate(javax.swing.event.DocumentEvent e) { updateDefaultPassword(); }
         });
 
-        // Call it once immediately to set the default state (e.g., "User0001")
         updateDefaultPassword();
 
         createBtn.addActionListener(e -> {
@@ -221,7 +199,6 @@ public class ManagerCreateAccountPane extends JPanel {
                         max = num;
                     }
                 } catch (NumberFormatException e) {
-                    // skip bad data instead of crashing
                     System.err.println("Invalid ID format: " + row[0]);
                 }
             }
@@ -253,7 +230,6 @@ public class ManagerCreateAccountPane extends JPanel {
         String fName = firstNameTxtField.getText();
         String id = userIDTxtField.getText();
 
-        // Use our new utility class!
         String generatedPassword = DefaultPasswordGenerator.generate(fName, id);
         passwordTxtField.setText(generatedPassword);
     }

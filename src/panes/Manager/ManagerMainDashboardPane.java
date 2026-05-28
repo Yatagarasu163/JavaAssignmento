@@ -71,7 +71,5 @@ public class ManagerMainDashboardPane extends JPanel{
 
 		add(bottomPanel);
 		add(Box.createVerticalStrut(50));
-		
-		
 	}
 }

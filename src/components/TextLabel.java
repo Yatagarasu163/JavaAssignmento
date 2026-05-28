@@ -3,7 +3,6 @@ package components;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class TextLabel extends JLabel{
 
 	private String fontFamily = "SansSerif";

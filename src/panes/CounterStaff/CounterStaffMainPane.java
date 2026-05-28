@@ -1,10 +1,7 @@
 package panes.CounterStaff;
 
 import javax.swing.*;
-
-
 import java.awt.*;
-
 import panes.SidebarPanel;
 
 public class CounterStaffMainPane extends JFrame{
@@ -40,8 +37,6 @@ public class CounterStaffMainPane extends JFrame{
         mainPane.add(customerListPane, "CUSTOMER");
         mainPane.add(appointmentPane, "APPOINTMENT");
         mainPane.add(paymentPane, "PAYMENT");
-
-
 
         sidebarPanel.getProfileBtn().addActionListener(e -> {
             cardLayout.show(mainPane, "DASHBOARD");

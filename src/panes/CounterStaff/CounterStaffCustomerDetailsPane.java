@@ -5,7 +5,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.util.List;
-import java.util.ArrayList;
 
 import components.FloatingButton;
 import config.UIConfig;
@@ -18,8 +17,8 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
     private CustomerPanelListener listener; 
 
     private JPanel buttonPanel = new JPanel();
-    private JTextField nameField, phoneField, addressField; // Editable
-    private JTextField idField, emailField, dateField;                 // Non-editable
+    private JTextField nameField, phoneField, addressField;
+    private JTextField idField, emailField, dateField;
     private boolean isEditing = false;
     private CardLayout cardLayout = new CardLayout();
     private static final String filename = "Users.txt";
@@ -43,15 +42,11 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-
-        // --- PART 1: USER PROFILE ICON ---
-        // Using a large Unicode character as a placeholder for the avatar
         JLabel avatarLabel = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
         avatarLabel.setFont(new Font("SansSerif", Font.PLAIN, 80));
         avatarLabel.setForeground(Color.LIGHT_GRAY);
         avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Wrap it in a panel to draw the circle around it
         JPanel avatarContainer = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -59,7 +54,7 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.GRAY);
-                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20); // Draw outer circle
+                g2.drawOval(10, 10, getWidth() - 20, getHeight() - 20);
             }
         };
         avatarContainer.setPreferredSize(new Dimension(150, 150));
@@ -69,7 +64,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
         avatarContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JPanel detailsCard = new JPanel();
         detailsCard.setBackground(Color.WHITE);
         detailsCard.setBorder(BorderFactory.createCompoundBorder(
@@ -77,7 +71,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
             new EmptyBorder(30, 40, 30, 40)
         ));
         detailsCard.setLayout(new BoxLayout(detailsCard, BoxLayout.Y_AXIS));
-
 
         idField = createReadOnlyField(null);
         nameField = createReadOnlyField("Hao Ni Ma");
@@ -101,8 +94,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         detailsCard.add(createDetailsPanel("Address", addressField));
         detailsCard.add(Box.createVerticalStrut(componentSpace));
 
-
-        //Update and back button panel
         buttonPanel.setLayout(cardLayout);
         JPanel updatePanel = new JPanel();
         updatePanel.setLayout(new GridBagLayout());
@@ -129,9 +120,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         updatePanel.add(backBtn, gbc);
         buttonPanel.add(updatePanel, "UPDATE");
 
-
-
-        // Save and cancel button panel
         JPanel savePanel = new JPanel();
         savePanel.setLayout(new GridBagLayout());
         savePanel.setBackground(Color.WHITE);
@@ -149,7 +137,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         gbc.anchor = GridBagConstraints.NORTH;
         savePanel.add(saveBtn, gbc);
         buttonPanel.add(savePanel, "SAVE");
-        
 
         FloatingButton vehicleBtn = new FloatingButton("Add vehicle", 20);
 
@@ -165,7 +152,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
         JScrollPane scrollPane = new JScrollPane(contentPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
-
 
         updateBtn.addActionListener(e -> {
             toggleEditMode(false);
@@ -267,7 +253,6 @@ public class CounterStaffCustomerDetailsPane extends JPanel{
             cardLayout.show(buttonPanel, "UPDATE");
 
             if(isSaving){
-                // Foo
                 List<String[]> accounts = FileHandler.read(filename);
                 for(String[] account : accounts){
                     if(account[0].equalsIgnoreCase(id)){

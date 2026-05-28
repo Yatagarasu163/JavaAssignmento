@@ -7,7 +7,6 @@ import javax.swing.table.TableCellRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
-
 import panes.Manager.components.AccountsPanelListener;
 import components.FeedbackTable;
 import components.FloatingButton;
@@ -102,10 +101,7 @@ public class ManagerAccountsList extends JPanel{
         scrollPane.getViewport().setBackground(Color.WHITE);
 
         middlePanel.add(scrollPane, BorderLayout.CENTER);
-        
-
         add(middlePanel, BorderLayout.CENTER);
-
 
         addUserBtn.addActionListener(e -> {
             listener.toCreateUser();

@@ -12,20 +12,16 @@ import components.TextLabel;
 import IO.FileHandler;
 
 public class ForgotPasswordPage extends JFrame {
-
-    // Verification Fields
     private FloatingTextField userIDTxt;
     private FloatingTextField emailTxt;
     private FloatingButton verifyBtn;
 
-    // Reset Fields (Hidden at first)
     private JPanel resetPanel;
     private FloatingPasswordField newPassTxt;
     private FloatingPasswordField confirmPassTxt;
     private JCheckBox showPassBox;
     private FloatingButton resetBtn;
 
-    // To store the verified user's row data temporarily
     private String[] verifiedUserRow = null;
 
     public ForgotPasswordPage() {
@@ -35,13 +31,11 @@ public class ForgotPasswordPage extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // Main Container
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(new EmptyBorder(40, 50, 40, 50));
 
-        // Title
         TextLabel title = new TextLabel("Reset Password");
         title.setFontSize(28);
         title.setFontType(Font.BOLD);
@@ -49,7 +43,6 @@ public class ForgotPasswordPage extends JFrame {
         mainPanel.add(title);
         mainPanel.add(Box.createVerticalStrut(40));
 
-        // --- STEP 1: VERIFICATION SECTION ---
         userIDTxt = new FloatingTextField("User ID");
         userIDTxt.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(userIDTxt);
@@ -64,11 +57,10 @@ public class ForgotPasswordPage extends JFrame {
         verifyBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(verifyBtn);
 
-        // --- STEP 2: RESET SECTION (HIDDEN BY DEFAULT) ---
         resetPanel = new JPanel();
         resetPanel.setLayout(new BoxLayout(resetPanel, BoxLayout.Y_AXIS));
         resetPanel.setBackground(Color.WHITE);
-        resetPanel.setVisible(false); // Hide it initially!
+        resetPanel.setVisible(false);
 
         resetPanel.add(Box.createVerticalStrut(30));
         resetPanel.add(new JSeparator());
@@ -96,7 +88,6 @@ public class ForgotPasswordPage extends JFrame {
 
         mainPanel.add(resetPanel);
 
-        // Back to Login Button
         mainPanel.add(Box.createVerticalStrut(40));
         JButton backBtn = new JButton("Back to Login");
         backBtn.setContentAreaFilled(false);
@@ -108,17 +99,11 @@ public class ForgotPasswordPage extends JFrame {
 
         add(mainPanel);
 
-        // ==========================================
-        // ADDING THE LOGIC & ACTIONS
-        // ==========================================
-
-        // 1. Back Button Logic
         backBtn.addActionListener(e -> {
             this.dispose();
             new LoginPage().setVisible(true);
         });
 
-        // 2. Show/Hide Password Toggle
         showPassBox.addActionListener(e -> {
             if (showPassBox.isSelected()) {
                 newPassTxt.setEchoChar((char) 0);
@@ -129,7 +114,6 @@ public class ForgotPasswordPage extends JFrame {
             }
         });
 
-        // 3. Verify Button Logic
         verifyBtn.addActionListener(e -> {
             String inputID = userIDTxt.getText().trim();
             String inputEmail = emailTxt.getText().trim();
@@ -138,23 +122,20 @@ public class ForgotPasswordPage extends JFrame {
             boolean found = false;
 
             for (String[] user : users) {
-                // Assuming Index 0 is ID and Index 5 is Email based on your User class
                 if (user.length > 5 && user[0].equalsIgnoreCase(inputID) && user[5].equalsIgnoreCase(inputEmail)) {
-                    verifiedUserRow = user; // Save the user data
+                    verifiedUserRow = user;
                     found = true;
                     break;
                 }
             }
 
             if (found) {
-                // Lock the top fields so they can't change them after verifying
                 userIDTxt.setEditable(false);
                 emailTxt.setEditable(false);
                 verifyBtn.setEnabled(false);
 
-                // Reveal the bottom panel!
                 resetPanel.setVisible(true);
-                this.revalidate(); // Tells Java to redraw the window
+                this.revalidate();
                 this.repaint();
 
                 JOptionPane.showMessageDialog(this, "Account verified! You may now enter a new password.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -163,7 +144,6 @@ public class ForgotPasswordPage extends JFrame {
             }
         });
 
-        // 4. Reset Password Button Logic
         resetBtn.addActionListener(e -> {
             String newPass = new String(newPassTxt.getPassword());
             String confirmPass = new String(confirmPassTxt.getPassword());
@@ -178,18 +158,15 @@ public class ForgotPasswordPage extends JFrame {
                 return;
             }
 
-            // Update the specific user's password in the database
             List<String[]> allUsers = FileHandler.read("Users.txt");
 
             for (String[] user : allUsers) {
                 if (user[0].equals(verifiedUserRow[0])) {
-                    // Assuming password is at index 7 based on your User class structure
                     user[7] = newPass;
                     break;
                 }
             }
 
-            // Overwrite the file with the new updated list
             FileHandler.write("Users.txt", allUsers, false);
 
             JOptionPane.showMessageDialog(this, "Password successfully updated! You can now log in.", "Success", JOptionPane.INFORMATION_MESSAGE);

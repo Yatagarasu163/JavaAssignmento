@@ -237,7 +237,6 @@ public class CustomerDashboardPane extends JPanel {
             cardsContainer.add(detailsPane, "APPT_DETAILS");
             cardLayout.show(cardsContainer, "APPT_DETAILS");
         });
-
         JPanel btnContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
         btnContainer.setBackground(Color.WHITE);
         btnContainer.add(actionBtn);

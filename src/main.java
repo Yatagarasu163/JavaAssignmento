@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import panes.LoginPage;
 
 public class main {

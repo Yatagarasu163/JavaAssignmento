@@ -97,7 +97,6 @@ public class TechnicianAppointmentListPane extends JPanel {
         statusLbl.setFont(new Font("SansSerif", Font.BOLD, 10));
         statusLbl.setOpaque(true);
 
-        // Dynamic Status Color
         if (data.status.equals("Completed")) statusLbl.setBackground(new Color(100, 200, 100));
         else if (data.status.equals("In Service")) statusLbl.setBackground(new Color(255, 180, 50));
         else statusLbl.setBackground(isSelected ? new Color(100, 100, 220) : primaryPurple);
@@ -119,7 +118,6 @@ public class TechnicianAppointmentListPane extends JPanel {
         gbc.gridx = 0; gbc.gridy = 2;
         card.add(plateLbl, gbc);
 
-        // Click Listener to switch details
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

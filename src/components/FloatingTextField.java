@@ -5,7 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import config.UIConfig;
+
 
 
 public class FloatingTextField extends JTextField {

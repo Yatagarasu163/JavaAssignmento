@@ -3,7 +3,6 @@ package panes.CounterStaff;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import panes.CounterStaff.components.AppointmentPanelListener;
 
 public class CounterStaffMainAppointmentPane extends JPanel implements AppointmentPanelListener{
