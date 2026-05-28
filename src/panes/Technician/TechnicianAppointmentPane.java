@@ -82,7 +82,7 @@ public class TechnicianAppointmentPane extends JPanel {
         List<String[]> AppointmentDetails = AppointmentDetails(UserID, appointmentDate);
         List<String[]> commentHistory = FileHandler.read("Comments.txt");
 
-        System.out.println(AppointmentDetails);
+//        System.out.println(AppointmentDetails);
 
         int i = 1;
         for (String[] appointment:AppointmentList){
@@ -93,31 +93,13 @@ public class TechnicianAppointmentPane extends JPanel {
                     app.description = details[1];
                     app.appointmentID = details[0];
                     app.status = details[4];
-                    switch (details[2]) {
-                        case "Normal Service":
-                            String[] baseTasks = new String[]{
-                                    "Fully Synthetic Engine Oil (4L)", "Oil Filter Replacement", "Drain Plug Washer",
-                                    "Tire Rotation & Balancing", "Battery Health Check & Cleaning", "Windshield Wiper Fluid Top-up"
-                            };
-                            String[] extraServiceNames = additionalServices(details[3]);
-                            List<String> combinedList = new ArrayList<>(Arrays.asList(baseTasks));
-                            combinedList.addAll(Arrays.asList(extraServiceNames));
-                            app.tasks = combinedList.toArray(new String[0]);
-                            break;
-                        case "Major Service":
-                            String[] baseTask = new String[]{"Spark Plugs Replacement (Set of 4)", "Transmission Fluid Flush", "Brake Pad Replacement",
-                                                    "Brake Fluid Flush & Bleed", "Cabin Air Filter (A/C) Replacement", "Engine Coolant System Flush"};
-                            String[] extraServiceName = additionalServices(details[3]);
-                            List<String> combinedLists = new ArrayList<>(Arrays.asList(baseTask));
-                            combinedLists.addAll(Arrays.asList(extraServiceName));
-                            app.tasks = combinedLists.toArray(new String[0]);
-                            break;
-                        default:
-                            app.tasks = new String[]{"Unknown Service"};
-                            break;
+
+                    if (details.length > 3 && !details[3].trim().isEmpty()) {
+                        app.tasks = additionalServices(details[3]);
+                    } else {
+                        app.tasks = new String[]{"No tasks assigned"};
                     }
                 }
-
             }
 
             app.taskStates = new boolean [app.tasks.length];
@@ -191,21 +173,21 @@ public class TechnicianAppointmentPane extends JPanel {
     }
 
     public String[] additionalServices(String addServiceIDs) {
-        String[] addServices = addServiceIDs.split(",");
+        if (addServiceIDs == null || addServiceIDs.trim().isEmpty()) {
+            return new String[0];
+        }
 
+        String[] addServices = addServiceIDs.split(",");
         List<String[]> serviceList = FileHandler.read("Price.txt");
 
         for (int i = 0; i < addServices.length; i++) {
             for (String[] service : serviceList) {
-                if (addServices[i].equals(service[0])) {
-
+                if (addServices[i].trim().equals(service[0])) {
                     addServices[i] = service[1];
-
                     break;
                 }
             }
         }
-
         return addServices;
     }
 

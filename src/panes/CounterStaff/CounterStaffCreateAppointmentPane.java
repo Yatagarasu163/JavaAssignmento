@@ -267,8 +267,11 @@ public class CounterStaffCreateAppointmentPane extends JPanel {
             }
             List<String[]> selectedServicesArray = new ArrayList<>();
             List<String> selectedServicesStrings = new ArrayList<>();
+
+            List<String[]> activePriceList = typeComboBox.getSelectedIndex() == 0 ? normalPriceList : majorPriceList;
+
             for(String service : selectedServices){
-                for(String[] price : normalPriceList){
+                for(String[] price : activePriceList){
                     if (price[1].equalsIgnoreCase(service)){
                         selectedServicesArray.add(price);
                         selectedServicesStrings.add(price[0]);
