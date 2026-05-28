@@ -78,15 +78,41 @@ public class CounterStaffAddVehiclePane extends JPanel{
 
         addBtn.addActionListener(e -> {
             String id = customerID;
-            String plate = plateField.getText();
-            String model = modelField.getText();
-            String color = colorField.getText();
+            String plate = plateField.getText().trim();
+            String model = modelField.getText().trim();
+            String color = colorField.getText().trim();
+
+            if (plate.isEmpty() || model.isEmpty() || color.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all vehicle details!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!plate.matches("^[a-zA-Z0-9 ]+$")) {
+                JOptionPane.showMessageDialog(this, "Car Plate can only contain letters and numbers (no symbols).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!model.matches("^[a-zA-Z0-9 ]+$")) {
+                JOptionPane.showMessageDialog(this, "Car Model can only contain letters and numbers (no symbols).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!color.matches("^[a-zA-Z ]+$")) {
+                JOptionPane.showMessageDialog(this, "Car Color can only contain letters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             String vehicleID = generateNewVehicleID(filename);
             String[] vehicle = {vehicleID, plate, model, color, id};
-            List<String[]> vehicleList = new ArrayList<>(); 
+            List<String[]> vehicleList = new ArrayList<>();
 
             vehicleList.add(vehicle);
             FileHandler.write(filename, vehicleList, true);
+
+            plateField.setText("");
+            modelField.setText("");
+            colorField.setText("");
+
             JOptionPane.showMessageDialog(this, "Vehicle saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             listener.onBackToList();
         });
