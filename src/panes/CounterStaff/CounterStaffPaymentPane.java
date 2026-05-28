@@ -19,7 +19,7 @@ public class CounterStaffPaymentPane extends JPanel{
 
 	private PaymentListener listener;
     private Timer timer;
-    private int lastCount = -1;
+    private String lastStateHash = "";
     private String typeItem;
     private String statusItem;
     private boolean initialized = true;
@@ -33,11 +33,22 @@ public class CounterStaffPaymentPane extends JPanel{
 
         timer = new Timer(3000, e -> {
             List<String[]> payments = FileHandler.read(FileHandler.payment);
+            List<String[]> appointments = FileHandler.read(FileHandler.appointments);
 
-            if (payments.size() != lastCount) {
-                    lastCount = payments.size();
-                    loadPayments();
-                }
+            StringBuilder currentState = new StringBuilder();
+
+            for (String[] p : payments) {
+                if (p.length > 6) currentState.append(p[0]).append(p[6]);
+            }
+
+            for (String[] a : appointments) {
+                if (a.length > 4) currentState.append(a[0]).append(a[4]);
+            }
+
+            if (!currentState.toString().equals(lastStateHash)) {
+                lastStateHash = currentState.toString();
+                loadPayments();
+            }
         });
 
         loadPayments();

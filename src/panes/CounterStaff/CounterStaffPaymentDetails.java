@@ -386,11 +386,13 @@ public class CounterStaffPaymentDetails extends JPanel{
             writeReceiptToPDF(paymentID, cusName, totalAmount);
 
             JOptionPane.showMessageDialog(
-                this,
-                "Receipt printed!",
-                "Receipt",
-                JOptionPane.INFORMATION_MESSAGE
+                    this,
+                    "Receipt printed!",
+                    "Receipt",
+                    JOptionPane.INFORMATION_MESSAGE
             );
+
+            listener.onBackToList();
         });
     }
 
@@ -411,8 +413,6 @@ public class CounterStaffPaymentDetails extends JPanel{
             document.add(new Paragraph("Status: PAID"));
             document.add(new Paragraph("====================================="));
             document.add(new Paragraph("Thank you for choosing APU-ASC!"));
-
-            System.out.println("PDF Receipt generated successfully at: " + filePath);
 
         } catch (DocumentException | IOException e) {
             System.err.println("Error generating PDF: " + e.getMessage());
