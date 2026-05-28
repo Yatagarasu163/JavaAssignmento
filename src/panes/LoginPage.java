@@ -18,7 +18,7 @@ public class LoginPage extends JFrame {
     private JButton btnSignIn;
 
     public LoginPage() {
-        setTitle("Login Page");
+        setTitle("APU-ASC");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

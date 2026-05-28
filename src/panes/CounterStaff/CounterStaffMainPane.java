@@ -7,7 +7,7 @@ import panes.SidebarPanel;
 public class CounterStaffMainPane extends JFrame{
 
     public CounterStaffMainPane() {
-        setTitle("Counter Staff");
+        setTitle("APU-ASC");
         setSize(800, 600);
         components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);

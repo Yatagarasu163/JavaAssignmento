@@ -25,7 +25,7 @@ public class ForgotPasswordPage extends JFrame {
     private String[] verifiedUserRow = null;
 
     public ForgotPasswordPage() {
-        setTitle("APU-ASC: Forgot Password");
+        setTitle("APU-ASC");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

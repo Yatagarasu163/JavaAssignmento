@@ -21,7 +21,7 @@ public class ForcePasswordChangePage extends JFrame {
     public ForcePasswordChangePage(String[] userData) {
         this.trappedUserRow = userData;
 
-        setTitle("APU-ASC: Mandatory Password Update");
+        setTitle("APU-ASC");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

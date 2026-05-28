@@ -15,7 +15,7 @@ public class TechnicianMainPane extends JFrame {
 
     public TechnicianMainPane(String UserID) {
 
-        setTitle("APU-ASC: Technician Portal");
+        setTitle("APU-ASC");
         setSize(1000, 700);
         components.ProgramTerminator.enableSafeExit(this);
         setLocationRelativeTo(null);

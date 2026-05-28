@@ -7,7 +7,7 @@ import java.awt.*;
 public class ManagerMainPane extends JFrame{
 
 	public ManagerMainPane() {
-		setTitle("Manager");
+		setTitle("APU-ASC");
 		setSize(800, 600);
 		components.ProgramTerminator.enableSafeExit(this);
 		setLocationRelativeTo(null);
