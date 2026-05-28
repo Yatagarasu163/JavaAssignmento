@@ -165,11 +165,20 @@ public class CounterStaffPaymentPane extends JPanel{
                     break;
                 }
             }
-                
+
+            String appointmentStatus = "";
+
             for(String[] appointment : appointments){
                 if(appointment[0].equalsIgnoreCase(appointmentID)){
                     serviceType = appointment[2];
+                    if (appointment.length > 4) {
+                        appointmentStatus = appointment[4];
+                    }
                 }
+            }
+
+            if (!appointmentStatus.equalsIgnoreCase("Completed")) {
+                continue;
             }
 
             boolean matchesType = false;
