@@ -4,7 +4,7 @@ P000003/></Drain Plug Washer/></N/></25.00
 P000004/></Tire Rotation & Balancing/></N/></45.00
 P000005/></Battery Health Check & Cleaning/></N/></20.00
 P000006/></Windshield Wiper Fluid Top-up/></N/></10.00
-P000007/></Spark Plugs Replacement (Set of 4)/></M/></200.00
+P000007/></Spark Plugs Replacement (Set of 4)/></M/></210.00
 P000008/></Transmission Fluid Flush/></M/></180.00
 P000009/></Brake Pad Replacement (Front & Rear)/></M/></350.00
 P000010/></Brake Fluid Flush & Bleed/></M/></120.00

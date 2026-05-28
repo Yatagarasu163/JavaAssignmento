@@ -121,24 +121,49 @@ public class ManagerPricingPane extends JPanel{
         });
 
         updateButton.addActionListener(e -> {
-            double newPrice = parsePrice(newPriceField.getText());
+            String inputText = newPriceField.getText().trim();
+
+            if (inputText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a new price.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double newPrice;
+
+            try {
+                newPrice = Double.parseDouble(inputText);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid format! Please enter numbers only (e.g., 50.00).", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (newPrice <= 0) {
+                JOptionPane.showMessageDialog(this, "Price must be greater than RM0.00!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             Integer serviceTypeIndex = serviceTypeComboBox.getSelectedIndex();
             Integer priceTypeIndex = priceTypeComboBox.getSelectedIndex();
 
-            if(newPrice <= 0){
-                JOptionPane.showMessageDialog(this, "Invalid price input!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            if(serviceTypeIndex == 0){
-                prices.get(priceTypeIndex)[3] = String.format("%.2f", newPrice);
-            } else{
-                prices.get(priceTypeIndex + normalPricesList.size())[3] = String.format("%.2f", newPrice);
+            int actualRowIndex;
+            if (serviceTypeIndex == 0) {
+                actualRowIndex = priceTypeIndex;
+            } else {
+                actualRowIndex = priceTypeIndex + normalPricesList.size();
             }
 
+            double currentSavedPrice = Double.parseDouble(prices.get(actualRowIndex)[3]);
+            if (newPrice == currentSavedPrice) {
+                JOptionPane.showMessageDialog(this, "The new price must be different from the current price!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            prices.get(actualRowIndex)[3] = String.format("%.2f", newPrice);
             currentPriceLabel.setText(String.format("RM%.2f", newPrice));
 
             FileHandler.write(filename, prices, false);
+
+            newPriceField.setText("");
 
             JOptionPane.showMessageDialog(this, "New price saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         });
@@ -150,14 +175,13 @@ public class ManagerPricingPane extends JPanel{
     }
 
     private static double parsePrice(String input) {
-    if (input == null || input.isEmpty()) return 0.0;
-
-    String cleaned = input.replaceAll("[^0-9.]", "");
-
-    try {
-        return Double.parseDouble(cleaned);
-    } catch (NumberFormatException e) {
-        return 0.0;
+        if (input == null || input.isEmpty()) return 0.0;
+        String cleaned = input.replaceAll("[^0-9.]", "");
+        try {
+            return Double.parseDouble(cleaned);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 }
-}
+

@@ -61,6 +61,20 @@ public class ManagerAccountsList extends JPanel{
         userIDField.setActiveColor(Color.WHITE);
         userIDField.setForeground(Color.WHITE);
         userIDField.setCaretColor(Color.WHITE);
+
+        userIDField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
+
+            private void triggerSearch() {
+                String text = userIDField.getText();
+                if (text.equals("User ID")) {
+                    text = "";
+                }
+                updateAccounts(text);
+            }
+        });
         middleTopPanel.add(userIDField);
         middleTopPanel.add(Box.createHorizontalStrut(50));
         TextLabel dateTxt = new TextLabel("Date: ");
@@ -109,6 +123,10 @@ public class ManagerAccountsList extends JPanel{
     }
 
     public String[][] getAccounts(){
+        return getAccounts("");
+    }
+
+    public String[][] getAccounts(String searchKeyword){
         List<String[]> accounts = FileHandler.read(filename);
         List<String[]> currentUserList = FileHandler.read("CurrentUser.txt");
         String currentID = "";
@@ -120,25 +138,31 @@ public class ManagerAccountsList extends JPanel{
         if (accounts.size() > 0) {
             for (String[] account : accounts){
                 if(!account[0].equalsIgnoreCase(currentID)){
-                    String[] arr = {account[0], account[3], account[9], "View"};
-                    cleanedAccounts.add(arr);
+
+                    if (searchKeyword == null || searchKeyword.trim().isEmpty() ||
+                            account[0].toLowerCase().contains(searchKeyword.toLowerCase().trim())) {
+
+                        String[] arr = {account[0], account[3], account[9], "View"};
+                        cleanedAccounts.add(arr);
+                    }
                 }
             }
         }
-        String[][] array = cleanedAccounts.toArray(new String[0][]);
-
-        return array;
+        return cleanedAccounts.toArray(new String[0][]);
     }
 
-    public void updateAccounts() {
+    public void updateAccounts(String searchKeyword) {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
-
         model.setRowCount(0);
 
-        String[][] accounts = getAccounts();
+        String[][] accounts = getAccounts(searchKeyword);
         for (String[] row : accounts) {
             model.addRow(row);
         }
+    }
+
+    public void updateAccounts() {
+        updateAccounts("");
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer{
