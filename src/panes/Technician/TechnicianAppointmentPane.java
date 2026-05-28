@@ -22,25 +22,37 @@ public class TechnicianAppointmentPane extends JPanel {
 
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDate =  today.format(formatter);;
+        String formattedDate = today.format(formatter);
+
         initData(UserID, formattedDate);
 
-        listPanel = new panes.Technician.TechnicianAppointmentListPane(appointments, this);
-        listPanel.setPreferredSize(new Dimension(320, 0));
+        if (appointments.isEmpty()) {
+            JPanel emptyPanel = new JPanel(new GridBagLayout());
+            emptyPanel.setOpaque(false);
 
-        detailsPanel = new TechnicianAppointmentDetailsPane(this);
+            JLabel emptyLbl = new JLabel("You have no appointments scheduled for today. Have a great day!");
+            emptyLbl.setFont(new Font("SansSerif", Font.ITALIC, 20));
+            emptyLbl.setForeground(Color.GRAY);
 
-        JScrollPane rightScroll = new JScrollPane(detailsPanel);
-        rightScroll.setBorder(null);
-        rightScroll.getVerticalScrollBar().setUnitIncrement(16);
-        rightScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        rightScroll.setOpaque(false);
-        rightScroll.getViewport().setOpaque(false);
+            emptyPanel.add(emptyLbl);
+            add(emptyPanel, BorderLayout.CENTER);
 
-        add(listPanel, BorderLayout.WEST);
-        add(rightScroll, BorderLayout.CENTER);
+        } else {
+            listPanel = new panes.Technician.TechnicianAppointmentListPane(appointments, this);
+            listPanel.setPreferredSize(new Dimension(320, 0));
 
-        if (!appointments.isEmpty()) {
+            detailsPanel = new TechnicianAppointmentDetailsPane(this);
+
+            JScrollPane rightScroll = new JScrollPane(detailsPanel);
+            rightScroll.setBorder(null);
+            rightScroll.getVerticalScrollBar().setUnitIncrement(16);
+            rightScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            rightScroll.setOpaque(false);
+            rightScroll.getViewport().setOpaque(false);
+
+            add(listPanel, BorderLayout.WEST);
+            add(rightScroll, BorderLayout.CENTER);
+
             detailsPanel.loadAppointment(appointments.get(0));
         }
     }

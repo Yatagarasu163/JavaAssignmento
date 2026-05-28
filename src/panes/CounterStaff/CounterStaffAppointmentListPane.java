@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import IO.FileHandler;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class CounterStaffAppointmentListPane extends JPanel{
     private AppointmentPanelListener listener;
@@ -90,23 +92,35 @@ public class CounterStaffAppointmentListPane extends JPanel{
         addAppointmentBtn.addActionListener(e -> {
             listener.onCreateAppointment();
         });
-    }   
+    }
 
     private void loadAppointments() {
         middlePanel.removeAll();
 
-        List<String[]> appointments = FileHandler.read(FileHandler.appointments);
-
+        List<String[]> allAppointments = FileHandler.read(FileHandler.appointments);
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Set<String> selectedTechnicians = new HashSet<>();
-        for (String[] appointment : appointments){
-            selectedTechnicians.add(appointment[6]);
+
+        for (String[] appointment : allAppointments){
+            if (appointment.length > 6 && appointment[5].equals(todayDate)) {
+                selectedTechnicians.add(appointment[6]);
+            }
         }
 
-        for (String technicianID : selectedTechnicians){
-            AppointmentBox box = new AppointmentBox(technicianID);
-            System.out.println(technicianID);
-            middlePanel.add(box);
-            middlePanel.add(Box.createVerticalStrut(30));
+        if (selectedTechnicians.isEmpty()) {
+            JLabel emptyStateLbl = new JLabel("There are no appointments for today yet.", SwingConstants.CENTER);
+            emptyStateLbl.setFont(new Font("SansSerif", Font.ITALIC, 18));
+            emptyStateLbl.setForeground(Color.GRAY);
+            emptyStateLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            middlePanel.add(Box.createVerticalStrut(50));
+            middlePanel.add(emptyStateLbl);
+        } else {
+            for (String technicianID : selectedTechnicians){
+                AppointmentBox box = new AppointmentBox(technicianID);
+                middlePanel.add(box);
+                middlePanel.add(Box.createVerticalStrut(30));
+            }
         }
 
         middlePanel.revalidate();

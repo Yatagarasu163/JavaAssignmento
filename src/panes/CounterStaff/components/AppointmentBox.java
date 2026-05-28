@@ -9,6 +9,8 @@ import java.awt.event.HierarchyEvent;
 import config.UIConfig;
 import components.TextLabel;
 import IO.FileHandler;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AppointmentBox extends JPanel{
     private int radius = 30; 
@@ -73,8 +75,13 @@ public class AppointmentBox extends JPanel{
         List<String[]> selectedAppointments = new ArrayList<>();
         List<String> vehicleIDs = new ArrayList<>();
 
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
         for (String[] appointment : appointments){
-            if(appointment[6].equalsIgnoreCase(technicianID)){
+            if(appointment.length > 9 &&
+                    appointment[6].equalsIgnoreCase(technicianID) &&
+                    appointment[5].equals(todayDate)){
+
                 selectedAppointments.add(appointment);
                 vehicleIDs.add(appointment[9]);
             }
