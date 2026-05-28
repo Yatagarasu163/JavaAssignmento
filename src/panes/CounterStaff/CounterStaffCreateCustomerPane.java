@@ -130,23 +130,61 @@ public class CounterStaffCreateCustomerPane extends JPanel{
         updateDefaultPassword();
 
         createBtn.addActionListener(e -> {
+            String fName = firstNameTxtField.getText().trim();
+            String lName = lastNameTxtField.getText().trim();
+            String email = emailTxtField.getText().trim();
+            String contact = contactNumberTxtField.getText().trim();
+            String address = addressTxtField.getText().trim();
+            String uname = usernameTxtField.getText().trim();
+
+            if (fName.isEmpty() || lName.isEmpty() || email.isEmpty() || contact.isEmpty() || address.isEmpty() || uname.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!fName.matches("^[a-zA-Z/ ]+$") || !lName.matches("^[a-zA-Z/ ]+$")) {
+                JOptionPane.showMessageDialog(this, "Names can only contain letters, spaces, and the '/' symbol.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!contact.matches("^[0-9]+$")) {
+                JOptionPane.showMessageDialog(this, "Contact number must contain numbers only. (E.g. 0123456789)", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid email format. (E.g. abd@gmail.com)", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            List<String[]> existingUsers = FileHandler.read(filename);
+            for (String[] row : existingUsers) {
+                if (row.length > 3 && row[3].equalsIgnoreCase(uname)) {
+                    JOptionPane.showMessageDialog(this, "This username is already taken! Please choose another one.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (row.length > 5 && row[5].equalsIgnoreCase(email)) {
+                    JOptionPane.showMessageDialog(this, "This email is already registered to another account!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
             User user = new User();
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String formattedDate = today.format(formatter);
 
             user.id = userIDTxtField.getText();
-            user.firstName = firstNameTxtField.getText();
-            user.lastName = lastNameTxtField.getText();
-            user.username = usernameTxtField.getText();
+            user.firstName = fName;
+            user.lastName = lName;
+            user.username = uname;
             user.role = "Customer";
-            user.email = emailTxtField.getText();
-            user.contact = contactNumberTxtField.getText();
+            user.email = email;
+            user.contact = contact;
             user.password = new String(passwordTxtField.getPassword());
-            user.address = addressTxtField.getText();
+            user.address = address;
             user.dateJoined = formattedDate;
-
-            String newID = generateNewID(filename, "CT");
 
             String[] userDetails = user.getDetails();
             List<String[]> inputUser = new ArrayList<>();
@@ -154,7 +192,7 @@ public class CounterStaffCreateCustomerPane extends JPanel{
 
             FileHandler.write(filename, inputUser, true);
 
-            JOptionPane.showMessageDialog(this, "Saved!", "Saved the user details", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Account successfully created!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             listener.onBackToList();
         });
