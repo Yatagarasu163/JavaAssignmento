@@ -128,8 +128,14 @@ public class ManagerPricingPane extends JPanel{
                 return;
             }
 
-            double newPrice;
+            // Validation 2: Strict Regex Pattern (Blocks Java's hidden 'd' and 'f' quirks)
+            // This pattern strictly allows digits, and optionally one decimal point followed by digits.
+            if (!inputText.matches("^\\d+(\\.\\d+)?$")) {
+                JOptionPane.showMessageDialog(this, "Invalid format! Please enter numbers only (e.g., 50.00).", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
+            double newPrice;
             try {
                 newPrice = Double.parseDouble(inputText);
             } catch (NumberFormatException ex) {
