@@ -15,6 +15,7 @@ public class TechnicianMainPane extends JFrame {
 
     public TechnicianMainPane(String UserID) {
 
+        // set Title and structure of Interface
         setTitle("APU-ASC");
         setSize(1000, 700);
         components.ProgramTerminator.enableSafeExit(this);
@@ -37,17 +38,22 @@ public class TechnicianMainPane extends JFrame {
         String[] TechnicianInfo = getTechnicianInfo();
         String fullName = TechnicianInfo[1] + " " + TechnicianInfo[2];
 
+        // Technician Dashboard
         TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
+        // Technician Appointment Pane
         appointmentPane = new panes.Technician.TechnicianAppointmentPane(TechnicianInfo[0]);
+        // Technician Profile Page
         TechnicianProfilePane profilePane = new TechnicianProfilePane(fullName, TechnicianInfo[0], TechnicianInfo[5],
                 TechnicianInfo[9], TechnicianInfo[6], TechnicianInfo[8]);
 
+        // Addressing each name for pane section
         cardContainer.add(TechnicianDashboard, "Dashboard");
         cardContainer.add(profilePane, "TechnicianProfile");
         cardContainer.add(appointmentPane, "Appointment");
 
         cardLayout.show(cardContainer, "Dashboard");
 
+        // Add each section to nav bar
         sidebarPanel.getHomeBtn().addActionListener(e -> {
             cardContainer.remove(TechnicianDashboard);
             TechnicianDashboard = new panes.Technician.TechnicianDashboardPane(TechnicianInfo[3], TechnicianInfo[0], this);
@@ -66,11 +72,13 @@ public class TechnicianMainPane extends JFrame {
         });
     }
 
+    // Enable navigation to specific vehicle appointment section
     public void navigateToAppointment(String plateNumber) {
         cardLayout.show(cardContainer, "Appointment");
         appointmentPane.openSpecificAppointment(plateNumber);
     }
 
+    // get Technician Information
     public String[] getTechnicianInfo() {
 
         List<String[]> currentUser = FileHandler.read("CurrentUser.txt");
@@ -81,6 +89,7 @@ public class TechnicianMainPane extends JFrame {
             }
         }
 
+        // ensure the ID part show Technician Not Found
         return new String[]{"N/A", "Not Found", "N/A", "N/A", "N/A", "N/A"};
     }
 }
