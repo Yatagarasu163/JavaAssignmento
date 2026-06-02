@@ -26,9 +26,10 @@ public class TechnicianProfilePane extends JPanel {
         setBackground(bgColor);
         setBorder(new EmptyBorder(40, 40, 40, 40));
 
+        // Add the default user icon
         ImageIcon originalIcon = new ImageIcon("src/images/UserProfile.png");
 
-        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // set the size design of icon
         ImageIcon avatarIcon = new ImageIcon(scaledImage);
 
         JLabel avatarLabel = new JLabel(avatarIcon, SwingConstants.CENTER);
@@ -50,6 +51,7 @@ public class TechnicianProfilePane extends JPanel {
         avatarContainer.setLayout(new BorderLayout());
         avatarContainer.add(avatarLabel, BorderLayout.CENTER);
 
+        // Adding card for each user details
         JPanel detailsCard = new JPanel(new GridBagLayout());
         detailsCard.setBackground(Color.WHITE);
         detailsCard.setMaximumSize(new Dimension(800, 300));
@@ -58,6 +60,7 @@ public class TechnicianProfilePane extends JPanel {
                 new EmptyBorder(20, 20, 20, 20)
         ));
 
+        // Create a Read only field for disabling Editing mode
         nameField = createReadOnlyField(name);
         idField = createReadOnlyField(id);
         emailField = createReadOnlyField(email);
@@ -65,36 +68,40 @@ public class TechnicianProfilePane extends JPanel {
         phoneField = createReadOnlyField(phone);
         addressField = createReadOnlyField(address);
 
-        addFormField(detailsCard, "src/images/User.png", nameField, 0, 0, 1);
-        addFormField(detailsCard, "src/images/ID.png", idField, 2, 0, 1);
-        addFormField(detailsCard, "src/images/Email.png", emailField, 0, 1, 1);
-        addFormField(detailsCard, "src/images/Calendar.png", dateField, 2, 1, 1);
-        addFormField(detailsCard, "src/images/Contact.png", phoneField, 0, 2, 3);
-        addFormField(detailsCard, "src/images/Address.png", addressField, 0, 3, 3);
+        // Technician Details
+        addFormField(detailsCard, "src/images/User.png", nameField, 0, 0, 1); // Name
+        addFormField(detailsCard, "src/images/ID.png", idField, 2, 0, 1); // ID
+        addFormField(detailsCard, "src/images/Email.png", emailField, 0, 1, 1); // Email
+        addFormField(detailsCard, "src/images/Calendar.png", dateField, 2, 1, 1); // Date Joined
+        addFormField(detailsCard, "src/images/Contact.png", phoneField, 0, 2, 3); // Contact Number
+        addFormField(detailsCard, "src/images/Address.png", addressField, 0, 3, 3); // Address
 
+        // Update Button for editing Personal Details
         updateBtn = new FloatingButton("Update", 20);
         updateBtn.setPreferredSize(new Dimension(150, 40));
         updateBtn.setMaximumSize(new Dimension(150, 40));
 
         updateBtn.addActionListener(e -> toggleEditMode());
 
+        // Assemble components for Technician Profile
         add(Box.createVerticalStrut(20));
-        add(avatarContainer);
+        add(avatarContainer); // Avatar
         add(Box.createVerticalStrut(30));
-        add(detailsCard);
+        add(detailsCard); // User Details
         add(Box.createVerticalStrut(30));
-        add(updateBtn);
+        add(updateBtn); // Update Button
     }
 
     private JTextField createReadOnlyField(String text) {
         JTextField field = new JTextField(text);
         field.setFont(new Font("Serif", Font.BOLD, 16));
-        field.setEditable(false);
-        field.setOpaque(false);
-        field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        field.setEditable(false); // unable to edit
+        field.setOpaque(false); // making the text field transparent
+        field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // text field size
         return field;
     }
 
+    // Form field for each User Details
     private void addFormField(JPanel panel, String imagePath, JTextField field, int x, int y, int width) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x; gbc.gridy = y;
@@ -118,12 +125,14 @@ public class TechnicianProfilePane extends JPanel {
         panel.add(field, gbc);
     }
 
+    // event for updating and read only mode
     private void toggleEditMode() {
         if (!isEditing) {
             isEditing = true;
             updateBtn.setText("Save Changes");
             updateBtn.setBackground(new Color(100, 200, 100));
 
+            // enable specific thee column only
             enableField(nameField);
             enableField(phoneField);
             enableField(addressField);
@@ -143,19 +152,22 @@ public class TechnicianProfilePane extends JPanel {
         }
     }
 
+    // Text Field is editable
     private void enableField(JTextField field) {
         field.setEditable(true);
-        field.setOpaque(true);
+        field.setOpaque(true); // text field will be gray
         field.setBackground(new Color(245, 245, 255));
         field.setBorder(BorderFactory.createLineBorder(primaryPurple, 1, true));
     }
 
+    // Text Field in read only mode
     private void disableField(JTextField field) {
         field.setEditable(false);
         field.setOpaque(false);
         field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
 
+    // Split full name passed from Main Pain
     public static parsedName splitName(String fullName){
         String[] parts = fullName.trim().split(" ", 2);
 
@@ -165,6 +177,7 @@ public class TechnicianProfilePane extends JPanel {
         return new parsedName(first, last);
     }
 
+    // Update New Technician Info to Text File
     public void updateTechnicianInfo() {
 
         List<String[]> userList = FileHandler.read("Users.txt");
@@ -173,8 +186,10 @@ public class TechnicianProfilePane extends JPanel {
         String[] updatedInfo = null;
         boolean found = false;
 
+        // split full name into first name and last name
         parsedName userName = splitName(nameField.getText());
 
+        // Update new info into list
         for (String[] user: currentUser) {
             if (user[0].equals(idField.getText())) {
                 user[1] = userName.firstName;
@@ -187,17 +202,18 @@ public class TechnicianProfilePane extends JPanel {
             }
         }
 
-        if (updatedInfo != null) {
+        if (updatedInfo != null) { // if list contain value
             for (int i = 0; i < userList.size(); i++) {
-                String[] targetUser = userList.get(i);
-                if (targetUser[0].equals(updatedInfo[0])) {
-                    userList.set(i, updatedInfo);
-                    found = true;
+                String[] targetUser = userList.get(i); // get each user record in Text File
+                if (targetUser[0].equals(updatedInfo[0])) { // finds the specific user ID record row
+                    userList.set(i, updatedInfo); // replace entire row with new update info row
+                    found = true; // user found
                     break;
                 }
             }
         }
-        if (found) {
+
+        if (found) { // only update when information is replaced successfully
             FileHandler.write("Users.txt", userList, false);
             FileHandler.write("CurrentUser.txt", currentUser, false);
             System.out.println("Update successful.");
