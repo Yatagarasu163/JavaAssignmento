@@ -19,7 +19,7 @@ import components.FloatingComboBox;
 public class ManagerAccountsList extends JPanel{
     private AccountsPanelListener listener;
     private String filename = "Users.txt";
-    private String[] columns = {"User ID", "User Name", "Date Joined", "Details"};
+    private String[] columns = {"User ID", "User Name", "Date Joined", "Overall Rating", "Details"};
     private FeedbackTable userTable;
 
     public ManagerAccountsList(AccountsPanelListener listener) {
@@ -35,8 +35,8 @@ public class ManagerAccountsList extends JPanel{
         addUserBtn.setForeground(UIConfig.mainBackground);
         addUserBtn.setBorderPainted(true);
         addUserBtn.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(UIConfig.mainBackground, 3, true),
-            new EmptyBorder(10, 10, 10, 10)
+                new LineBorder(UIConfig.mainBackground, 3, true),
+                new EmptyBorder(10, 10, 10, 10)
         ));
         topPanel.add(addUserBtn, BorderLayout.EAST);
 
@@ -46,27 +46,29 @@ public class ManagerAccountsList extends JPanel{
         middlePanel.setLayout(new BorderLayout(10, 30));
         middlePanel.setBackground(UIConfig.mainBackground);
         middlePanel.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(UIConfig.mainBackground, 3, true),
-            new EmptyBorder(10, 10, 10, 10)
+                new LineBorder(UIConfig.mainBackground, 3, true),
+                new EmptyBorder(10, 10, 10, 10)
         ));
-        
+
         JPanel middleTopPanel = new JPanel();
         middleTopPanel.setLayout(new BoxLayout(middleTopPanel, BoxLayout.X_AXIS));
         middleTopPanel.setBackground(UIConfig.mainBackground);
-        TextLabel userIDtxt = new TextLabel("User ID: ");
+
+        TextLabel userIDtxt = new TextLabel("Search ID: ");
         userIDtxt.setForeground(Color.WHITE);
         middleTopPanel.add(userIDtxt);
-        middleTopPanel.add(Box.createHorizontalStrut(30));
+        middleTopPanel.add(Box.createHorizontalStrut(20));
+
         FloatingTextField userIDField = new FloatingTextField("User ID");
         userIDField.setPlaceHolderColor(Color.LIGHT_GRAY);
         userIDField.setActiveColor(Color.WHITE);
         userIDField.setForeground(Color.WHITE);
         userIDField.setCaretColor(Color.WHITE);
 
-        String[] roles = {"All Staff", "Manager", "Counter Staff", "Technician"};
-        FloatingComboBox<String> roleComboBox = new FloatingComboBox<>(roles);
-        roleComboBox.setPreferredSize(new Dimension(150, 40));
-        roleComboBox.setMaximumSize(new Dimension(150, 40));
+        String[] sortOptions = {"Default", "Highest Rating", "Lowest Rating"};
+        FloatingComboBox<String> sortComboBox = new FloatingComboBox<>(sortOptions);
+        sortComboBox.setPreferredSize(new Dimension(160, 40));
+        sortComboBox.setMaximumSize(new Dimension(160, 40));
 
         userIDField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) { triggerSearch(); }
@@ -76,25 +78,25 @@ public class ManagerAccountsList extends JPanel{
             private void triggerSearch() {
                 String text = userIDField.getText();
                 if (text.equals("User ID")) text = "";
-                String role = (String) roleComboBox.getSelectedItem();
-                updateAccounts(text, role);
+                String sortOption = (String) sortComboBox.getSelectedItem();
+                updateAccounts(text, sortOption);
             }
         });
 
-        roleComboBox.addActionListener(e -> {
+        sortComboBox.addActionListener(e -> {
             String text = userIDField.getText();
             if (text.equals("User ID")) text = "";
-            String role = (String) roleComboBox.getSelectedItem();
-            updateAccounts(text, role);
+            String sortOption = (String) sortComboBox.getSelectedItem();
+            updateAccounts(text, sortOption);
         });
 
         middleTopPanel.add(userIDField);
         middleTopPanel.add(Box.createHorizontalStrut(50));
 
-        TextLabel roleTxt = new TextLabel("Role: ");
-        roleTxt.setForeground(Color.WHITE);
-        middleTopPanel.add(roleTxt);
-        middleTopPanel.add(roleComboBox);
+        TextLabel sortTxt = new TextLabel("Sort By: ");
+        sortTxt.setForeground(Color.WHITE);
+        middleTopPanel.add(sortTxt);
+        middleTopPanel.add(sortComboBox);
         middlePanel.add(middleTopPanel, BorderLayout.NORTH);
 
         JPanel tablePanel = new JPanel();
@@ -107,7 +109,7 @@ public class ManagerAccountsList extends JPanel{
         DefaultTableModel tableModel = new DefaultTableModel(data, columns){
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 3;
+                return column == 4;
             }
         };
 
@@ -132,12 +134,15 @@ public class ManagerAccountsList extends JPanel{
     }
 
     public String[][] getAccounts(){
-        return getAccounts("", "All Staff");
+        return getAccounts("", "Default");
     }
 
-    public String[][] getAccounts(String searchKeyword, String roleFilter){
+    // --- 2. UPDATED PARAMETER TO ACCEPT SORT OPTION ---
+    public String[][] getAccounts(String searchKeyword, String sortOption){
         List<String[]> accounts = FileHandler.read(filename);
         List<String[]> currentUserList = FileHandler.read("CurrentUser.txt");
+        List<String[]> reviews = FileHandler.read("Rating_Review.txt");
+
         String currentID = "";
         if (currentUserList.size() > 0){
             currentID = currentUserList.get(0)[0];
@@ -152,45 +157,86 @@ public class ManagerAccountsList extends JPanel{
                 boolean isCounterStaff = userID.startsWith("CS");
                 boolean isTechnician = userID.startsWith("T");
 
-                // Determine if this user matches the selected dropdown role
-                boolean matchRole = false;
-                if (roleFilter.equals("All Staff") && (isManager || isCounterStaff || isTechnician)) {
-                    matchRole = true;
-                } else if (roleFilter.equals("Manager") && isManager) {
-                    matchRole = true;
-                } else if (roleFilter.equals("Counter Staff") && isCounterStaff) {
-                    matchRole = true;
-                } else if (roleFilter.equals("Technician") && isTechnician) {
-                    matchRole = true;
-                }
-
-                // If the role matches AND they aren't the current user, check the search text
-                if(matchRole && !account[0].equalsIgnoreCase(currentID)){
+                if((isManager || isCounterStaff || isTechnician) && !account[0].equalsIgnoreCase(currentID)){
 
                     if (searchKeyword == null || searchKeyword.trim().isEmpty() ||
                             account[0].toLowerCase().contains(searchKeyword.toLowerCase().trim())) {
 
-                        String[] arr = {account[0], account[3], account[9], "View"};
+                        String ratingStr = "N/A";
+
+                        if (isCounterStaff) {
+                            double totalScore = 0;
+                            int count = 0;
+                            for (String[] review : reviews) {
+                                if (review.length >= 6 && review[5].equalsIgnoreCase(userID)) {
+                                    try {
+                                        totalScore += Double.parseDouble(review[3]);
+                                        count++;
+                                    } catch (NumberFormatException ignored) {}
+                                }
+                            }
+                            if (count > 0) {
+                                ratingStr = String.format("%.1f / 5.0", (totalScore / count));
+                            } else {
+                                ratingStr = "No ratings";
+                            }
+                        } else if (isTechnician) {
+                            double totalScore = 0;
+                            int count = 0;
+                            for (String[] review : reviews) {
+                                if (review.length >= 5 && review[4].equalsIgnoreCase(userID)) {
+                                    try {
+                                        totalScore += Double.parseDouble(review[2]);
+                                        count++;
+                                    } catch (NumberFormatException ignored) {}
+                                }
+                            }
+                            if (count > 0) {
+                                ratingStr = String.format("%.1f / 5.0", (totalScore / count));
+                            } else {
+                                ratingStr = "No ratings";
+                            }
+                        }
+
+                        String[] arr = {account[0], account[3], account[9], ratingStr, "View"};
                         cleanedAccounts.add(arr);
                     }
                 }
             }
         }
+
+        if (sortOption.equals("Highest Rating")) {
+            cleanedAccounts.sort((a, b) -> Double.compare(getSortValue(b[3], true), getSortValue(a[3], true)));
+        } else if (sortOption.equals("Lowest Rating")) {
+            cleanedAccounts.sort((a, b) -> Double.compare(getSortValue(a[3], false), getSortValue(b[3], false)));
+        }
+
         return cleanedAccounts.toArray(new String[0][]);
     }
 
-    public void updateAccounts(String searchKeyword, String roleFilter) {
+    public void updateAccounts(String searchKeyword, String sortOption) {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         model.setRowCount(0);
 
-        String[][] accounts = getAccounts(searchKeyword, roleFilter);
+        String[][] accounts = getAccounts(searchKeyword, sortOption);
         for (String[] row : accounts) {
             model.addRow(row);
         }
     }
 
     public void updateAccounts() {
-        updateAccounts("", "All Staff");
+        updateAccounts("", "Default");
+    }
+
+    private double getSortValue(String ratingStr, boolean isHighestFirst) {
+        if (ratingStr.contains("/")) {
+            try {
+                return Double.parseDouble(ratingStr.split(" ")[0]);
+            } catch (Exception e) {
+                return isHighestFirst ? -1.0 : 6.0;
+            }
+        }
+        return isHighestFirst ? -1.0 : 6.0;
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer{
@@ -258,5 +304,4 @@ public class ManagerAccountsList extends JPanel{
             return super.stopCellEditing();
         }
     }
-
 }
