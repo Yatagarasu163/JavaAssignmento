@@ -308,6 +308,10 @@ public class CustomerAppointmentDetailsPane extends JPanel {
 
             saveReviewBtn.addActionListener(e -> {
                 String reviewText = reviewField.getText().trim();
+                if (reviewText.isEmpty() || reviewText.equals("Leave your review here...")) {
+                    reviewText = "No review from customer...";
+                }
+
                 String tRate = ((String) techCombo.getSelectedItem()).substring(0,1);
                 String sRate = ((String) staffCombo.getSelectedItem()).substring(0,1);
 
